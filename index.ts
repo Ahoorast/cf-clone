@@ -6,8 +6,8 @@ const server = Bun.serve({
     async fetch(request: Request) {
         let req = await request.text();
         let data = JSON.parse(req);
-        // remove all the "/" from data.url and replace it with "-"
-        let filename = data.url.toISOString().replace(/[\/\\:]/g, "_");
+        let filename = data.url.replace(/[\/\\:]/g, "_");
+        console.log(`${path}${filename}`);
         fs.writeFileSync(`${path}${filename}`, data.solution);
         const res = new Response('hello world yo yo');
         res.headers.append('Content-Type', 'text/plain');
@@ -21,10 +21,3 @@ const server = Bun.serve({
 });
 
 console.log(`Listening on localhost:${server.port}`);
-
-// write an ajax request to the server
-// Path: index.html
-// // <script>
-//    fetch("http://localhost:3000").then((response) => {
-//
-//    });

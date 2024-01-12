@@ -46,16 +46,18 @@ async function solutionToServer(url, solution) {
 
 async function getAccepted() {
     for (let i = 1; i < subs.length; i++) {
+        console.log(`${i} out of ${subs.length}`);
         if (getStatus(subs[i]) !== 'OK') {
             continue;
         }
+        console.log(`sending ${i} to server`)
         let url = getLink(subs[i]);
-        console.log(i);
+        await new Promise(resolve => setTimeout(resolve, 1000));
         clickSub(subs[i]);
-        await new Promise(resolve => setTimeout(resolve, 10000));
+        await new Promise(resolve => setTimeout(resolve, 7000));
         let solution = getSolution();
-        solutionToServer(solution, url);
-        console.log("HI", i);
+        solutionToServer(url, solution);
+        console.log(url);
         await new Promise(resolve => setTimeout(resolve, 1000));
         closeSub();
     }
