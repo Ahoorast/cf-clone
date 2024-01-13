@@ -1,0 +1,54 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10;
+int n, m, s, from[N], to[N], we[N], d[N], l;
+vector<int> adj[N];
+ 
+void dij() {
+	set<pair<int, int>> q;
+	fill(d, d + n + 1, l + 10);
+	q.insert({d[s] = 0, s});
+	while (q.size()) {
+		auto it = *q.begin();
+		q.erase(q.begin());
+		int v = it.second;
+		for (auto i: adj[v]) {
+			int u = from[i] + to[i] - v;
+			int nw = d[v] + we[i];
+			if (nw < d[u]) {
+				q.erase({d[u], u});
+				q.insert({d[u] = nw, u});
+			}
+		}
+	}
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m >> s;
+	for (int i = 0, v, u, w; i < m; i++) {
+		cin >> from[i] >> to[i] >> we[i];
+		adj[from[i]].push_back(i);
+		adj[to[i]].push_back(i);
+	}
+	cin >> l;
+	dij();
+	int ans = 0;
+	for (int i = 1; i <= n; i++)
+		if (d[i] == l)
+			ans++;
+	for (int i = 0; i < m; i++) {
+		int v = from[i], u = to[i], w = we[i];
+		bool t1 = false, t2 = false;
+		int d1 = l - d[v], d2 = l - d[u];
+		if (d[u] + w - d1 >= d[v] + d1 && d1 > 0 && d1 < w) 
+			ans++, t1 = true;
+		if (d[v] + w - d2 >= d[u] + d2 && d2 > 0 && d2 < w)
+			ans++, t2 = true;
+		if (t1 && t2 && d1 + d2 == w)
+			ans--;
+	}
+	cout << ans << '\n'; 
+	return 0;
+}

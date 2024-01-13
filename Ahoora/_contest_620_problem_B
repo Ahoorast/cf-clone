@@ -1,0 +1,18 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int maxn = 200;
+int a[maxn];
+ 
+int main() {
+ 	ios_base:: sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int counter[12] = {6, 2, 5, 5, 4, 5, 6, 3, 7, 6};
+	long long l, r, k, res = 0;
+	cin >> l >> r;
+	for (int i = l; i <= r; i++) {
+		k = i;
+		while (k) res += counter[k % 10], k /= 10;
+	}
+	cout << res << endl;
+	return 0;
+}

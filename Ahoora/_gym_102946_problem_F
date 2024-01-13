@@ -1,0 +1,85 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 8;
+int n, d, r, c, dx[4] = {+1, -1, 0, 0}, dy[4] = {0, 0, +1, -1};
+map<unsigned long long, int> dis[N][N];
+ 
+bool vld(int x, int y) {
+	return x >= 0 && y >= 0 && x < n && y < n;
+}
+ 
+struct state {
+	unsigned long long msk;
+	int r, c;
+	state(unsigned long long x = 0, int y = 0, int z = 0) {
+		msk = x, r = y, c = z;
+	}
+	void print() {
+		cout << r << ' ' << c << '\n';
+		for (int i = 0; i < n; i++, cout << '\n')
+			for (int j = 0; j < n; j++)
+				cout << ((msk >> (i * n + j)) & 1);
+	}
+};
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> d >> r >> c;
+	unsigned long long msk1 = 0, msk2 = 0;
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++) {
+			char c;
+			cin >> c;
+			msk1 += (c - '0') * (1ull << (n * i + j));
+		}
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++) {
+			char c;
+			cin >> c;
+			msk2 += (c - '0') * (1ull << (n * i + j));
+		}
+	queue<state> q;
+	q.push(state(msk1, r, c));
+	dis[r][c][msk1] = 0;
+	while (q.size()) {
+		state f = q.front();
+		q.pop();
+		if (dis[f.r][f.c][f.msk] > d)
+			return cout << "No\n", 0;
+		if (f.msk == msk2) 
+			return cout << "Yes\n", 0;
+		for (int i = 0; i < 4; i++) {
+			int x = f.r + dx[i], y = f.c + dy[i];
+			if (!vld(x, y))
+				continue;
+			unsigned long long nmsk = 0;
+			for (int i = 0; i < n; i++)
+				for (int j = 0; j < n; j++) {
+					if (i == x && j == y)
+						continue;
+					int cnt = 0;
+					for (int dx = -1; dx <= 1; dx++)
+						for (int dy = -1; dy <= 1; dy++) 
+							if (dx != 0 || dy != 0) {
+								int X = i + dx, Y = j + dy;
+								if (!vld(X, Y))
+									continue;
+								cnt += (f.msk >> (n * X + Y)) & 1;
+							}
+					if ((f.msk >> (i * n + j)) & 1) {
+						if (cnt == 2 || cnt == 3)
+							nmsk += (1ull << (i * n + j));
+					} else if (cnt == 3)
+						nmsk += (1ull << (i * n + j));
+ 
+				}
+			if (!dis[x][y].count(nmsk)) {
+				dis[x][y][nmsk] = dis[f.r][f.c][f.msk] + 1;
+				q.push(state(nmsk, x, y));
+			}
+		}
+	}
+	cout << "No\n";
+	return 0;
+}

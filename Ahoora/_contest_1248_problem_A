@@ -1,0 +1,25 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int main() {
+	ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		long long cnt[2][2];
+		for (int i = 0; i < 2; i++)
+			for (int j = 0; j < 2; j++)
+				cnt[i][j] = 0;
+		long long p, q, n, res = 0, m;
+		cin >> n;
+		for (int i = 0; i < n; i++)
+			cin >> p, cnt[0][p % 2]++;
+		cin >> m;
+		for (int i = 0; i < m; i++)
+			cin >> q, cnt[1][q % 2]++;
+		for (int i = 0; i < 2; i++)
+			res += cnt[1][i] * cnt[0][i];
+		cout << res << endl;
+	}
+	return 0;
+}

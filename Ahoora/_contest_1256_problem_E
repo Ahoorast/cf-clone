@@ -1,0 +1,52 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+typedef		long long				ll;
+typedef		unsigned long long		ull;
+#define		F						first
+#define		S						second
+ 
+const int N = 2 * 1000 * 100 + 10;
+ll n, dp[N], res[N], t = 1;
+pair<int, int> a[N];
+ 
+void backTrace() {
+	int i, j;
+	bool flag = 1;
+	for (i = n - 1, j = 0; i >= 0 && flag; i -= j) {
+		for (j = 3; j <= 5 && !(dp[i] == dp[i - j] + a[i].F - a[i - j + 1].F && (i - j > 1 || i - j + 1 == 0)); j++)
+			;
+		flag &= !(j == 6);
+		if (flag) {
+			for (int k = 0; k < j; k++)
+				res[a[i - k].S] = t;
+			t++;
+		}
+	}
+	if (!flag) {
+		for (int i = 0; i < n; i++)
+			if (res[i] == 0)
+				res[i] = t;
+		t++;
+	}
+}
+ 
+int main() {
+	cin >> n;
+	for (int i = 0; i < n; i++)
+		cin >> a[i].F, a[i].S = i;
+	sort(a, a + n);
+	for (int i = 3; i < N; i++)
+		dp[i] = (1LL << 50);
+	for (int i = 2; i <= 4; i++)
+		dp[i] = a[i].F - a[0].F;
+	for (int i = 5; i < n; i++)
+		for (int j = 3; j <= 5; j++)
+			if (i - j > 1)
+				dp[i] = min(dp[i], dp[i - j] + a[i].F - a[i - j + 1].F);
+	backTrace();
+	cout << dp[n - 1] << ' ' << t - 1 << endl;
+	for (int i = 0; i < n; i++)
+		cout << res[i] << ' ';
+	return 0;
+}

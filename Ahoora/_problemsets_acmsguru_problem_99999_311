@@ -1,0 +1,166 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10;
+int sz;
+vector<long long> all;
+ 
+struct Node {
+	long long ted = 0, p = 0;
+	bool cl = 0;
+	void merge(Node L, Node R) {
+		ted = L.ted + R.ted;
+		p = L.p + R.p;
+	}
+	void add(bool x) {
+		cl |= x;
+		if (x)
+			ted = p = 0;
+	}
+	void init(int x, int pp) {
+		ted += x;
+		p += 1LL * x * pp;
+		cl = false;
+	}
+} seg[(N << 2) + 100];
+ 
+void shift(int id) {
+	seg[id << 1].add(seg[id].cl), seg[id << 1 | 1].add(seg[id].cl);
+	seg[id].cl = false;
+}
+ 
+void build(int l = 0, int r = sz, int id = 1) {
+	if (l + 1 == r) {
+		seg[id].init(0, all[l]);
+		return;
+	}
+	int mid = l + r >> 1;
+	build(l, mid, id << 1), build(mid, r, id << 1 | 1);
+	seg[id].merge(seg[id << 1], seg[id << 1 | 1]);
+}
+ 
+void upd(int x, int c, int l = 0, int r = sz, int id = 1) {
+	if (l + 1 == r) {
+		seg[id].init(x, all[l]);
+		return;
+	}
+	shift(id);
+	int mid = l + r >> 1;
+	(c < mid? upd(x, c, l, mid, id << 1): upd(x, c, mid, r, id << 1 | 1));
+	seg[id].merge(seg[id << 1], seg[id << 1 | 1]);
+}
+ 
+int find(long long t, int l = 0, int r = sz, int id = 1) {
+	if (l + 1 == r) 
+		return l;
+	shift(id);
+	int mid = l + r >> 1;
+	if (seg[id << 1].ted > t)
+		return find(t, l, mid, id << 1);
+	return find(t - seg[id << 1].ted, mid, r, id << 1 | 1);
+}
+ 
+Node get(int s, int e, int l = 0, int r = sz, int id = 1) {
+	if (s <= l && e >= r)
+		return seg[id];
+	if (s >= r || e <= l)
+		return seg[0];
+	shift(id);
+	int mid = l + r >> 1;
+	Node res;
+	res.merge(get(s, e, l, mid, id << 1), get(s, e, mid, r, id << 1 | 1));
+	return res;
+}
+ 
+void clear(int s, int e, int l = 0, int r = sz, int id = 1) {
+	if (s <= l && e >= r) {
+		seg[id].add(1);
+		return;
+	}
+	if (s >= r || e <= l)
+		return;
+	shift(id);
+	int mid = l + r >> 1;
+	clear(s, e, l, mid, id << 1), clear(s, e, mid, r, id << 1 | 1);
+	seg[id].merge(seg[id << 1], seg[id << 1 | 1]);
+}
+ 
+struct Query {
+	long long x, y, z;
+	Query(long long a, long long b, long long c) {
+		x = a, y = b, z = c;
+	}
+};
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	vector<Query> query;
+	while (true) {
+		char s;
+		long long x, y, tp;
+		s = getchar();
+		if (s == EOF)
+			break;
+		if (s == 'A') {
+			tp = 1;
+			for (int i = 0; i < 5; i++)
+				s = getchar();
+		}
+		else {
+			tp = 2;
+			for (int i = 0; i < 2; i++)
+				s = getchar();
+		}
+		s = getchar();
+		x = 0, y = 0;
+		while (true) {
+			s = getchar();
+			if (s == ' ')
+				break;
+			x *= 10;
+			x += s - '0';
+		}
+		while (true) {
+			s = getchar();
+			if (s == '\n')
+				break;
+			y *= 10;
+			y += s - '0';
+		}
+		query.push_back(Query(x, y, tp));
+		all.push_back(y);
+	}
+	sort(all.begin(), all.end());
+	all.resize(unique(all.begin(), all.end()) - all.begin());
+	sz = (int)(all.size());
+	build();
+	for (auto it: query) {
+		long long x = it.x, y = it.y, tp = it.z;
+		if (tp == 1) {
+			upd(x, lower_bound(all.begin(), all.end(), y) - all.begin());
+		} else {
+			int r = find(x);
+			Node res = get(0, r);
+			if (res.ted > x || res.p > y) 
+				cout << "UNHAPPY\n";
+			else {
+				x -= res.ted;
+				y -= res.p;
+				res = get(r, r + 1);
+				if (res.ted < x)
+					cout << "UNHAPPY\n";
+				else {
+					y -= x * all[r];
+					if (y < 0)
+						cout << "UNHAPPY\n";
+					else {
+						cout << "HAPPY\n";
+						clear(0, r);
+						upd(-x, r);
+					}
+				}
+			}
+		}
+	}
+	return 0;
+}

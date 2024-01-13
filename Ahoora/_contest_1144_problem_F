@@ -1,0 +1,47 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 100;
+int n, m, ans[N];
+vector<pair<int, int>> adj[N];
+bool vis[N], h[N];
+ 
+void read() {
+	cin >> n >> m;
+	for (int i = 1, v, u; i <= m; i++) {
+		cin >> v >> u;
+		adj[v].push_back({u, i});
+		adj[u].push_back({v, -i});
+	}
+}
+ 
+void dfs(int root, bool d = 0) {
+	vis[root] = true;
+	d = !d;
+	h[root] = d;
+	for (auto u: adj[root])
+		if (!vis[u.first]) 
+			dfs(u.first, d);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	read();
+	dfs(1);
+	for (int i = 1; i <= n; i++)
+		for (auto u: adj[i]) {
+			if (h[i] == h[u.first]) 
+				return cout << "NO" << endl, 0;
+			bool t = h[i];
+			if (u.second > 0)
+				ans[u.second] = t;
+			else
+				ans[-u.second] = !t;
+ 
+		}
+	cout << "YES" << endl;
+	for (int i = 1; i <= m; i++)
+		cout << ans[i];
+	cout << endl;
+	return 0;
+}

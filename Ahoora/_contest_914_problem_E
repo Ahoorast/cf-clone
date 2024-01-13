@@ -1,0 +1,107 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10, Z = 20;;
+int n, s[N], msk, sz[N], mx[N];
+bool mark[N];
+vector<int> adj[N];
+long long ans[N], cnt[1 << (Z + 2)];
+ 
+void add(int v, int w = +1, int par = 0) {
+	msk ^= s[v];
+	cnt[msk] += w;
+	for (auto u: adj[v])
+		if (!mark[u] && u ^ par)
+			add(u, w, v);
+	msk ^= s[v];
+}
+ 
+void dfs_sz(int v, int par = 0) {
+	sz[v] = 1, mx[v] = 0;
+	for (auto u: adj[v])
+		if (!mark[u] && u ^ par) {
+			dfs_sz(u, v);
+			sz[v] += sz[u];
+			if (sz[u] > sz[mx[v]])
+				mx[v] = u;
+		}
+}
+ 
+long long go(int v, int par = 0) {
+	msk ^= s[v];
+	long long res = 0;
+	for (int i = 0; i < Z; i++) 
+		res += cnt[msk ^ (1 << i)];
+	res += cnt[msk];
+	for (auto u: adj[v])
+		if (!mark[u] && u ^ par)
+			res += go(u, v);
+	msk ^= s[v];
+	ans[v] += res;
+	return res;
+}
+ 
+void cal(int root, int v, int par = 0) {
+	msk ^= s[v];
+	for (int i = 0; i < Z; i++)
+		ans[root] += cnt[msk ^ (1 << i)];
+	ans[root] += cnt[msk];
+	for (auto u: adj[v])
+		if (!mark[u] && u ^ par)
+			cal(root, u, v);
+	msk ^= s[v];
+}
+ 
+void solve(int v) {
+	dfs_sz(v);
+	int n = sz[v];
+	while (2 * sz[mx[v]] > n)
+		v = mx[v];
+	mark[v] = true;
+	msk = 0;
+	add(v);
+	for (auto u: adj[v])
+		if (!mark[u]) {
+			msk = s[v];
+			add(u, -1);
+			msk = 0;
+			go(u);
+			msk = s[v];
+			add(u);
+		}
+	msk = 0;
+	add(v, -1);
+	cnt[s[v]]++;
+	for (auto u: adj[v])
+		if (!mark[u]) {
+			msk = 0;
+			cal(v, u);
+			msk = s[v];
+			add(u);
+		}
+	msk = 0;
+	add(v, -1);
+	for (auto u: adj[v])
+		if (!mark[u])
+			solve(u);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 1, v, u; i < n; i++) {
+		cin >> v >> u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+	for (int i = 1; i <= n; i++) {
+		char c;
+		cin >> c;
+		s[i] = 1 << (c - 'a');
+	}
+	solve(1);
+	for (int i = 1; i <= n; i++)
+		cout << ++ans[i] << ' ';
+	cout << '\n';
+	return 0;
+}

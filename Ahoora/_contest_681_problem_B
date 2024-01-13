@@ -1,0 +1,14 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int main() {
+	ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0); 
+	long long a = 1234567, b = 123456, c = 1234, n;
+	cin >> n;
+	for (int i = 0; i <= n / a; i++)
+		for (int j = 0; j <= n / b; j++)
+				if (n - (a * i + b * j) >= 0 && (n - (a * i + b * j)) % c == 0)
+					return cout << "YES", 0;
+	cout << "NO";
+	return 0;
+}

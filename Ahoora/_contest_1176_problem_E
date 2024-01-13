@@ -1,0 +1,51 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10;
+vector<int> adj[N], ans[2];
+bool vis[N];
+int n, m;
+ 
+void read() {
+	cin >> n >> m;
+	int v, u;
+	for (int i = 0; i < m; i++) {
+		cin >> v >> u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+}
+ 
+void dfs(int v, int h) {
+	vis[v] = true;
+	++h;
+	ans[h % 2].push_back(v);
+	for (auto u: adj[v])
+		if (!vis[u])
+			dfs(u, h);
+}
+ 
+int main() {
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		read();
+		dfs(1, 0);	
+		for (int i = 0; i <= n; i++)
+			adj[i].clear(), vis[i] = 0;
+		if (ans[0].size() <= n / 2) {
+			cout << ans[0].size() << endl;
+			for (auto it: ans[0])
+				cout << it << ' ';
+		}
+		else {
+			cout << ans[1].size() << endl;
+			for (auto it: ans[1])
+				cout << it << ' ';
+		}
+		cout << endl;
+		ans[0].clear(), ans[1].clear();
+	}
+	return 0;
+}

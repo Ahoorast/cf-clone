@@ -1,0 +1,80 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N  = 2 * 1000 * 100 + 10, Z = 26;
+int cnt[N][Z], n, ps[N];
+bool have[Z];
+set<int> F[Z];
+string s;
+ 
+bool can_rem(int l, int r) {
+	for (int i = 0; i < Z; i++) {
+		int kol = cnt[r][i] - cnt[l][i];
+		if (kol == 0)
+			continue;
+		if (cnt[n][i] - cnt[r][i] == 0 && !have[i])
+			return false;
+	}
+	return true;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		string inp;
+		cin >> inp;
+		s.clear();
+		n = (int)(inp.size());
+		char prv = '0';
+		for (int i = 0; i < n; i++) {
+			if (prv != inp[i])
+				s += inp[i];
+			prv = inp[i];
+		}
+		n = (int)(s.size());
+		for (int i = 1; i <= n; i++)
+			for (int j = 0; j < Z; j++)
+				cnt[i][j] = cnt[i - 1][j] + (s[i - 1] - 'a' == j);
+		for (int i = 0; i < n; i++)
+			F[s[i] - 'a'].insert(i);
+		for (int i = 0; i < n; i++) {
+			if (i)
+				ps[i] += ps[i - 1];
+			if (ps[i] > 0)
+				continue;
+			if (have[s[i] - 'a']) {
+				ps[i]++;
+				ps[i + 1]--;
+				continue;
+			}
+			int mn = n;
+			for (int j = s[i] - 'a' + 1; j < Z; j++) {
+				if (have[j])
+					continue;
+				auto it = F[j].upper_bound(i);
+				if (it != F[j].end())
+					mn = min(mn, *it);
+			}
+			if (mn == n) {
+				have[s[i] - 'a'] = true;
+				continue;
+			}
+			if (can_rem(i, mn)) {
+				ps[i]++;
+				ps[mn]--;
+			} else
+				have[s[i] - 'a'] = true;
+		} 
+		for (int i = 0; i < n; i++)
+			if (ps[i] == 0)
+				cout << s[i];
+		cout << '\n';
+		for (int i = 0; i <= n; i++)
+			ps[i] = 0;
+		for (int i = 0; i < Z; i++)
+			F[i].clear(), have[i] = false;
+	}
+	return 0;
+}

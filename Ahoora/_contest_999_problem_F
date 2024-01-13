@@ -1,0 +1,36 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 510, M = 1000 * 100 + 10;
+int n, K, h[N], cnt[2][M], dp[N][N * 10];
+ 
+void read() {
+	int c, f;
+	cin >> n >> K;
+	for (int i = 1; i <= n * K; i++)
+		cin >> c, cnt[0][c]++;
+	for (int i = 1; i <= n; i++)
+		cin >> f, cnt[1][f]++;
+	for (int i = 1; i <= K; i++)
+		cin >> h[i];
+}
+ 
+int joy(int n, int m) {
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= m; j++) {
+			dp[i][j] = -1 * (1 << 20);
+			for (int k = 0; k <= min(K, j); k++)
+				dp[i][j] = max(dp[i][j], h[k] + dp[i - 1][j - k]);
+		}
+	return dp[n][m];
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	read();
+	int ans = 0;
+	for (int i = 1; i < M; i++)
+		ans += joy(cnt[1][i], cnt[0][i]);
+	cout << ans << endl;
+	return 0;
+}

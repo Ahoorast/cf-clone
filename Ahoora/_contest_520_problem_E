@@ -1,0 +1,45 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10, mod = 1LL * 1000 * 1000 * 1000 + 7;
+int k, n, dp[N], fact[N], inv[N];
+ 
+long long Pow(long long a, long long b) {
+	return b? (b & 1? a: 1) % mod * Pow(a * a % mod, b >> 1) % mod: 1;
+}
+ 
+int C(int r, int n) {
+	if (r > n)
+		return 0;
+	if (r < 0)
+		return 0;
+	return 1LL * fact[n] * inv[r] % mod * inv[n - r] % mod;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> k;
+	fact[0] = 1;
+	for (int i = 1; i < N; i++)
+		fact[i] = 1LL * fact[i - 1] * i % mod;
+	inv[N - 1] = Pow(fact[N - 1], mod - 2);
+	for (int i = N - 2; i >= 0; i--)
+		inv[i] = 1LL * inv[i + 1] * (i + 1) % mod;
+	dp[0] = C(k - 1, n - 2);
+	int t = 1;
+	for (int i = 1; i < N; i++) {
+		t = 1LL * t * 10 % mod;
+		dp[i] = (1LL * C(k - 1, n - 2 - i) * t % mod + dp[i - 1]) % mod;
+	}
+	string s;
+	cin >> s;
+	int ans = 0;
+	for (int i = n - 1; i >= 0; i--) {
+		int x = s[i] - '0';
+		(ans += 1LL * C(k, i) * x % mod * Pow(10, n - 1 - i) % mod) %= mod;
+		if (i < n - 1)
+			(ans += 1LL * dp[n - 2 - i] * x % mod) %= mod;
+	}
+	cout << ans << '\n';
+	return 0;
+}

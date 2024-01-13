@@ -1,0 +1,68 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10;
+long long seg[N << 2];
+int a[N], n;
+ 
+void upd(int p, int x, int lx = 0, int rx = n, int root = 1) {
+	if (lx + 1 == rx) {
+		seg[root] = x;
+		a[p] = x;
+		return;
+	}
+	int mid = lx + rx >> 1;
+	p < mid? upd(p, x, lx, mid, root << 1): upd(p, x, mid, rx, root << 1 | 1);
+	seg[root] = seg[root << 1] + seg[root << 1 | 1];
+}
+ 
+long long get(int l, int r, int lx = 0, int rx = n, int root = 1) {
+	if (l <= lx && r >= rx)
+		return seg[root];
+	if (l >= rx || r <= lx)
+		return 0LL;
+	int mid = lx + rx >> 1;
+	return get(l, r, lx, mid, root << 1) + get(l, r, mid, rx, root << 1 | 1);
+}
+ 
+int nxt(long long s, long long add = 0, int lx = 0, int rx = n, int root = 1) {
+	if (lx + 1 == rx)
+		return lx;
+	int mid = lx + rx >> 1;
+	if (add + seg[root << 1] < s)
+		return nxt(s, add + seg[root << 1], mid, rx, root << 1 | 1);
+	return nxt(s, add, lx, mid, root << 1);
+}
+ 
+int query() {
+	if (a[0] == 0)
+		return 0;
+	long long s = a[0];
+	int l = 1;
+	while (l < n) {
+		int x = nxt(s * 2);
+		long long sum = get(0, x + 1);
+		if (sum < s * 2)
+			return -2;
+		if (sum == (sum - a[x]) * 2)
+			return x;
+		l = x;
+		s = sum;
+	}
+	return -2;
+}
+ 
+int main() { 
+	int Q;
+	scanf("%d%d", &n, &Q);
+	for (int i = 0; i < n; i++)
+		scanf("%d", &a[i]), upd(i, a[i]);
+	while (Q--) {
+		int p, x;
+		scanf("%d%d", &p, &x);
+		--p;
+		upd(p, x);
+		printf("%d\n", query() + 1);
+	}
+	return 0;
+}

@@ -1,0 +1,26 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int main() {
+    ios:: sync_with_stdio(false), cin.tie(NULL), cout.tie(NULL);
+	int Q;
+    cin >> Q;
+    while (Q--) {
+        int cntA = 0, cntB = 0;
+		string s;
+        cin >> s;
+		int n = (int)(s.size());
+        for (int i = 0; i < n; i++) {
+            if (s[i] == 'A')
+                cntA++;
+            else if (s[i] == 'B' && cntA)
+                cntA--;
+            else if (s[i] == 'B' && !cntA && cntB)
+               	cntB--;
+            else if (s[i] == 'B' && !cntA)
+                cntB++;
+        }
+        cout << cntA + cntB << '\n';
+    }
+	return 0;
+}

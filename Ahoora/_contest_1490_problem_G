@@ -1,0 +1,76 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+struct bad_struct {
+	long long ind, id;
+	long long s;
+	bad_struct(long long a = 0, long long b = 0, long long c = 0) {
+		ind = a, id = b, s = c;
+	}
+	bool operator < (const bad_struct &x) const {
+		if (s != x.s)
+			return s < x.s;
+		return (ind > x.ind);
+	}
+};
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	long long Q;
+	cin >> Q;
+	while (Q--) {
+		long long n, m;
+		cin >> n >> m;
+		vector<long long> a(n), x(m);
+		for (long long i = 0; i < n; i++)
+			cin >> a[i];
+		vector<bad_struct> all;
+		for (long long i = 0; i < m; i++) {
+			cin >> x[i];
+			all.push_back(bad_struct(1LL << 60, i, 1LL * x[i]));
+		}
+		long long sum = 0, mx = 0;
+		long long index_khoobe = -1;
+		vector<pair<long long, long long>> kooft;
+		for (long long i = 0; i < n; i++) {
+			sum += a[i];
+			if (mx < sum) {
+				mx = sum;
+				index_khoobe = i;
+			}
+			all.push_back(bad_struct(i + 1, -1, sum));
+			kooft.push_back({sum, i + 1});
+		}
+		all.push_back(bad_struct(0, -1, 0));
+		kooft.push_back({0, 0});
+		sort(kooft.begin(), kooft.end());
+		sort(all.begin(), all.end());
+		vector<long long> kire_khar(n + 1);
+		kire_khar[n] = kooft[n].second;
+		for (long long i = n - 1; i >= 0; i--)
+			kire_khar[i] = min(kire_khar[i + 1], kooft[i].second);
+		long long sz = (long long)(all.size());
+		vector<long long> ans(m, 1LL << 60), mn(sz);
+		mn[sz - 1] = all[sz - 1].ind;
+		for (long long i = sz - 2; i >= 0; i--)
+			mn[i] = min(mn[i + 1], 1LL * all[i].ind);
+		for (long long i = 0; i < sz; i++)
+			if (all[i].id != -1)
+				ans[all[i].id] = min(ans[all[i].id], mn[i]);
+		if (sum > 0) {
+			for (long long i = 0; i < m; i++) {
+				if (ans[i] != 1LL << 60)
+					continue;
+				long long turn = ((x[i] - mx) + sum - 1) / sum;
+				long long res = 1LL * turn * n;
+				x[i] -= 1LL * turn * sum;
+				res += kire_khar[(lower_bound(kooft.begin(), kooft.end(), make_pair(x[i], -1LL))) - kooft.begin()];
+				ans[i] = min(ans[i], res);
+			}
+		}
+		for (auto x: ans)
+			cout << (x < 1LL << 60? x - 1: -1) << ' ';
+		cout << '\n';
+	}
+	return 0;
+}

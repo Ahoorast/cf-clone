@@ -1,0 +1,28 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+	int arr[110][110], n, x1, y1, x2, y2, ans = 0;
+	cin >> n;
+	for(int i = 0; i <= 100; i++)
+	{
+		for(int j = 0; j <= 100; j++)
+		arr[i][j] = 0;
+	}
+	for(int i = 0; i < n; i++)
+	{
+		cin >> x1 >> y1 >> x2 >> y2;
+		for(int i = y1; i <= y2; i++)
+		{
+			for(int j = x1; j <= x2; j++)
+			arr[i][j]++;
+		}
+	}
+	for(int i = 0; i <= 100; i++)
+	{
+		for(int j = 0; j <= 100; j++)
+		ans += arr[i][j];
+	}
+	cout << ans;
+	return 0;
+}

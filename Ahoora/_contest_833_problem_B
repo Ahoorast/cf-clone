@@ -1,0 +1,45 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 35000 + 10;
+int n, k, a[N], seg[N << 2], lazy[N << 2], last[N], dp[N][2];
+ 
+void push(int root) {
+	seg[root << 1] += lazy[root], seg[root << 1 | 1] += lazy[root];
+	lazy[root << 1] += lazy[root], lazy[root << 1 | 1] += lazy[root];
+	lazy[root] = 0;
+}
+ 
+void upd(int s, int e, int w, int l = 0, int r = n, int root = 1) {
+	if (s <= l && e >= r) {
+		seg[root] += w;
+		lazy[root] += w;
+		return;
+	}
+	if (e <= l || s >= r)
+		return;
+	push(root);
+	int mid = l + r >> 1;
+	upd(s, e, w, l, mid, root << 1), upd(s, e, w, mid, r, root << 1 | 1);
+	seg[root] = max(seg[root << 1], seg[root << 1 | 1]);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> k;
+	for(int i = 0; i < n; i++)
+		cin >> a[i];
+	for(int j = 1; j <= k; j++){
+		fill(seg, seg + (N << 2), 0);
+		fill(lazy, lazy + (N << 2), 0);
+		fill(last, last + N, 0);
+		for(int i = 0; i < n; i++){
+			upd(i, i + 1, dp[i][!(j & 1)]);
+			upd(last[a[i]], i + 1, +1);
+			dp[i + 1][j & 1] = seg[1];
+			last[a[i]] = i + 1;
+		}
+	}
+	cout << dp[n][k & 1] << '\n';
+	return 0;
+}

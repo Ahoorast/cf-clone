@@ -1,0 +1,36 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+ 
+int n[3];
+vector<vector<int>> a(3);
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	for (int i = 0; i < 3; i++)
+		cin >> n[i];
+	for (int i = 0; i < 3; i++) {
+		a[i].resize(n[i]);
+		for (int j = 0; j < n[i]; j++)
+			cin >> a[i][j];
+		sort(a[i].begin(), a[i].end());
+	}
+	long long ans = 0;
+	for (int i = 0; i < 3; i++) {
+		long long res = 0, s[2] = {0, 0};
+		int l = 0, mn[2];
+		for (int j = 0; j < 3; j++)
+			if (j != i) {
+				mn[l] = a[j][0];
+				for (int k = 1; k < n[j]; k++)
+					s[l] += a[j][k];
+				l++;
+			} else
+				for (auto x: a[j])
+					res += x;
+		res += max({s[0] + s[1] - mn[0] - mn[1], mn[0] + s[0] - mn[1] - s[1], mn[1] + s[1] - mn[0] - s[0]});
+		ans = max(ans, res);
+	}
+	cout << ans << '\n';
+	return 0;
+}

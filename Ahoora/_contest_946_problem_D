@@ -1,0 +1,43 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 510;
+int sR[N][N], sL[N][N], n, m, K, best[N][N], dp[N][N], L[N][N], R[N][N];
+char c[N][N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m >> K;
+	for (int i = 1; i <= n; i++) 
+		for (int j = 1; j <= m; j++)
+			cin >> c[i][j], sL[i][j] = sL[i][j - 1] + c[i][j] - '0', L[i][j] = (c[i][j] == '1'? j: L[i][j - 1]);
+	for (int i = 1; i <= n; i++)
+		sL[i][m + 1] = sL[i][m], L[i][m + 1] = L[i][m];
+	for (int i = 1; i <= n; i++)
+		for (int j = m; j >= 0; j--)
+			sR[i][j] = sR[i][j + 1] + c[i][j] - '0', R[i][j] = (c[i][j] == '1'? j: R[i][j + 1]);
+	for (int i = 1; i < N; i++)
+		for (int j = 0; j < N; j++)
+			best[i][j] = dp[i][j] = 1 << 28;
+	for (int i = 1; i <= n; i++) {
+		best[i][0] = L[i][m] - R[i][1] + 1;
+		if (R[i][1] == 0)
+			best[i][0] = 0;
+	}
+	for (int i = 1; i <= n; i++) 
+		for (int j = 0; j <= m; j++)
+			for (int k = m + 1; k > j; k--)	{
+				best[i][sL[i][j] + sR[i][k]] = max(min(best[i][sL[i][j] + sR[i][k]], L[i][k - 1] - R[i][j + 1] + 1), 0);
+				if (R[i][j + 1] == 0)
+					best[i][sL[i][j] + sR[i][k]] = 0;
+			}
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= K; j++)
+			best[i][j] = min(best[i][j], best[i][j - 1]);
+	for (int i = 1; i <= n; i++)
+		for (int j = 0; j <= K; j++)
+			for (int k = 0; k <= j; k++)
+				dp[i][j] = min(dp[i][j], best[i][k] + dp[i - 1][j - k]);
+	cout << dp[n][K] << endl;
+	return 0;
+}

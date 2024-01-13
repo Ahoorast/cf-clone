@@ -1,0 +1,29 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+long long cal(long long x) {
+	return x * (x + 1) / 2;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		long long x;
+		cin >> x;
+		int ans = 0;
+		long long i = 1;
+		while (x) {
+			if (cal(i) <= x) {
+				x -= cal(i);
+				ans++;
+				i = 2 * i + 1;
+			}
+			else
+				break;
+		}
+		cout << ans << '\n';
+	}
+	return 0;
+}

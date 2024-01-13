@@ -1,0 +1,25 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int main()
+{
+	string s;
+	int n, a8 = 0, rest = 0, ans1, ans = 0;
+	cin >> n >> s;
+	for(int i = 0; i < n; i++)
+		if(s[i] == '8') a8++;
+		else rest++;
+	ans1 = rest / 10;
+	rest %= 10;
+	if(a8 <= ans1) cout << min(a8, ans1);
+	else { 
+		rest = ans1 * 10 + rest;
+		for(int i = 0; a8; i++) {
+			if(ans < min(a8, rest / 10)) ans = min(a8, rest / 10);
+			a8--;
+			rest++;
+		}
+		cout << ans;
+	}
+	return 0;
+}

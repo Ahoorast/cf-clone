@@ -1,0 +1,56 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int maxn = 2 * 100 * 1000 + 100;
+long long p[maxn], n, x, y, a, b, dp[maxn];
+unsigned long long k = 0;
+vector<int> result;
+ 
+unsigned long long cal(long long t) {
+	unsigned long long res = 0;
+	int tmp = t / (a * b / __gcd(a, b)), tmp1 = t / a - tmp, tmp2 = t / b - tmp;
+	unsigned long long w1 = 0, w2 = 0;
+	res += dp[tmp] * (x + y) / 100;
+	w1 = (dp[tmp + tmp1] - dp[tmp]) * x / 100 + (dp[tmp + tmp1 + tmp2] - dp[tmp + tmp1]) * y / 100;
+	w2 = (dp[tmp + tmp2] - dp[tmp]) * y / 100 + (dp[tmp + tmp1 + tmp2] - dp[tmp + tmp2]) * x / 100;
+	if (w1 < w2)
+		swap(w1, w2);
+	res += w1;
+	return res;
+}
+ 
+void solve() {
+	int tmp = 0;
+	sort(p, p + n);
+	for (int i = 0; i < n / 2; i++)
+		swap(p[i], p[n - i - 1]);
+	dp[1] = p[0];
+	for (int i = 2; i <= n; i++)
+		dp[i] = dp[i - 1] + p[i - 1];
+	for (long long i = 1; i <= n && tmp == 0; i++)
+		if (cal(i) >= k)
+			result.push_back(i), tmp++;
+	if (tmp == 0)
+		result.push_back(-1);
+}
+ 
+void read() {
+	for (int i = 0; i < n; i++)
+		p[i] = 0;
+	cin >> n;
+	for (int i = 0; i < n; i++) 
+		cin >> p[i];
+	cin >> x >> a >> y >> b >> k;
+	solve();
+}
+ 
+int main() {
+	ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+	long long Q;
+	cin >> Q;
+	while (Q--)
+		read();
+	for (int i = 0; i < result.size(); i++)
+		cout << result[i] << endl;
+	return 0;
+}

@@ -1,0 +1,30 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+	char a;
+	int ans = 0, cnt = 0;
+	string s;
+	for(int i = 0; true; i++)
+	{
+		cin >> a;
+		if(a >= 'a' && a <= 'z')
+		s += a;
+		if(a == '}')
+		break;
+	}
+	int sz = s.size();
+	for(int i = 0; i < sz; i++)
+	{
+		for(int j = i + 1; j < sz; j++)
+		{
+			if(s[i] == s[j])
+			s[j] = '/';
+		}
+	}
+	for(int i = 0; i < sz; i++)
+	if(s[i] != '/')
+	ans++;
+	cout << ans;
+	return 0;
+}

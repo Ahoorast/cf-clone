@@ -1,0 +1,41 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+typedef long long ll;
+typedef unsigned long long ull;
+ 
+int main() {
+	ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+	int t;
+	cin >> t;
+	while (t--) {
+		string s;
+		cin >> s;
+		vector<int> v[2];
+		int sz = s.size();
+		v[0].push_back(1);
+		v[1].push_back(s[0]);
+		for (int i = 1; i < sz; i++) {
+			if (s[i] == s[i - 1])
+				v[0][int(v[0].size()) - 1]++;
+			else {
+				v[0].push_back(1);
+				v[1].push_back(s[i]);
+			}
+		}
+		int res[200];
+		for (int i = 0; i < 200; i++)
+			res[i] = 0;
+		for (int i = 0; i < v[0].size(); i++)
+			if (v[0][i] % 2 == 1)
+				res[v[1][i]]++;
+		for (int i = 0; i < 200; i++)
+			if (res[i] != 0) {
+				char c = i;
+				cout << c;
+			}
+	//			cout << (char(res[i]));
+		cout << endl;
+	}
+	return 0;
+}

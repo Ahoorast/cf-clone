@@ -1,0 +1,69 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 4 * 1000 * 100 + 10;
+set<int> s[N];
+string tp[N];
+vector<int> all;
+int seg[N << 2], x[N], y[N], n;
+ 
+void read() {
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		cin >> tp[i] >> x[i] >> y[i];
+		all.push_back(x[i]), all.push_back(y[i]);
+	}
+	sort(all.begin(), all.end());
+	all.resize(unique(all.begin(), all.end()) - all.begin());
+	for (int i = 0; i < n; i++) {
+		x[i] = lower_bound(all.begin(), all.end(), x[i]) - all.begin();
+		y[i] = lower_bound(all.begin(), all.end(), y[i]) - all.begin();
+	}
+}
+ 
+void upd(int x, int y, int l = 0, int r = N - 1, int root = 1) {
+	if (l + 1 == r) {
+		seg[root] = y;
+		return;
+	}
+	int mid = l + r >> 1;
+	x < mid? upd(x, y, l, mid, root << 1): upd(x, y, mid, r, root << 1 | 1);
+	seg[root] = max(seg[root << 1], seg[root << 1 | 1]);
+}
+ 
+int find(int x, int y, int l = 0, int r = N - 1, int root = 1) {
+	if (seg[root] < y || x >= r)
+		return -1;
+	if (l + 1 == r)
+		return l;
+	int mid = l + r >> 1;
+	int res = find(x, y, l, mid, root << 1);
+	if (res != -1)
+		return res;
+	return find(x, y, mid, r, root << 1 | 1);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	read();
+	for (int i = 0; i < N; i++)
+		s[i].insert(-1);
+	fill(seg, seg + (N << 2), -1);
+	for (int i = 0; i < n; i++) 
+		if (tp[i] == "add") {
+			s[x[i]].insert(y[i]);
+			upd(x[i], *--s[x[i]].end());
+		}
+		else if (tp[i] == "remove") {
+			s[x[i]].erase(y[i]);
+			upd(x[i], *--s[x[i]].end());
+		}
+		else {
+			int res = find(x[i] + 1, y[i] + 1);
+			if (res == -1) 
+				cout << res << '\n';
+			else
+				cout << all[res] << ' ' << all[*s[res].upper_bound(y[i])] << '\n';
+		}
+	return 0;
+}

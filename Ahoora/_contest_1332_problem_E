@@ -1,0 +1,25 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int mod = 998244353;
+ 
+long long Pow(long long a, long long b) {
+	return b? (b & 1? a: 1) % mod * Pow(a * a % mod, b >> 1) % mod: 1;
+}
+ 
+int main() { 
+	long long n, m, L, R;
+	cin >> n >> m >> L >> R;
+	if (n % 2 && m % 2)
+		return cout << Pow(R - L + 1, n * m) << '\n', 0;
+	if ((R - L + 1) % 2 == 0)
+		return cout << ((Pow((R - L + 1), n * m - 1)) * ((R - L + 1) / 2)) % mod << '\n', 0;
+	if (R == L)
+		return cout << "1\n", 0;
+	long long ans = Pow(R - L + 1, n * m);
+	ans = ((ans - 1) % mod + mod) % mod;
+	(ans *= Pow(2, mod - 2)) %= mod;
+	ans = (ans + 1) % mod;
+	cout << ans  << '\n';
+	return 0;
+}

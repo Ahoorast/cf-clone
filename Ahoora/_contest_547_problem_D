@@ -1,0 +1,50 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100;
+int n, cnt_col, c[N * 2 + 10];
+bool ans[N];
+multiset<pair<int, int>> adj[N * 2 + 10];
+vector<int> vec[N * 2 + 10];
+ 
+void rm(int v, pair<int, int> u) {
+	adj[v].erase(adj[v].find(u));
+	adj[u.first].erase(adj[u.first].find({v, u.second}));
+}
+ 
+void euler(int v, bool c = false) {
+	if ((int)(adj[v].size()) == 0)
+		return;
+	auto u = *adj[v].begin();
+	if (u.second >= 0)
+		ans[u.second] = c;
+	rm(v, u);
+	euler(u.first, !c);
+}
+ 
+void dfs(int v) {
+	c[v] = cnt_col;
+	for (auto u: adj[v])
+		if (!c[u.first])
+			dfs(u.first);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 0, x, y; i < n; i++) {
+		cin >> x >> y;
+		adj[x].insert({y + N, i});
+		adj[y + N].insert({x, i});
+	}
+	for (int i = 1; i <= N * 2; i++)
+		if ((int)(adj[i].size()) & 1)
+			euler(i);
+	for (int i = 1; i <= N * 2; i++)
+		if (adj[i].size())
+			euler(i);
+	for (int i = 0; i < n; i++)
+		cout << (ans[i]? 'b': 'r');
+	cout << '\n';
+	return 0;
+}

@@ -1,0 +1,49 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 5 * 100 * 1000 + 10;
+long long sL[N], sR[N];
+int m[N], n, L[N], R[N], ans[N];
+ 
+int Left(int i, int x) {
+	return m[i] < x? i: Left(L[i], x);
+}
+ 
+int Right(int i, int x) {
+	return m[i] < x? i: Right(R[i], x);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 1; i <= n; i++)
+		cin >> m[i];
+	m[0] = m[n + 1] = 0;
+	for (int i = 1; i <= n; i++) {
+		L[i] = Left(i - 1, m[i]);
+		sL[i] = sL[L[i]] + 1LL * (i - L[i]) * m[i];
+	}
+	for (int i = n; i >= 1; i--) {
+		R[i] = Right(i + 1, m[i]);
+		sR[i] = sR[R[i]] + 1LL * (R[i] - i) * m[i];
+	}
+	long long sum = 0;
+	int p = 1;
+	for (int i = 1; i <= n + 1; i++)
+		if (sL[i - 1] + sR[i] > sum)
+			sum = sL[i - 1] + sR[i], p = i;
+	int last = 1 << 30;
+	for (int i = p; i <= n; i++) {
+		ans[i] = min(last, m[i]);
+		last = ans[i];
+	}
+	last = ans[p];
+	for (int i = p - 1; i >= 1; i--) {
+		ans[i] = min(last, m[i]);
+		last = ans[i];
+	}
+	for (int i = 1; i <= n; i++)
+		cout << ans[i] << ' ';
+	cout << endl;
+	return 0;
+}

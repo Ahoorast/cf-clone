@@ -1,0 +1,47 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) { 
+		int n;
+		cin >> n; 
+		vector<int> q(n);
+		for (auto &x: q)
+			cin >> x;
+		set<int> s, ss;
+		for (int i = 1; i <= n; i++)
+			s.insert(i), ss.insert(i);
+		vector<int> ans(n), ans1(n);
+		ans[0] = q[0], s.erase(q[0]), ss.erase(q[0]);
+		ans1[0] = q[0];
+		for (int i = 1; i < n; i++)
+			if (q[i] != q[i - 1]) {
+				ans[i] = q[i];
+				ans1[i] = q[i];
+				s.erase(q[i]);
+				ss.erase(q[i]);
+			}
+		for (int i = 0; i < n; i++) {
+			if (ans[i] == 0) {
+				ans[i] = *s.begin();
+				s.erase(s.begin());
+			}
+			if (ans1[i] == 0) {
+				auto it = ss.upper_bound(q[i]);
+				it--;
+				ans1[i] = *it;
+				ss.erase(it);
+			}
+		}
+		for (auto x: ans)
+			cout << x << ' ';
+		cout << '\n';
+		for (auto x: ans1)
+			cout << x << ' ';
+		cout << '\n';
+	}
+	return 0;
+}

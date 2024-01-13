@@ -1,0 +1,28 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+long long cal(long long x) {
+	long long res = 0;
+	for (long long i = 5; i <= x; i *= 5)
+		res += x / i;
+	return res;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	long long l = 0, r = 1LL << 60;
+	while (l + 1 < r) {
+		long long mid = l + r >> 1;
+		if (cal(mid) < Q)
+			l = mid;
+		else
+			r = mid;
+	}
+	if (cal(l + 1) == Q)
+		cout << l + 1 << '\n';
+	else
+		cout << "No solution\n";
+	return 0;
+}

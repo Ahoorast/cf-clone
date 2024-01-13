@@ -1,0 +1,63 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 500 * 100 + 100;
+long long dp[2][N][510];
+int fath[N], K, n;
+vector<int> adj[N], vec;
+bool mark[2][N];
+ 
+void read() {
+	cin >> n >> K;
+	for (int i = 1, v, u; i < n; i++) {
+		cin >> v >> u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+}
+ 
+void dfs(int root, bool t) {
+	mark[t][root] = true;
+	if (!t) {
+		bool leaf = true;
+		for (auto u: adj[root]) 
+			if (!mark[t][u]) {
+				fath[u] = root;
+				dfs(u, t);
+				for (int i = 1; i <= K; i++)
+					dp[t][root][i] += dp[t][u][i - 1];
+				leaf = false;
+			}
+		if (leaf)
+			vec.push_back(root);
+	}
+	else {
+		mark[t][root] = true;
+		if (!mark[t][fath[root]] && fath[root] != 0)
+			dfs(fath[root], t);
+		if (fath[root] != 0)
+			for (int i = 1; i <= K; i++) {
+				if (i - 2 >= 0)
+					dp[t][root][i] -= dp[!t][root][i - 2];
+				dp[t][root][i] += dp[t][fath[root]][i - 1];
+		}
+	}
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	read();
+	long long ans = 0;
+	for (int i = 1; i <= n; i++)
+		dp[0][i][0] = 1;
+	dfs(1, 0);
+	for (int i = 1; i <= n; i++)
+		for (int j = 0; j <= K; j++)
+			dp[1][i][j] = dp[0][i][j];
+	for (auto it: vec)
+		dfs(it, 1);
+	for (int i = 1; i <= n; i++)
+		ans += dp[1][i][K];
+	cout << ans / 2 << endl;
+	return 0;
+}

@@ -1,0 +1,47 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 100;
+int trie[N][26], cnt;
+int Win[N], Lose[N];
+string s;
+ 
+void insert() {
+	int j = 0, sz = s.size();
+	for (int i = 0; i < s.size(); i++) {
+		if (!trie[j][s[i] - 'a'])
+			trie[j][s[i] - 'a'] = ++cnt;
+		j = trie[j][s[i] - 'a'];
+	}
+}
+ 
+int dfs(int v) {
+	int cld = 0;
+	for (int i = 0; i < 26; i++)
+		if (trie[v][i]) {
+			cld++;
+			dfs(trie[v][i]);
+			Win[v] |= !Win[trie[v][i]];
+			Lose[v] |= !Lose[trie[v][i]];
+		}
+	if (!cld)
+		Lose[v] = true;
+	return 0;
+}
+ 
+int main() {
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int n, k;
+	cin >> n >> k;
+	for (int i = 0; i < n; i++)
+		cin >> s, insert();
+	dfs(0);
+	if (Win[0] && Lose[0])
+		return cout << "First" << endl, 0;
+	if (Win[0])
+		return cout << (k & 1? "First": "Second") << endl, 0;
+	if (Lose[0])
+		return cout << "Second" << endl, 0;
+	cout << "Second" << endl;
+	return 0;
+}

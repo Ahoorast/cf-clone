@@ -1,0 +1,27 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int a[4];
+	cin >> a[0] >> a[1] >> a[2] >> a[3];
+	bool seg = false, tri = false;
+	for (int i = 0; i < 1 << 4; i++)
+		if (__builtin_popcount(i) == 3) {
+			vector<int> vec;
+			int s = 0;
+			for (int j = 0; j < 4; j++)
+				if (i & (1 << j))
+					vec.push_back(a[j]), s += a[j];
+			bool flag = true, flag1 = false;
+			for (int j = 0; j < 3; j++)
+				flag &= (s - vec[j]) > vec[j], flag1 |= s - vec[j] == vec[j];
+			seg |= flag1, tri |= flag;
+		}
+	if (tri)
+		return cout << "TRIANGLE" << endl, 0;
+	if (seg)
+		return cout << "SEGMENT" << endl, 0;
+	cout << "IMPOSSIBLE" << endl;
+	return 0;
+}

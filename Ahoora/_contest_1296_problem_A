@@ -1,0 +1,22 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int n;
+		cin >> n;
+		int cnt[2] = {0, 0}, a;
+		for (int i = 1; i <= n; i++) {
+			cin >> a;
+			cnt[a & 1]++;
+		}
+		if (cnt[1] > 0 && (cnt[1] < n || (n % 2)))
+			cout << "YES" << endl;
+		else
+			cout << "NO" << endl;
+	}
+	return 0;
+}

@@ -1,0 +1,140 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 60;
+int n, m, x[N], y[N], dx[4] = {-1, +1, 0, 0}, dy[4] = {0, 0, -1, +1}, ex[N], ey[N], col[N][N];
+vector<pair<int, int>> o;
+ 
+bool vld(int x, int y) {
+	return x >= 0 && y >= 0 && x < n && y < n && !col[x][y];
+}
+ 
+void dir_move(int id, int i) {
+	assert(vld(x[id] + dx[i], y[id] + dy[i]));
+	o.push_back({x[id] + 1, y[id] + 1});
+	col[x[id]][y[id]] = 0;
+	x[id] += dx[i], y[id] += dy[i];
+	col[x[id]][y[id]] = id + 1;
+	o.push_back({x[id] + 1, y[id] + 1});
+}
+ 
+void Up(int id) {
+	dir_move(id, 0);
+}
+ 
+void Down(int id){
+	dir_move(id, 1);
+}
+ 
+void Left(int id) {
+	dir_move(id, 2);
+}
+ 
+void Right(int id) {
+	dir_move(id, 3);
+}
+ 
+void swap_cube(int i, int j) {
+	if (i == j)
+		return;
+	if (y[i] > y[j])
+		swap(i, j);
+	if (y[j] - y[i] == 1) {
+		Down(i), Left(j), Right(i), Up(i);
+		return;
+	}
+	Down(i), Down(i);
+	Down(j);
+	int t = y[j] - y[i];
+	for (int k = 0; k < t; k++)
+		Left(j);
+	Up(j);
+	for (int k = 0; k < t; k++)
+		Right(i);
+	Up(i), Up(i);
+}
+ 
+void print() {
+	cerr << "HI\n";
+	for (int i = 0; i < n; i++, cout << '\n')
+		for (int j = 0; j < n; j++)
+			cout << col[i][j] << ' ';
+	cout << '\n';
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m;
+	for (int i = 0; i < m; i++) {
+		cin >> x[i] >> y[i];
+		--x[i], --y[i];
+		col[x[i]][y[i]] = i + 1;
+	}
+	for (int i = 0; i < m; i++)
+		cin >> ex[i] >> ey[i], ex[i]--, ey[i]--;
+	vector<int> p(m);
+	iota(p.begin(), p.end(), 0);
+	sort(p.begin(), p.end(), [](int i, int j) {
+			return make_pair(x[i], y[j]) < make_pair(x[j], y[i]);
+			});
+	for (auto id: p) {
+		while (vld(x[id] - 1, y[id]))
+			Up(id);
+		while (vld(x[id], y[id] + 1))
+			Right(id);
+	}
+	sort(p.begin(), p.end(), [](int i, int j) {
+			return make_pair(x[i], y[i]) < make_pair(x[j], y[j]);
+			});
+	for (auto id: p) {
+		while (vld(x[id] - 1, y[id]))
+			Up(id);
+		while (vld(x[id], y[id] - 1))
+			Left(id);
+	}
+	for (int i = 0; i < m; i++) {
+		int bruh = i;
+		int id = col[0][bruh];
+		for (int i = bruh; i < m; i++)
+			if (col[0][i]) {
+				int u = col[0][i];
+				if (ey[u - 1] < ey[id - 1])
+					id = u;
+			}
+		swap_cube(col[0][i] - 1, id - 1);
+	} 
+	sort(p.begin(), p.end(), [](int i, int j) {
+			return make_pair(-ex[i], ey[i]) < make_pair(-ex[j], ey[j]);
+			});
+	for (int i = 0; i < m; i++) {
+		int id = p[i];
+		while (x[id] != ex[id])
+			Down(id);
+	}
+	vector<int> pp(m);
+	iota(pp.begin(), pp.end(), 0);
+	sort(pp.begin(), pp.end(), [](int i, int j) {
+			return make_pair(x[i], y[i]) < make_pair(x[j], y[j]);
+			});
+	for (int i = 0; i < m; i++) {
+		int id = pp[i];
+		while (vld(x[id], y[id] - 1))
+			Left(id);
+	}
+	sort(p.begin(), p.end(), [](int i, int j) {
+			return ey[i] > ey[j];
+			});
+	for (int i = 0; i < m; i++) {
+		int id = p[i];
+		while (y[id] < ey[id]) 
+			Right(id);
+	} 
+	int sz = (int)(o.size());
+	cout << sz / 2 << '\n';
+	for (int i = 0; i < sz; i++) {
+		cout << o[i].first << ' ' << o[i].second << ' ';
+		if (i % 2 == 1)
+			cout << '\n';
+	}
+	return 0;
+}

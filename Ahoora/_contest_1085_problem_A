@@ -1,0 +1,19 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int main()
+{
+	string s;
+	cin >> s;
+	int sz = s.size(), mid, t = 1;
+	mid = sz / 2 - (sz + 1) % 2;
+	cout << s[mid];
+	while(true) {
+		if(mid + t > sz - 1 || mid - t < 0) break;
+		cout << s[mid + t] << s[mid - t];
+		t++;
+	}
+	if(mid + t == sz - 1) cout << s[mid + t];
+	if(mid - t == 0) cout << mid - t;
+	return 0;
+}

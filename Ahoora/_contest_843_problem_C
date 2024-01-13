@@ -1,0 +1,72 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10;
+int n, par[N], mx[N], sz[N], c1, c2;
+vector<int> adj[N], vec;
+vector<pair<int, pair<int, int>>> ans;
+ 
+void dfs(int root, int par = -1) {
+	mx[root] = sz[root] = 0;
+	for (auto u: adj[root])
+		if (u ^ par) {
+			dfs(u, root);
+			sz[root] += sz[u];
+			if (sz[u] > sz[mx[root]])
+				mx[root] = u;
+		}
+	sz[root]++;
+}
+ 
+void centroid(int v) {
+	dfs(v);
+	while (sz[mx[v]] * 2 > n)
+		v = mx[v];
+	c1 = v, c2 = -1;
+	if ((n - sz[mx[c1]]) == sz[mx[c1]])
+		c2 = mx[c1];
+}
+ 
+void dfs2(int root, int p) {
+	par[root] = p;
+	vec.push_back(root);
+	for (auto u: adj[root])
+		if (u ^ p)
+			dfs2(u, root);
+}
+ 
+void do_shit(int c) {
+	if (c <= 0)
+		return;
+	for (auto u: adj[c])
+		if (u != c1 && u != c2) {
+			vec.clear();
+			dfs2(u, c);
+			int root = u, tar = u;
+			for (auto x: vec) {
+				if (x == tar)
+					continue;
+				ans.push_back({c, {root, x}});
+				root = x;
+				ans.push_back({x, {par[x], tar}});
+			}
+			if (root != tar)
+				ans.push_back({c, {root, tar}});
+		}
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 1, v, u; i < n; i++) {
+		cin >> v >> u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+	centroid(1);
+	do_shit(c1), do_shit(c2);
+	cout << (int)(ans.size()) << '\n';
+	for (auto it: ans)
+		cout << it.first << ' ' << it.second.first << ' ' << it.second.second << '\n';
+	return 0;
+}

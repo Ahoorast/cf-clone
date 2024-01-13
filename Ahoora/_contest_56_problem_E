@@ -1,0 +1,62 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 1000 + 10;
+int n, low[N], high[N], dp[N], seg[N << 2], ans[N];
+pair<pair<int, int>, int> a[N];
+ 
+void read() {
+	cin >> n;
+	for (int i = 1; i <= n; i++)
+		cin >> a[i].first.first >> a[i].first.second, a[i].second = i;
+	sort(a + 1, a + n + 1);
+	set<pair<int, int>> s;
+	s.insert({1 << 30, n + 1});
+	for (int i = 1; i <= n; i++)
+		s.insert({a[i].first.first, i});
+	for (int i = 1; i <= n; i++) {
+		auto it = s.upper_bound({a[i].first.first + 1, -1});
+		low[i] = (*it).second;
+		it = s.upper_bound({a[i].first.first + a[i].first.second - 1, 1 << 30});
+		if (it != s.begin())
+			it--;
+		high[i] = (*it).second;
+	}
+}
+ 
+int get(int l, int r, int lv = 1, int rv = n, int root = 1) {
+	if (l > r)
+		return -1 * (1 << 30);
+	if (l > rv || r < lv)
+		return -1 * (1 << 30);
+	if (l <= lv && r >= rv)
+		return seg[root];
+	int mid = (lv + rv) >> 1;
+	return max(get(l, r, lv, mid, root << 1), get(l, r, mid + 1, rv, root << 1 | 1));
+}
+ 
+void add(int p, int x, int lv = 1, int rv = n, int root = 1) {
+	if (lv == rv) {
+		seg[root] = max(seg[root], x);
+		return;
+	}
+	int mid = (lv + rv) >> 1;
+	if (p <= mid)
+		add(p, x, lv, mid, root << 1);
+	else
+		add(p, x, mid + 1, rv, root << 1 | 1);
+	seg[root] = max(seg[root << 1], seg[root << 1 | 1]);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	read();
+	for (int i = n; i >= 1; i--)  
+		dp[i] = max(get(low[i], high[i]), i), add(i, dp[i]);
+	for (int i = 1; i <= n; i++)
+		ans[a[i].second] =  dp[i] - i + 1;
+	for (int i = 1; i <= n; i++)
+		cout << ans[i] << ' ';
+	cout << endl;
+	return 0;
+}

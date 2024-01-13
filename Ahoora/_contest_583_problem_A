@@ -1,0 +1,21 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int maxn = 100;
+int arr[2][maxn];
+vector<int> result;
+ 
+int main() {
+	int n, h, v, cnt = 1;
+	cin >> n;
+	n *= n;
+	while (n--) {
+		cin >> h >> v;
+		if (arr[0][h] == false && arr[1][v] == false)
+			result.push_back(cnt), arr[0][h] = true, arr[1][v] = true;
+		cnt++;
+	}
+	for (int i = 0; i < result.size(); i++)
+		cout << result[i] << ' ';
+	return 0;
+}

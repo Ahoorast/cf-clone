@@ -1,0 +1,19 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int x = 1378;
+ 
+int main() {
+ 	ios_base:: sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	long long res = 1, n;
+	cin >> n;
+	if (n == 0)
+		return cout << '1', 0;
+	long long tmp = n % 4;
+	if (n % 4 == 0)
+		tmp = 4;
+	for (int i = 0; i < tmp; i++)
+		res *= x, res %= 10;
+	cout << res << endl;
+	return 0;
+}

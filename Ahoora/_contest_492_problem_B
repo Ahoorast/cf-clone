@@ -1,0 +1,24 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+	long long n, l, arr[10000];
+	long double ans = 0, f;
+	cin >> n >> l;
+	for(int i = 0; i < n; i++)
+	cin >> arr[i];
+	arr[n] = 0;
+	arr[n + 1] = l;
+	sort(arr, arr + (n + 1));
+	for(int i = 0; i < n + 1; i++)
+	{
+		f  = arr[i + 1] - arr[i];
+		if(i != 0 && i != n)
+		f /= 2;
+		if(ans < f)
+		ans = f;
+	}
+	cout << setprecision(10) << fixed;
+	cout << ans;
+	return 0;
+}

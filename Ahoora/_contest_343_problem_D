@@ -1,0 +1,76 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 500000 + 100;
+int seg1[N << 2], seg2[N << 2], st[N], en[N], cnt, n;
+vector<int> adj[N];
+ 
+void dfs(int root, int par = -1) {
+	st[root] = ++cnt;
+	for (auto u: adj[root])
+		if (u ^ par)
+			dfs(u, root);
+	en[root] = cnt;
+}
+ 
+void Fill(int l, int r, int val, int lx = 1, int rx = n, int root = 1) {
+	if (l > rx || r < lx)
+		return;
+	if (l <= lx && r >= rx) {
+		seg1[root] = val;
+		return;
+	}
+	int mid = lx + rx >> 1;
+	Fill(l, r, val, lx, mid, root << 1), Fill(l, r, val, mid + 1, rx, root << 1 | 1);
+}
+ 
+void Change(int p, int val, int lx = 1, int rx = n, int root = 1) {
+	if (lx == rx) {
+		seg2[root] = val;
+		return;
+	}
+	int mid = lx + rx >> 1;
+	(p <= mid? Change(p, val, lx, mid, root << 1): Change(p, val, mid + 1, rx, root << 1 | 1));
+	seg2[root] = max(seg2[root << 1], seg2[root << 1 | 1]);
+}
+ 
+int get1(int v, int lx = 1, int rx = n, int root = 1) {
+	if (lx == rx) 
+		return seg1[root];
+	int mid = lx + rx >> 1;
+	return max(seg1[root], (v <= mid? get1(v, lx, mid, root << 1): get1(v, mid + 1, rx, root << 1 | 1)));
+}
+ 
+int get2(int l, int r, int lx = 1, int rx = n, int root = 1) {
+	if (l > rx || r < lx)
+		return -1;
+	if (l <= lx && r >= rx) 
+		return seg2[root];
+	int mid = lx + rx >> 1;
+	return max(get2(l, r, lx, mid, root << 1), get2(l, r, mid + 1, rx, root << 1 | 1));
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 1, v, u; i < n; i++) {
+		cin >> v >> u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+	dfs(1);
+	int Q;
+	cin >> Q;
+	for (int i = 1, c, v; i <= Q; i++) {
+		cin >> c >> v;
+		if (c == 1) 
+			Fill(st[v], en[v], i);
+		else if (c == 2)
+			Change(st[v], i);
+		else {
+			int x = get1(st[v]), y = get2(st[v], en[v]);
+			cout << (x > y) << '\n';
+		}
+	}
+	return 0;
+}

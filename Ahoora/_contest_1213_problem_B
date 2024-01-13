@@ -1,0 +1,35 @@
+/*
+ 
+ 
+*/
+#include <bits/stdc++.h>
+using namespace std;
+#define		debug(x)	cout << #x << '=' << x << endl
+#define		print(x, n)	for(int i = 0; i < n; i++) cout << x[i] << ' ';
+#define		pb			push_back
+#define		sep			' '
+const int maxn = 15e4 + 100;
+long long n, a[maxn];
+void solve()
+{
+	long long mx = a[n - 1], res = 0;
+	for(int i = n - 1; i >= 0; i--) (a[i] > mx ? res++ : res = res), (a[i] < mx ? mx = a[i] : mx = mx);
+	cout << res << endl;
+}
+void read()
+{
+	long long t;
+	cin >> t;
+	while(t--) {
+		cin >> n;
+		for(int i = 0; i < n; i++) cin >> a[i];
+		solve();
+		for(int i = 0; i < n; i++) a[i] = 0;
+	}
+}
+int main()
+{
+	ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+	read();
+	return 0;
+}

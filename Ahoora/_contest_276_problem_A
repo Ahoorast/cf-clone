@@ -1,0 +1,16 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 1000 * 1000 + 100;
+ 
+int main() {
+	long long res = (-1) * N, n, k, a, b;
+	cin >> n >> k;
+	while (n--) {
+		cin >> a >> b;
+		long long tmp;
+		res = max(res,(b > k? a - (b - k): a));
+	}
+	cout << res << endl;
+	return 0;
+}

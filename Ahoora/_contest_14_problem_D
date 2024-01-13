@@ -1,0 +1,55 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 210;
+int n, mark[N];
+bool vis[N];
+vector<int> adj[N];
+ 
+int draw(int root, int t) {
+	vis[root] = true;
+	if (root == t)
+		mark[root] = 0;
+	for (auto u: adj[root])
+		if (!vis[u]) 
+			mark[root] = (draw(u, t) >= 0? mark[u] + 1: mark[root]);
+	return mark[root];
+}
+ 
+pair<int, int> dfs(int root) {
+	vis[root] = true;
+	pair<int, int> res = {0, 0};
+	for (auto u: adj[root]) 
+		if (!vis[u]) {
+			pair<int, int> t = dfs(u);
+			res.first = max({t.first, res.second + t.second + 1, res.first});
+			res.second = max(res.second, t.second + 1);
+		}
+	return res;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 1, v, u; i < n; i++) {
+		cin >> v >> u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+	int ans = 0;
+	for (int v = 1; v <= n; v++) 
+		for (int u = v + 1; u <= n; u++) {
+			for (int i = 1; i <= n; i++)
+				vis[i] = false, mark[i] = -1;
+			int d1 = draw(v, u);
+			for (int i = 1; i <= n; i++)
+				vis[i] &= mark[i] >= 0;
+			int d2 = 0;
+			for (int i = 1; i <= n; i++)
+				if (!vis[i])
+					d2 = max(d2, dfs(i).first);
+			ans = max(d1 * d2, ans);
+		}
+	cout << ans << endl;
+	return 0;
+}

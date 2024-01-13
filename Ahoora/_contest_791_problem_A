@@ -1,0 +1,17 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+	long long ans = 0, a, b;
+	cin >> a >> b;
+	for(int i = 0; true;  i++)
+	{
+		a *= 3;
+		b *= 2;
+		ans++;
+		if(a > b)
+		break;
+	}
+	cout << ans;
+	return 0;
+}

@@ -1,0 +1,54 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 4 * 1000 * 100 + 10, LG = 20;
+long long s[N][LG], w[N];
+int p[N][LG];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	int cnt = 1;
+	long long last = 0;
+	w[0] = 1LL << 59;
+	while (Q--) {	
+		long long R, W, t;
+		cin >> t >> R >> W;
+		R ^= last, W ^= last;
+		if (t == 1) {
+			cnt++;
+			int v = R;
+			for (int j = LG - 1; j >= 0; j--)
+				if (w[v] < W && w[p[v][j]]< W) 
+					v = p[v][j];
+			if (w[v] >= W)
+				p[cnt][0] = v;
+			else
+				p[cnt][0] = p[v][0];
+			s[cnt][0] = w[p[cnt][0]];
+			w[cnt] = W;
+			for (int j = 1; j < LG; j++) {
+				p[cnt][j] = p[p[cnt][j - 1]][j - 1];
+				s[cnt][j] = s[cnt][j - 1] + s[p[cnt][j - 1]][j - 1];
+			}
+		}
+		else {
+			int ans = 0;
+			long long X = W, sum = 0;
+			if (w[R] <= X) {
+				ans = 1;
+				sum = w[R];
+				for (int j = LG - 1; j >= 0; j--)
+					if (sum + s[R][j] <= X && p[R][j]) {
+						sum += s[R][j];
+						ans += (1 << j);
+						R = p[R][j];
+					}
+			}
+			cout << ans << '\n';
+			last = ans;
+		}
+	}
+	return 0;
+}

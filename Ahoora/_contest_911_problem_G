@@ -1,0 +1,86 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10, MX = 105;
+int n;
+short a[N];
+ 
+inline int inp() {
+	int res = 0;
+	char c = '0';
+	while (c >= '0' && c <= '9') {
+		((res *= 10) += c - '0');
+		c = getchar();
+	}
+	return res;
+}
+ 
+inline short shinp() {
+	short res = 0;
+	char c = '0';
+	while (c >= '0' & c <= '9') {
+		((res *= 10) += c - '0');
+		c = getchar();
+	}
+	return res;
+}
+ 
+struct Node {
+	short who[MX];
+	Node() {
+		for (int i = 1; i < MX; i++)
+			who[i] = i;
+	}
+	inline void add(const Node &x) {
+		for (int i = 1; i < MX; i++)
+			who[i] = x.who[who[i]];
+	}
+} seg[N << 2];
+ 
+inline void shift(int id) {
+	seg[id << 1].add(seg[id]);
+	seg[id << 1 | 1].add(seg[id]);
+	seg[id] = Node();
+}
+ 
+inline void upd(int s, int e, short x, short y, int l = 0, int r = n, int id = 1) {
+	if (s <= l && e >= r) {
+		for (int i = 1; i < MX; i++)
+			if (seg[id].who[i] == x)
+				seg[id].who[i] = y;
+		return;
+	}
+	if (s >= r || e <= l)
+		return;
+	shift(id);
+	int mid = l + r >> 1;
+	upd(s, e, x, y, l, mid, id << 1), upd(s, e, x, y, mid, r, id << 1 | 1);
+}
+ 
+inline int get(int x, int l = 0, int r = n, int id = 1) {
+	if (l + 1 == r)
+		return seg[id].who[a[l]];
+	shift(id);
+	int mid = l + r >> 1;
+	return (x < mid? get(x, l, mid, id << 1): get(x, mid, r, id << 1 | 1));
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	n = inp();
+	for (int i = 0; i < n; i++) 
+		a[i] = shinp();
+	int Q;
+	Q = inp();
+	int l, r;
+	short x, y;
+	for (int i = 1; i <= Q; i++) {
+		l = inp(), r = inp(), x = shinp(), y = shinp();
+		--l;
+		upd(l, r, x, y);
+	}
+	for (int i = 0; i < n; i++)
+		printf("%d ", get(i));
+	printf("\n");
+	return 0;
+}

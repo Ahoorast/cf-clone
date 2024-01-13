@@ -1,0 +1,31 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+	int n, a0 = 0, a5 = 0;
+	cin >> n;
+	for(int i = 0; i < n; i++)
+	{
+		int a;
+		cin >> a;
+		if(a == 0)
+		a0++;
+		else
+		a5++;
+	}
+	if(a0 == 0)
+	{
+		cout << "-1";
+		return 0;
+	}
+	if(a5 / 9 == 0)
+	{
+		cout << "0";
+		return 0;
+	}
+	for(int i = 0; i < a5 / 9; i++)
+	cout << "555555555";
+	for(int i = 0; i < a0; i++)
+	cout << "0";
+	return 0;
+}

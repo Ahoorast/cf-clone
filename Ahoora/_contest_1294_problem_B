@@ -1,0 +1,40 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1100;
+int n;
+pair<int, int> cor[N];
+ 
+void solve() {
+	int curx = 0, cury = 0;
+	bool res = true;
+	string ans = "";
+	for (int i = 0; i < n; i++) {
+		while (curx < cor[i].first)
+			curx++, ans += 'R';
+		while (cury < cor[i].second)
+			cury++, ans += 'U';
+		if (curx != cor[i].first || cury != cor[i].second) {
+			res = false;
+			break;
+		}
+	}
+	if (res)
+		cout << "YES" << endl << ans << endl;
+	else
+		cout << "NO" << endl;
+}
+ 
+int main() {
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> n;
+		for (int i = 0; i < n; i++)
+			cin >> cor[i].first >> cor[i].second;
+		sort(cor, cor + n);
+		solve();
+	}
+	return 0;
+}

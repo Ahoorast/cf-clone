@@ -1,0 +1,17 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+	unsigned long long d1, d2, d3, ans, arr[10];
+	cin >> d1 >> d2 >> d3;
+	arr[0] = (d1 + d2) * 2;
+	arr[1] = (d1 + d3) * 2;
+	arr[2] = (d2 + d3) * 2;
+	arr[3] = d1 + d2 + d3;
+	ans = arr[0];
+	for(int i = 0; i < 4; i++)
+	if(ans > arr[i])
+	ans = arr[i];
+	cout << ans;
+	return 0;
+}

@@ -1,0 +1,99 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 5 * 1000 * 100 + 10, LG = 25;
+int n;
+long long ans;
+ 
+struct Node {
+	int pref = 0, suf = 0, mx = 0, len = 0;
+	void merge(Node L, Node R) {
+		len = L.len + R.len;
+		suf = (R.suf == R.len? R.suf + L.suf: R.suf);
+		pref = (L.pref == L.len? L.pref + R.pref: L.pref);
+		mx = max({L.mx, R.mx, L.suf + R.pref});
+	}
+	void init(char c) {
+		len = 1;
+		mx = suf = pref = (c == '1');
+	}
+} rmq[N][LG];
+ 
+int getR(int l, int r, int mx) {
+	Node x;
+	int i = r;
+	for (int j = LG - 1; j >= 0; j--) 
+		if ((1 << j) + i < n) {
+			Node tmp = x;
+			tmp.merge(tmp, rmq[i + 1][j]);
+			if (tmp.mx <= mx) {
+				x = tmp;
+				i += (1 << j);
+			}
+		}
+	return i;
+}
+ 
+int getL(int l, int r, int mx) {
+	Node x;
+	int i = l;
+	for (int j = LG - 1; j >= 0; j--) 
+		if (i - (1 << j) >= 0) {
+			Node tmp = x;
+			tmp.merge(rmq[i - (1 << j)][j], tmp);
+			if (tmp.mx < mx) {
+				x = tmp;
+				i -= (1 << j);
+			}
+		}
+	return i;
+}
+ 
+void cal(int l, int r) {
+	for (int i = 1; i < r - l + 1; i++)
+		ans += 1LL * i * (r - l + 1 - i + 1);
+	for (int i = r; i > l; i--) {
+		int R = getR(i, r, r - i + 1);
+		ans += 1LL * (R - r) * (r - i + 1);
+	}
+	for (int i = l; i < r; i++) {
+		int L = getL(l, i, i - l + 1);
+		ans += 1LL * (l - L) * (i - l + 1);
+	}
+	int R = getR(l, r, r - l + 1);
+	int L = getL(l, r, r - l + 1);
+	ans += 1LL * (R - r + 1) * (l - L + 1) * (r - l + 1);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	string s;
+	cin >> n >> s;
+	long long res = 0;
+	for (int i = 1; i <= n; i++)
+		res += 1LL * i * (n + 1 - i);
+	for (int i = 0; i < n; i++)
+		rmq[i][0].init(s[i]);
+	for (int j = 1; j < LG; j++)
+		for (int i = 0; i < n; i++)
+			if (i + (1 << j) - 1 < n)
+				rmq[i][j].merge(rmq[i][j - 1], rmq[i + (1 << (j - 1))][j - 1]);
+	int last = n;
+	vector<pair<int, int>> vec;
+	int prv = 1;
+	for (int i = 1; i < n; i++) {
+		if (s[i] == s[i - 1])
+			prv++;
+		else {
+			if (s[i] == '0')
+				vec.push_back({i - prv, i - 1});
+			prv = 1;
+		}
+	}
+	if (s[n - 1] == '1')
+		vec.push_back({n - prv, n - 1});
+	for (auto it: vec) 
+		cal(it.first, it.second);
+	cout << ans << '\n';
+	return 0;
+}

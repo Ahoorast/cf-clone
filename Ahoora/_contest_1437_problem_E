@@ -1,0 +1,37 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 5 * 1000 * 100 + 10;
+int a[N], n, b[N], ans, k;
+ 
+void solve(int l, int r) {
+	int L = a[l - 1], R = a[r];
+	if (L > R) {
+		cout << "-1\n";
+		exit(0);
+	}
+	vector<int> lis;
+	for (int i = l; i < r; i++)
+		if (L <= a[i] && R >= a[i]) {
+			if (lis.empty() || a[i] >= lis.back())
+				lis.push_back(a[i]);
+			else 
+				*upper_bound(lis.begin(), lis.end(), a[i]) = a[i];
+		}
+	ans += (r - l) - (int)(lis.size());
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> k;
+	for (int i = 1; i <= n; i++)
+		cin >> a[i], a[i] -= i;
+	for (int i = 1; i <= k; i++)
+		cin >> b[i];
+	a[n + 1] = 1 << 30, a[0] = -a[n + 1];
+	b[k + 1] = n + 1;
+	for (int i = 1; i <= k + 1; i++) 
+		solve(b[i - 1] + 1, b[i]);
+	cout << ans << '\n';
+	return 0;
+}

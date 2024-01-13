@@ -1,0 +1,89 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 5010;
+int n, m, c[N], cnt[N], cnt_comp;
+bool vis[N];
+vector<int> adj[N], jda[N], vec[N], L;
+ 
+void dfs(int v) {
+	vis[v] = true;
+	for (auto u: adj[v])
+		if (!vis[u])
+			dfs(u);
+	L.push_back(v);
+}
+ 
+void dfs_c(int v) {
+	c[v] = cnt_comp;
+	cnt[c[v]]++;
+	vec[c[v]].push_back(v);
+	for (auto u: jda[v])
+		if (!c[u])
+			dfs_c(u);
+}
+ 
+int cyc(int src) {
+	vector<int> h(N, 1 << 30);
+	queue<int> q;
+	q.push(src), h[src] = 0;
+	while (q.size()) {
+		int v = q.front();
+		q.pop();
+		for (auto u: adj[v])
+			if (h[v] + 1 < h[u]) {
+				h[u] = h[v] + 1;
+				q.push(u);
+			}
+		for (auto u: adj[v])
+			if (u == src)
+				return h[v] + 1;
+	}
+	return -1;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m;
+	for (int i = 0, v, u; i < m; i++) {
+		cin >> v >> u;
+		--v, --u;
+		adj[v].push_back(u);
+		jda[u].push_back(v);
+	}
+	for (int i = 0; i < n; i++)
+		if (!vis[i])
+			dfs(i);
+	reverse(L.begin(), L.end());
+	for (auto v: L)
+		if (!c[v]) {
+			cnt_comp++;
+			dfs_c(v);
+		}
+	fill(vis, vis + n, false); 
+	long long ans = 0;
+	for (int i = 1; i <= cnt_comp; i++) {
+		for (auto v: vec[i])
+			vis[v] = true;
+		bool tp = false;
+		for (auto v: vec[i])
+			for (auto u: adj[v])
+				if (!vis[u])
+					tp = true;
+		if (tp)
+			ans += cnt[i];
+		else {
+			int res = 1 << 30;
+			for (auto v: vec[i])
+				res = min(res, cyc(v));
+			if (res != -1)
+				ans += res * 999 + 1 + (cnt[i] - res);
+			else
+				ans += cnt[i];
+		}
+		for (auto v: vec[i])
+			vis[v] = false;
+	}
+	cout << ans << '\n';
+	return 0;
+}

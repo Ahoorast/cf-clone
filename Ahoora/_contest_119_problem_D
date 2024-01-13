@@ -1,0 +1,92 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 1000 + 10, P = 257, mod = 1e9 + 7;
+int pw[N], ahsh[N], bhsh[N], rev[N], n, F[2 * N], wp[N];
+char a[N], b[N];
+ 
+inline int add(int a, int b) {
+	a += b;
+	if (a < 0)
+		a += mod;
+	if (a >= mod)
+		a -= mod;
+	return a;
+}
+ 
+inline int mul(int a, int b) {
+	return 1LL * a * b % mod;
+}
+ 
+inline int Pow(int a, int b) {
+	return b? mul((b & 1? a: 1), Pow(mul(a, a), b >> 1)): 1;
+}
+ 
+inline int get(int x, int l, int r) {
+	if (x == 0)
+		return mul(add(ahsh[r + 1], -ahsh[l]), wp[l]);
+	return mul(add(bhsh[r + 1], -bhsh[l]), wp[l]);
+}
+ 
+inline int get_rev(int x, int l, int r) {
+	return mul(add(rev[l], -rev[r + 1]), wp[n - r - 1]);
+}
+ 
+int main() { 
+	pw[0] = 1;
+	for (int i = 1; i < N; i++)
+		pw[i] = mul(pw[i - 1], P);
+	wp[N - 1] = Pow(pw[N - 1],  mod - 2);
+	for (int i = N - 2; i >= 0; i--)
+		wp[i] = mul(wp[i + 1], P);
+	a[0] = getchar();
+	int sz1 = 0;
+	while (a[sz1] != '\n') 
+		a[++sz1] = getchar();
+	b[0] = getchar();
+	int sz2 = 0;
+	while (b[sz2] != '\n') 
+		b[++sz2] = getchar();
+	n = sz1;
+	if (n != sz2)
+		return printf("-1 -1\n"), 0;
+	for (int i = 1; i <= n; i++) {
+		ahsh[i] = add(ahsh[i - 1], mul(pw[i], (int)(a[i - 1])));
+		bhsh[i] = add(bhsh[i - 1], mul(pw[i], (int)(b[i - 1])));
+	}
+	for (int i = n - 1; i >= 0; i--) 
+		rev[i] = add(rev[i + 1], mul(pw[n - i], (int)(a[i])));
+	vector<int> vec;
+	for (int i = 0; i < n; i++) {
+		int l = 0, r = n - i + 1;
+		while (l + 1 < r) {
+			int mid = l + r >> 1;
+			if (get(1, i, i + mid - 1) == get_rev(0, n - mid, n - 1))
+				l = mid;
+			else
+				r = mid;
+		}
+		vec.push_back(l + i + 1);
+	}
+	fill(F, F + 2 * N, N);
+	for (int i = 0; i < n; i++)
+		F[vec[i]] = min(i, F[vec[i]]);
+	for (int i = 2 * N - 2; i >= 0; i--)
+		F[i] = min(F[i + 1], F[i]);
+	for (int i = n - 2; i >= 0; i--) {
+		if (get_rev(0, 0, i) != get(1, n - 1 - i, n - 1))
+			continue;
+		int l = 0, r = n - i;
+		while (l + 1 < r) {
+			int mid = l + r >> 1; 
+			if (get(0, i + 1, i + mid) == get(1, 0, mid - 1))
+				l = mid;
+			else
+				r = mid;
+		}
+		if (F[n - i] <= l)
+			return printf("%d %d\n", i, F[n - i] + i + 1), 0;
+	}
+	printf("-1 -1\n");
+	return 0;
+}

@@ -1,0 +1,37 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10;
+int n, s, l, dp[N];
+long long a[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> s >> l;
+	a[0] = -3e9;
+	for (int i = 1; i <= n; i++)
+		cin >> a[i];
+	fill(dp + 1, dp + n + 1, 1 << 30);
+	int lf = 0;
+	deque<int> dq;
+	multiset<int> S;
+	S.insert(a[0]);
+	for (int i = 1; i <= n; i++) {
+		S.insert(a[i]);
+		while (max(abs(a[i] - *S.begin()), abs(a[i] - *--S.end())) > s) {
+			if (dq.size() && dq.front() == lf - 1)
+				dq.pop_front();
+			S.erase(S.find(a[lf]));
+			lf++;
+		}
+		if (i - l >= lf - 1 && i - l >= 0) {
+			while (dq.size() && dp[dq.back()] > dp[i - l])
+				dq.pop_back();
+			dq.push_back(i - l);
+		}
+		if (dq.size())
+			dp[i] = dp[dq.front()] + 1;
+	}
+	cout << (dp[n] < 1 << 30? dp[n]: -1) << '\n';
+	return 0;
+}

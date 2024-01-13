@@ -1,0 +1,50 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int b, d, n, m;
+string a, c;
+ 
+struct SHEBHE_MAT {
+	vector<int> vec;
+	SHEBHE_MAT() {
+		vec.clear();
+	}
+	void push_back(int x) {
+		vec.push_back(x);
+	}
+	void operator *= (SHEBHE_MAT b) {
+		for (int i = 0; i < m; i++)
+			vec[i] += b.vec[(i + vec[i]) % m];
+	}
+	void resize(int x, int y = 0) {
+		vec.resize(x, y);
+	}
+	SHEBHE_MAT operator ^ (int b) {
+		SHEBHE_MAT res, tmp = *this;
+		res.resize(m);
+		while (b) {
+			if (b & 1) 
+				res *= tmp;
+			b >>= 1;
+			tmp *= tmp;
+		}
+		return res;
+	}
+} v;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> b >> d >> a >> c;
+	n = (int)(a.size()), m = (int)(c.size());
+	for (int i = 0; i < m; i++) {
+		int l = i, len = 0;
+		for (int j = 0; j < n; j++)
+			if (c[l] == a[j]) {
+				len++;
+				(l += 1) %= m;
+			}
+		v.push_back(len);
+	}
+	cout << (v ^ b).vec[0] / (d * m) << '\n';
+	return 0;
+}

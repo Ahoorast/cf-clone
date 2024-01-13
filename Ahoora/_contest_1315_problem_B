@@ -1,0 +1,25 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int a, b, p;
+		string s;
+		cin >> a >> b >> p >> s;
+		long long n = s.size(), ans = n, x = 0;
+		x = (s[n - 1] == 'A'? a: b);
+		if (n >= 2 && s[n - 1] != s[n - 2])
+			x = 0;
+		for (int i = n - 2; i >= 0; i--) { 
+			if (!(s[i] == s[i + 1]))
+				x += (s[i] == 'A'? a: b);
+			if (x <= p)
+				ans = i + 1;
+		}
+		cout << ans << endl;
+	}
+	return 0;
+}

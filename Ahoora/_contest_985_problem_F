@@ -1,0 +1,53 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10, P = 2, mod = 1e9 + 7, Z = 26;
+int pw[N], wp[N], n, hsh[N][Z];
+string s;
+ 
+long long Pow(long long a, long long b) {
+	return b? (b & 1? a: 1) % mod * Pow(a * a % mod, b >> 1) % mod: 1;
+}
+ 
+int add(int a, int b) {
+	a += b;
+	a += (a < 0) * mod;
+	a -= (a >= mod) * mod;
+	return a;
+}
+ 
+int mul(int a, int b) {
+	return 1LL * a * b % mod;
+}
+ 
+int get(int x, int len, int j) {
+	return mul(add(hsh[x + len - 1][j], -hsh[x - 1][j]), wp[x]);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	pw[0] = 1;
+	for (int i = 1; i < N; i++)
+		pw[i] = mul(pw[i - 1], P);
+	wp[N - 1] = Pow(pw[N - 1], mod - 2);
+	for (int i = N - 2; i >= 0; i--)
+		wp[i] = mul(wp[i + 1], P);
+	int Q;
+	cin >> n >> Q >> s;
+	for (int i = 1; i <= n; i++)
+		for (int j = 0; j < Z; j++)
+			hsh[i][j] = add(hsh[i - 1][j], mul(pw[i], s[i - 1] - 'a' == j));
+	while (Q--) {
+		int x, y, len;
+		cin >> x >> y >> len;
+		vector<int> v1, v2;
+		for (int i = 0; i < Z; i++) {
+			v1.push_back(get(x, len, i));
+			v2.push_back(get(y, len, i));
+		}
+		sort(v1.begin(), v1.end());
+		sort(v2.begin(), v2.end());
+		cout << (v1 == v2? "YES": "NO") << '\n';
+	}
+	return 0;
+}

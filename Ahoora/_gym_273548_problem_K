@@ -1,0 +1,31 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1010;
+int n, m, h, s[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m >> h;
+	int S = 0;
+	for (int i = 1; i <= m; i++)
+		cin >> s[i], S += s[i];
+	if (n > S)
+		return cout << -1 << endl, 0;
+	if (s[h] == 1 || n == 1)
+		return cout << 0 << endl, 0;
+	float res = 1;
+	int x[4] = {S - s[h], S - n, S - 1, S - s[h] - n + 1};
+	if (S - s[h] < n - 1)
+		return cout << 1 << endl, 0;
+	for (int i = 1; i <= max({x[0], x[1], x[2], x[3]}); i++) {
+		for (int j = 2; j < 4; j++)
+			if (x[j] >= i)
+				res /= i;
+		for (int j = 0; j < 2; j++)
+			if (x[j] >= i)
+				res *= i;
+	}
+	cout << 1 - res << endl;
+	return 0;
+}

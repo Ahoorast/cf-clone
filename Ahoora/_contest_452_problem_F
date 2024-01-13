@@ -1,0 +1,49 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 3 * 1000 * 100 + 10, P = 2, mod = 1e9 + 7;
+int n, a[N], pw[N];
+ 
+long long Pow(long long a, long long b) {
+	return b? (b & 1? a: 1) % mod * Pow(a * a % mod, b >> 1) % mod: 1;
+}
+	
+struct BIT {
+	int fen[N];
+	void upd(int x, int w) {
+		for (++x; x < N; x += x & -x)
+			(fen[x] += w) %= mod;
+	}
+	int get(int x) {
+		int res = 0;
+		for (; x; x -= x & -x)
+			(res += fen[x]) %= mod;
+		return res;
+	}
+	int get(int l, int r) {
+		return ((get(r) - get(l)) % mod + mod) % mod;
+	}
+} L, R;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	pw[0] = 1;
+	for (int i = 1; i < N; i++)
+		pw[i] = 1LL * pw[i - 1] * P % mod;
+	cin >> n;
+	for (int i = 0; i < n; i++)
+		cin >> a[i], a[i]--;
+	for (int i = 0; i < n; i++) {
+		int len = min(a[i], n - a[i] - 1);
+		if (len != 0) {
+			int hsh1 = 1LL * L.get(a[i] - len, a[i]) * Pow(pw[a[i] - len], mod - 2) % mod;
+			int hsh2 = 1LL * R.get(a[i] + 1, a[i] + len + 1) * Pow(pw[n - 1 - a[i] - len], mod - 2) % mod;
+			if (hsh1 != hsh2)
+				return cout << "YES\n", 0;
+		}
+		L.upd(a[i], pw[a[i]]);
+		R.upd(a[i], pw[n - 1 - a[i]]);
+	}
+	cout << "NO\n";
+	return 0;
+}

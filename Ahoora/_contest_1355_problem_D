@@ -1,0 +1,21 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int n, S;
+	cin >> n >> S;
+	if (S < n)
+		return cout << "NO" << endl, 0;
+	if (S - n + 1 > n && S - n + 1 > 0) {
+		cout << "YES" << endl;
+		for (int i = 1; i <= n - 1; i++)
+			cout << "1 ";
+		cout << S - n + 1 << endl;
+		cout << n << endl;
+		return 0;
+	}
+	cout << "NO" << endl;
+	return 0;
+}
+ 

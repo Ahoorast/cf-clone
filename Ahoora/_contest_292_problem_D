@@ -1,0 +1,104 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 10000 + 10, SQ = 100;
+int n, m, v[N], u[N];
+ 
+struct DSU {
+	int n, cnt;
+	vector<int> par, sz;
+	vector<pair<int, int>> LOG;
+	DSU(int x = 0) {
+		n = x;
+		cnt = n;
+		par.resize(n, 0), sz.resize(n, 1);
+		iota(par.begin(), par.end(), 0);
+		LOG.clear();
+	}
+	int get_par(int v) {
+		return par[v] == v? v: get_par(par[v]);
+	}
+	void Union(int v, int u) {
+		v = get_par(v), u = get_par(u);
+		if (v == u) {
+			LOG.push_back({-1, -1});
+			return;
+		}
+		if (sz[v] < sz[u])
+			swap(v, u);
+		cnt--;
+		LOG.push_back({u, par[u]});
+		LOG.push_back({v, sz[v]});
+		sz[v] += sz[u], par[u] = v;
+	}
+	void Undo() {
+		pair<int, int> x = LOG.back();
+		LOG.pop_back();
+		if (x.first == -1)
+			return;
+		cnt++;
+		sz[x.first] = x.second;
+		x = LOG.back();
+		LOG.pop_back();
+		par[x.first] = x.second;
+	}
+};
+ 
+struct Query {
+	int l, r, id;
+	Query(int x = 0, int y = 0, int z = 0) {
+		l = x, r = y, id = z;
+	}
+	bool operator < (const Query &x) const {
+		if (l / SQ == x.l / SQ)
+			return r > x.r;
+		return l < x.l;
+	}
+};
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m;
+	for (int i = 0; i < m; i++)
+		cin >> v[i] >> u[i], --v[i], --u[i];
+	int Q;
+	cin >> Q;
+	vector<Query> query;
+	for (int i = 0, l, r; i < Q; i++) {
+		cin >> l >> r;
+		--l;
+		query.push_back(Query(l, r, i));
+	}
+	sort(query.begin(), query.end());
+	vector<int> ans(Q);
+	DSU G(n);
+	int s = 0, e = m;
+	for (auto q: query) {
+		if (s / SQ != q.l / SQ) {
+			while (e < m) {
+				G.Undo();
+				e++;
+			}
+		}
+		while (s / SQ != q.l / SQ) {
+			G.Union(v[s], u[s]);
+			s++;
+		}
+		while (e > q.r) {
+			G.Union(v[e - 1], u[e - 1]); 
+			e--;
+		}
+		while (s < q.l) {
+			G.Union(v[s], u[s]);
+			s++;
+		}
+		ans[q.id] = G.cnt;
+		while (s % SQ != 0) {
+			G.Undo();
+			s--;
+		}
+	}
+	for (int i = 0; i < Q; i++)
+		cout << ans[i] << '\n';
+	return 0;
+}

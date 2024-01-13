@@ -1,0 +1,43 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1010;
+int n, a[N], col[N];
+bool isP[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	for (int i = 1; i < N; i++)
+		isP[i] = true;
+	isP[1] = false;
+	for (int i = 2; i * i < N; i++)
+		if (isP[i])
+			for (int j = i * i; j < N; j += i)
+				isP[j] = false;
+	vector<int> p;
+	for (int i = 2; i < N; i++)
+		if (isP[i])
+			p.push_back(i);
+	cin >> Q;
+	while (Q--) {
+		cin >> n;
+		for (int i = 1; i <= n; i++)
+			cin >> a[i];
+		int cnt = 1, m = 0;
+		for (auto x: p) {
+			bool first = true;
+			for (int j = 1; j <= n; j++)
+				if (a[j] % x == 0 && !col[j]) {
+					m += first;
+					first = false;
+					col[j] = m;
+				}
+		}
+		cout << m << '\n';
+		for (int i = 1; i <= n; i++)
+			cout << col[i] << ' ', col[i] = 0;
+		cout << '\n';
+	}
+	return 0;
+}

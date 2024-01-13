@@ -1,0 +1,59 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2010;
+string s[10] = {"1110111", "0010010", "1011101", "1011011", "0111010", "1101011", "1101111", "1010010", "1111111", "1111011"};
+int n, K, T[N];
+bool dp[N][N];
+string t[N];
+ 
+int val(int i, int j) {
+	int x = i ^ j;
+	if (x & i)
+		return N + 1;
+	return __builtin_popcount(x);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> K;
+	for (int i = 1; i <= n; i++)
+		cin >> t[i];
+	vector<int> vec;
+	vec.push_back(1);
+	for (int i = 1; i <= n; i++) {
+		vec.push_back(0);
+		for (int j = 0; j < 7; j++)
+			if (t[i][j] == '1')
+				vec[i] ^= 1 << j;
+	}
+	for (int i = 0; i <= 9; i++)
+		for (int j = 0; j < 7; j++)
+			if (s[i][j] == '1')
+				T[i] ^= 1 << j;
+	dp[n + 1][0] = true;
+	for (int i = n; i >= 1; i--)
+		for (int j = 0; j <= K; j++)
+			for (int k = 0; k <= 9; k++) {
+				int x = val(vec[i], T[k]);
+				if (j >= x && dp[i + 1][j - x])
+					dp[i][j] = true;
+			}
+	if (!dp[1][K])
+		return cout << -1 << endl, 0;
+	vector<int> res;
+	for (int i = 1; i <= n; i++) {
+		int mx = -1, tmp = -1;
+		for (int j = 0; j <= 9; j++) {
+			int x = val(vec[i], T[j]);
+			if (K - x >= 0 && dp[i + 1][K - x])
+				tmp = x, mx = j;
+		}
+		K -= tmp;
+		res.push_back(mx);
+	}
+	for (auto it: res)
+		cout << it;
+	cout << endl;
+	return 0;
+}

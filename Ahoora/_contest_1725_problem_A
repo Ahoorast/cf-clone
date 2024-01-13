@@ -1,0 +1,13 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() {
+	int n, m;
+	cin >> n >> m;
+	if (m > 1) {
+		cout << 1LL * (m - 1) * n;
+	} else {
+		cout << n - 1 << '\n';
+	}
+	return 0;
+}

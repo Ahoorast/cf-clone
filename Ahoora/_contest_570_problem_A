@@ -1,0 +1,35 @@
+/*
+ 
+ 
+*/
+#include <bits/stdc++.h>
+using namespace std;
+#define		debug(x)	cout << #x << '=' << x << endl
+const int maxn = 1100;
+int n, m;
+long long v[maxn][maxn], ans[maxn];
+void read()
+{
+	cin >> n >> m;
+	swap(n, m);
+	for(int i = 0; i < n; i++) 
+		for(int j = 0; j < m; j++) cin >> v[i][j];
+}
+void solve()
+{
+	for(int i = 0; i < n; i++) {
+		long long r = 0, rn = 0;
+		for(int j = 0; j < m; j++) if(v[i][j] > r) r = v[i][j], rn = j;
+		ans[rn]++;
+	}
+	long long r = 0, res = 0;
+	for(int i = 0; i < m; i++) if(ans[i] > r) r = ans[i], res = i + 1;
+	cout << res;  
+}
+int main()
+{
+	ios_base::sync_with_stdio(false), cin.tie(NULL);
+	read();
+	solve();
+	return 0;
+}

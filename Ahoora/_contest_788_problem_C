@@ -1,0 +1,32 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 1000 + 10;
+int n, k, a[N], d[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	fill(d, d + N, -1);
+	cin >> n >> k;
+	for (int i = 0; i < k; i++)
+		cin >> a[i];
+	sort(a, a + k);
+	k = unique(a, a + k) - a;
+	vector<int> vec;
+	vec.push_back(0), d[0] = 0;
+	for (int t = 1; t <= 1000; t++) {
+		vector<int> nxt;
+		for (auto x: vec)
+			for (int i = 0; i < k; i++)
+				if (x + a[i] < N && d[x + a[i]] != t) {
+					d[x + a[i]] = t;
+					if (x + a[i] + a[k - 1] >= (t + 1) * n)
+						nxt.push_back(x + a[i]);
+				}
+		if (d[t * n] == t)
+			return cout << t << '\n', 0;
+		swap(vec, nxt);
+	}
+	cout << "-1\n";
+	return 0;
+}

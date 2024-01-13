@@ -1,0 +1,90 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+	int n;
+	cin >> n;
+	if(n >= 0 && n <= 19)
+	{
+		if(n == 0)
+		cout << "zero";
+		else if(n == 1)
+		cout << "one";
+		else if(n == 2)
+		cout << "two";
+		else if(n == 3)
+		cout << "three";
+		else if(n == 4)
+		cout << "four";
+		else if(n == 5)
+		cout << "five";
+		else if(n == 6)
+		cout << "six";
+		else if(n == 7)
+		cout << "seven";
+		else if(n == 8)
+		cout << "eight";
+		else if(n == 9)
+		cout << "nine";
+		else if(n == 10)
+		cout << "ten";
+		else if(n == 11)
+		cout << "eleven";
+		else if(n == 12)
+		cout << "twelve";
+		else if(n == 13)
+		cout << "thirteen";
+		else if(n == 14)
+		cout << "fourteen";
+		else if(n == 15)
+		cout << "fifteen";
+		else if(n == 16)
+		cout << "sixteen";
+		else if(n == 17)
+		cout << "seventeen";
+		else if(n == 18)
+		cout << "eighteen";
+		else if(n == 19)
+		cout << "nineteen";
+		return 0;
+	}
+	int second = (n - (n % 10)) / 10, first = n % 10;
+	if(second == 2)
+	cout << "twenty";
+	else if(second == 3)
+	cout << "thirty";
+	else if(second == 4)
+	cout << "forty";
+	else if(second == 5)
+	cout << "fifty";
+	else if(second == 6)
+	cout << "sixty";
+	else if(second == 7)
+	cout << "seventy";
+	else if(second == 8)
+	cout << "eighty";
+	else if(second == 9)
+	cout << "ninety";
+	if(first == 0)
+	return 0;
+	cout << "-";
+	if(first == 1)
+	cout << "one";
+	else if(first == 2)
+	cout << "two";
+	else if(first == 3)
+	cout << "three";
+	else if(first == 4)
+	cout << "four";
+	else if(first == 5)
+	cout << "five";
+	else if(first == 6)
+	cout << "six";
+	else if(first == 7)
+	cout << "seven";
+	else if(first == 8)
+	cout << "eight";
+	else if(first == 9)
+	cout << "nine";
+	return 0;
+}

@@ -1,0 +1,115 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 4 * 1000 * 100 + 10;
+int n, a[N], sz[N], mx[N];
+bool mark[N];
+vector<int> adj[N];
+vector<pair<int, long long>> all;
+ 
+struct BIT {
+	int fen[N], all;
+	vector<int> LOG;
+	BIT() {
+		LOG.clear();
+		all = 0;
+		for (int i = 0; i < N; i++)
+			fen[i] = 0;
+	}
+	void upd(int x) {
+		all++;
+		for (++x; x < N; x += x & -x)
+			fen[x]++, LOG.push_back(x);
+	}
+	int get(int x) {
+		int res = 0;
+		for (++x; x; x -= x & -x)
+			res += fen[x];
+		res = all - res;
+		return res;
+	}
+	void clear() {
+		all = 0;
+		for (auto id: LOG)
+			fen[id] = 0;
+		LOG.clear();
+	}
+} fen;
+ 
+long long get(const vector<pair<int, long long>> &v, int c) {
+	vector<long long> all;
+	for (auto it: v) 
+		all.push_back(it.second), all.push_back(-it.second + 2 * it.first + c);
+	sort(all.begin(), all.end());
+	long long res = 0;
+	fen.clear();
+	for (auto it: v) {
+		res += fen.get(lower_bound(all.begin(), all.end(), -it.second + 2 * it.first + c) - all.begin());
+		fen.upd(lower_bound(all.begin(), all.end(), it.second) - all.begin());
+	}
+	return res;
+}
+ 
+int dfs(int v, int par = -1) {
+	sz[v] = 1, mx[v] = -1;
+	for (auto u: adj[v])
+		if (u != par && !mark[u]) {
+			sz[v] += dfs(u, v);
+			if (mx[v] == -1 || sz[u] > sz[mx[v]])
+				mx[v] = u;
+		}
+	return sz[v];
+}
+ 
+void go(int v, int par = -1, int mx = 0, long long s = 0) {
+	mx = max(mx, a[v]);
+	s += a[v];
+	all.push_back({mx, s});
+	for (auto u: adj[v])
+		if (u != par && !mark[u]) 
+			go(u, v, mx, s);
+}
+ 
+long long solve(int v) {
+	int V = dfs(v);
+	while (mx[v] != -1 && sz[mx[v]] * 2 > V)
+		v = mx[v];
+	mark[v] = true;
+	long long res = 0;
+	vector<pair<int, long long>> them;
+	them.push_back({a[v], a[v]});
+	for (auto u: adj[v])
+		if (!mark[u]) {
+			all.clear();
+			go(u, -1, a[v], a[v]);
+			sort(all.begin(), all.end());
+			for (auto it: all)
+				them.push_back(it);
+			res -= get(all, a[v]);
+			res += solve(u);
+		}
+	sort(them.begin(), them.end());
+	res += get(them, a[v]);
+	mark[v] = false;
+	return res;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	scanf("%d", &Q);
+	while (Q--) {
+		scanf("%d", &n);
+		for (int i = 0; i < n; i++)
+			scanf("%d", &a[i]);
+		for (int i = 1, v, u; i < n; i++) {
+			scanf("%d%d", &v, &u);
+			--v, --u;
+			adj[v].push_back(u), adj[u].push_back(v);
+		}
+		printf("%lld\n", solve(0));
+		for (int i = 0; i < n; i++)
+			adj[i].clear();
+	}
+	return 0;
+}

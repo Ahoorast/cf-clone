@@ -1,0 +1,55 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 1000 + 10;
+int n, s[N], seg[N << 2], g[N << 2], v[N << 2];
+ 
+void build(int l, int r, int root = 1) {
+	if (l == r) {
+		seg[root] = 1;
+		g[root] = v[root] = s[l];
+		return;
+	}
+	int mid = (l + r) >> 1;
+	build(l, mid, root << 1);
+	build(mid + 1, r, root * 2 + 1);
+	g[root] = __gcd(g[root * 2], g[root * 2 + 1]);
+	if (v[root << 1] != 0 && g[root * 2 + 1] % v[root << 1] == 0)
+		v[root] = v[root << 1], seg[root] += seg[root << 1];
+	if (v[root * 2 + 1] != 0 && g[root << 1] % v[root * 2 + 1] == 0)
+		v[root] = v[root * 2 + 1], seg[root] += seg[root * 2 + 1];
+}
+ 
+pair<int, pair<int, int>> query(int l, int r, int root = 1, int lv = 1, int rv = n) {
+	if (lv == l && rv == r) 
+		return {v[root], {g[root], seg[root]}};
+	int mid = (lv + rv) >> 1;
+	pair<int, pair<int, int>> res, t1, t2;
+	res = t1 = t2 = {0, {0, 0}};
+	if (l <= mid)
+		t1 = query(l, min(mid, r), root * 2, lv, mid);
+	if (r > mid)
+		t2 = query(max(mid + 1, l), r, root * 2 + 1, mid + 1, rv);
+	res.second.first = __gcd(t1.second.first, t2.second.first);
+	if (t1.first != 0 && t2.second.first % t1.first == 0)
+		res.first = t1.first, res.second.second += t1.second.second;
+	if (t2.first != 0 && t1.second.first % t2.first == 0)
+		res.first = t2.first, res.second.second += t2.second.second;
+	return res;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 1; i <= n; i++)
+		cin >> s[i];
+	build(1, n);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int l, r;
+		cin >> l >> r;
+		cout << r - l + 1 - query(l, r).second.second << endl;
+	}
+	return 0;
+}

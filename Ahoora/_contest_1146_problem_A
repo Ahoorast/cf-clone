@@ -1,0 +1,22 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+	string a;
+	int az, ans = 0, c = 0;
+	cin >> a;
+	az = a.size();
+	for(int i = 0; i < az; i++)
+	{
+		if(a[i] == 'a')
+		c++;
+	}
+	int m = c * 2 - 1;
+	if(az < m) 
+	{
+		cout << az;
+		return 0;
+	}
+	cout << m;
+	return 0;
+}

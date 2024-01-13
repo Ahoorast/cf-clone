@@ -1,0 +1,32 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10, LG = 30;
+int n, trie[N * LG][2], dp[N * LG], size_of_trie;
+ 
+void dfs(int v) {
+	for (auto u: trie[v])
+		if (u)
+			dfs(u);
+	int l = trie[v][0], r = trie[v][1];
+	dp[v] = max({dp[v], min(1, dp[l]) + dp[r], min(1, dp[r]) + dp[l]});
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 0, a; i < n; i++) {
+		cin >> a;
+		int v = 0;
+		for (int j = LG - 1; j >= 0; j--) {
+			bool nxt = (bool)((1 << j) & a);
+			if (!trie[v][nxt])
+				trie[v][nxt] = ++size_of_trie;
+			v = trie[v][nxt];
+		}
+		dp[v]++;
+	}
+	dfs(0);
+	cout << n - dp[0] << '\n';
+	return 0;
+}

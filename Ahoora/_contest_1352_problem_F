@@ -1,0 +1,42 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int n[3];
+		for (int i = 0; i < 3; i++)
+			cin >> n[i];
+		string s;
+		if (n[0] && !n[1] && !n[2]) {
+			n[0]++;
+			while (n[0]--)
+				cout << '0';
+		}
+		else if (!n[0] && !n[1] && n[2]) {
+			n[2]++;
+			while (n[2]--)
+				cout << '1';
+		}
+		else {
+		for (int i = 1; i <= n[2] + 1; i++)
+			s += '1';
+		for (int i = 1; i <= n[1]; i++)
+			s += '0' + ((i + 1) & 1);
+		int sz = s.size(); 
+		bool flag = false;
+		for (int i = 0; i < sz; i++) {
+			if (!flag && s[i] == '0') {
+				flag = true;
+				for (int i = 1; i <= n[0]; i++)
+					cout << '0';
+			}
+			cout << s[i];
+		}
+		}
+		cout << endl;
+	}
+	return 0;
+}

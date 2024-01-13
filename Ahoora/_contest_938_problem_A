@@ -1,0 +1,20 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int main() {
+	ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+	int n, cnt = 0;
+	string s, v = "aeiouy";
+	cin >> n >> s;
+	for (int i = 0; i < n; i++) {
+		int c = 0;
+		for (int j = 0; j < 6; j++)
+			if (s[i] == v[j])
+				c++;
+		if (c == 0) cnt = 0;
+		else cnt++;
+		if (cnt < 2)
+			cout << s[i];
+	}
+	return 0;
+}

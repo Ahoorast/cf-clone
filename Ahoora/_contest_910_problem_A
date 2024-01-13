@@ -1,0 +1,28 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+typedef 	long long		 		ll;
+typedef 	unsigned long long 		ull;
+ 
+const int N = 200;
+int dp[N];
+ 
+int main() {
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+    int n, d;
+    string s;
+    cin >> n >> d >> s;
+    for (int i = 1; i < N; i++)
+        dp[i] = 1000000;
+    for (int i = 1; i < d; i++)
+        if (s[i] == '1')
+            dp[i] = 1;
+    for (int i = d; i < n; i++) 
+        if (s[i] == '1') {
+            for (int j = 1; j <= d; j++)
+                dp[i] = min(dp[i], dp[i - j]);
+            dp[i]++;
+        }
+    cout << (dp[n - 1] > 100000? -1: dp[n - 1]) << endl;
+    return 0;
+}

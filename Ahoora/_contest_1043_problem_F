@@ -1,0 +1,45 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 3 * 1000 * 100 + 10, mod = 1LL * 1000 * 1000 * 1000 + 7;
+int n, fact[N], inv[N], dp[N][15], cnt[N];
+ 
+long long Pow(long long a, long long b) {
+	return b? (b & 1? a: 1) % mod * Pow(a * a % mod, b >> 1) % mod: 1;
+}
+ 
+int C(int r, int n) {
+	if (r > n)
+		return 0;
+	return 1LL * fact[n] * inv[r] % mod * inv[n - r] % mod;
+}
+ 
+int main() { 
+	cin >> n;
+	fact[0] = 1;
+	for (int i = 1; i < N; i++)
+		fact[i] = 1LL * fact[i - 1] * i % mod;
+	inv[N - 1] = Pow(fact[N - 1], mod - 2);
+	for (int i = N - 2; i >= 0; i--)
+		inv[i] = 1LL * inv[i + 1] * (i + 1) % mod;
+	for (int i = 0, a; i < n; i++) {
+		cin >> a;
+		for (int j = 1; j * j <= a; j++)
+			if (a % j == 0) {
+				cnt[j]++;
+				if (a / j != j)
+					cnt[a / j]++;
+			}
+	}
+	for (int j = 1; j <= 10; j++) {
+		for (int i = N - 1; i >= 1; i--) {
+			dp[i][j] = C(j, cnt[i]);
+			for (int k = 2 * i; k < N; k += i)
+				dp[i][j] = ((dp[i][j] - dp[k][j]) % mod + mod) % mod;
+		}
+		if (dp[1][j])
+			return cout << j << '\n', 0;
+	}
+	cout << "-1\n";
+	return 0;
+}

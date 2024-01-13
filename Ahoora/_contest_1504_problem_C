@@ -1,0 +1,80 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+void solve() {
+	int n;
+	string s;
+	cin >> n >> s;
+	int cnt = 0;
+	for (int i = 0; i < n; i++)
+		if (s[i] == '1')
+			cnt++;
+	if (cnt & 1) {
+		cout << "NO\n";
+		return;
+	}
+	vector<int> ans(n);
+	cnt /= 2;
+	for (int i = 0; i < n; i++)
+		if (s[i] == '1') {
+			if (cnt) {
+				ans[i] = +1;
+				cnt--;
+			}
+			else {
+				ans[i] = -1;
+			}
+		}
+	int s1 = 0, s2 = 0;
+	int c = 0;
+	for (int i = 0; i < n; i++) {
+		if (ans[i] != 0) {
+			s1 += ans[i], s2 += ans[i];
+			if (s1 < 0 || s2 < 0) {
+				cout << "NO\n";
+				return;
+			}
+			continue;
+		}
+		if (c & 1) {
+			ans[i] = +1;
+			s1++, s2--;
+		}
+		else {
+			ans[i] = -1;
+			s1--, s2++;
+		}
+		c++;
+		if (s1 < 0 || s2 < 0) {
+			cout << "NO\n";
+			return;
+		}
+	}
+	if (s1 != 0 || s2 != 0)
+		cout << "NO\n";
+	cout << "YES\n";
+	string o1, o2;
+	for (int i = 0; i < n; i++) {
+		if (s[i] == '1') {
+			if (ans[i] == +1)
+				o1 += '(', o2 += '(';
+			else
+				o1 += ')', o2 += ')';
+		} else {
+			if (ans[i] == +1)
+				o1 += '(', o2 += ')';
+			else
+				o1 += ')', o2 += '(';
+		}
+	}
+	cout << o1 << '\n' << o2 << '\n';
+}
+ 
+int main() { 
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		solve();
+	}
+	return 0;
+}

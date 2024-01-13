@@ -1,0 +1,24 @@
+#include <bits/stdc++.h>
+using namespace std;
+int arr[510][510];
+int main()
+{
+	int n, k, t, cnt;
+	char c;
+	cin >> t;
+	for(int i = 0; i < t; i++)
+	{
+		cin >> n >> k;
+		cnt = 96;
+		for(int j = 0; j < n; j++)
+		{
+			cnt++;
+			c = cnt;
+			cout << c;
+			if(cnt - 96 == k)
+			cnt = 96;			
+		}
+		cout << endl;
+	}
+	return 0;
+}

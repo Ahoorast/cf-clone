@@ -1,0 +1,73 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10;
+int n, m, cnt, col[N], deg[N], down[N], up[N];
+vector<int> adj[2][N];
+bool vis[N];
+char c[N];
+set<int> s;
+ 
+void cycdfs(int root) {
+	s.insert(root);
+	col[root] = cnt;
+	for (auto u: adj[0][root])
+		if (!col[u])
+			cycdfs(u);
+		else if (s.find(u) != s.end()) {
+			cout << -1 << endl;
+			exit(0);
+		}
+	s.erase(root);
+}
+ 
+void dfs(int root, int tp) {
+	vis[root] = true;
+	for (auto u: adj[tp][root])
+		if (!vis[u]) {
+			dfs(u, tp);
+			if (tp)
+				down[root] = min(down[root], down[u]);
+			else
+				up[root] = min(up[root], up[u]);
+		}
+		else
+			if (tp)
+				down[root] = min(down[root], down[u]);
+			else
+				up[root] = min(up[root], up[u]);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m;
+	for (int i = 1, v, u; i <= m; i++) {
+		cin >> v >> u;
+		adj[0][v].push_back(u);
+		adj[1][u].push_back(v);
+		deg[u]++;
+	}
+	for (int i = 1; i <= n; i++)
+		c[i] = 'E';
+	for (int i = 1; i <= n; i++)
+		if (!col[i])
+			cnt++, cycdfs(i);
+	for (int i = 1; i <= n; i++)
+		vis[i] = false, down[i] = up[i] = i;
+	for (int t = 0; t <= 1; t++) {
+		for (int i = 1; i <= n; i++)
+			if (!vis[i])
+				dfs(i, t);
+		for (int i = 1; i <= n; i++)
+			vis[i] = false;
+	}
+	int ans = 0;
+	for (int i = 1; i <= n; i++)
+		if (down[i] >= i && up[i] >= i)
+			ans++, c[i] = 'A';
+	cout << ans << endl;
+	for (int i = 1; i <= n; i++)
+		cout << c[i];
+	cout << endl;
+	return 0;
+}

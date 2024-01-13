@@ -1,0 +1,31 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 310;
+bool ans[N][N];
+long long C[N], R[N];
+int n, K;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> n >> K;
+		int x = 0, y = 0;
+		while (K--) {
+			ans[x + 1][y + 1] = true;
+			R[x + 1]++, C[y + 1]++;
+			x++, y++;
+			if (x == n)
+				x = 0, y++;
+			y %= n;
+		}
+		long long mnR = *min_element(R + 1, R + n + 1), mnC = *min_element(C + 1, C + n + 1), mxR = *max_element(R + 1, R + n + 1), mxC = *max_element(C + 1, C + n + 1);
+		cout << (mxR - mnR) * (mxR - mnR) + (mxC - mnC) * (mxC - mnC) << '\n';
+		for (int i = 1; i <= n; i++, cout << '\n')
+			for (int j = 1; j <= n; j++)
+				cout << ans[i][j], ans[i][j] = false, C[i] = C[j] = R[i] = R[j] = 0;
+	}
+	return 0;
+}

@@ -1,0 +1,9 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+    unsigned long long x;
+    cin >> x;
+    cout << 2 * x + 1;
+    return 0;
+}

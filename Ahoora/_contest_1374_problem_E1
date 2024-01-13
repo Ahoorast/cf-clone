@@ -1,0 +1,59 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10;
+set<pair<int, int>> s[5];
+int n, m, K, a[N], b[N], t[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> K;
+	for (int i = 1; i <= n; i++) {
+		cin >> t[i] >> a[i] >> b[i];
+		if (a[i] && b[i]) 
+			s[0].insert({t[i], i});
+		else if (a[i])
+			s[1].insert({t[i], i});
+		else if (b[i])
+			s[2].insert({t[i], i});
+	}
+	vector<int> ans;
+	long long tot = 0;
+	while (true) {
+		if (s[0].empty())
+			break;
+		if (K == 0)
+			break;
+		auto x = *s[0].begin();
+		bool t = true;
+		if ((int)(s[1].size()) && (int)(s[2].size())) {
+			auto F = *s[1].begin(), S = *s[2].begin();
+			if (F.first + S.first <= x.first) 
+				t = false;
+			if (!t)
+				s[1].erase(s[1].begin()), s[2].erase(s[2].begin()), ans.push_back(F.second), ans.push_back(S.second), K--, tot += F.first + S.first, m -= 2;
+		}			
+		if (t) {
+			s[0].erase(s[0].begin());
+			ans.push_back(x.second), tot += x.first;
+			K--;
+		}
+	}
+	int t = K;
+	while (t--) {
+		if (s[1].empty())
+			return cout << "-1\n", 0;
+		auto x = *s[1].begin();
+		s[1].erase(s[1].begin());
+		tot += x.first, ans.push_back(x.second);
+	}
+	while (K--) {
+		if (s[2].empty())
+			return cout << "-1\n", 0;
+		auto x = *s[2].begin();
+		s[2].erase(s[2].begin());
+		tot += x.first, ans.push_back(x.second);
+	}
+	cout << tot << '\n';
+	return 0;
+}

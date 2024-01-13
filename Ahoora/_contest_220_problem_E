@@ -1,0 +1,61 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10;
+int n, a[N];
+long long k;
+ 
+struct FenwickTree {
+	vector<int> fen;
+	FenwickTree(int n = 0) {
+		fen.resize(n + 1, 0);
+	}
+	void upd(int x, int w = +1) {
+		for (; x <= n; x += x & (-x))
+			fen[x] += w;
+	}
+	int get(int x) {
+		int res = 0;
+		for (; x; x -= x & (-x))
+			res += fen[x];
+		return res;
+	}
+	int get(int l, int r) {
+		return get(r) - get(l - 1);
+	}
+} prv, nxt;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> k;
+	vector<int> all;
+	for (int i = 1; i <= n; i++)
+		cin >> a[i], all.push_back(a[i]);
+	sort(all.begin(), all.end());
+	all.resize(unique(all.begin(), all.end()) - all.begin());
+	for (int i = 1; i <= n; i++)
+		a[i] = lower_bound(all.begin(), all.end(), a[i]) - all.begin() + 1;
+	long long inv = 0, ans = 0;
+	nxt = prv = FenwickTree(n);
+	for (int i = n; i >= 2; i--) {
+		inv += nxt.get(a[i] - 1);
+		nxt.upd(a[i]);
+	}
+	int r = 2;
+	for (int l = 1; l < n; l++) {
+		inv += nxt.get(a[l] - 1);
+		inv += prv.get(a[l] + 1, n);
+		prv.upd(a[l]);
+		while (inv > k && r <= n) {
+			nxt.upd(a[r], -1);
+			inv -= nxt.get(a[r] - 1);
+			inv -= prv.get(a[r] + 1, n);
+			r++;
+		}
+		if (l == r)
+			return cout << 1LL * n * (n - 1) / 2 << '\n', 0;
+		ans += n - r + 1;
+	}
+	cout << ans << '\n';
+	return 0;
+}

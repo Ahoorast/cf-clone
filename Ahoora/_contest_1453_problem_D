@@ -1,0 +1,39 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const long long N = (long long)(1e18) + 100;
+ 
+int main() { 
+	vector<long long> vec;
+	vec.push_back(2LL);
+	while (vec.back() * 2 + 2 < N)
+		vec.push_back(vec.back() * 2LL + 2LL);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		long long k;
+		cin >> k;
+		if (k & 1)
+			cout << "-1\n";
+		else {
+			vector<int> ans;
+			while (k > 0) {
+				auto it = upper_bound(vec.begin(), vec.end(), k);
+				it--;
+				k -= *it;
+				ans.push_back(it - vec.begin());
+			}
+			vector<char> o;
+			for (auto x: ans) {
+				o.push_back('1');
+				for (int i = 1; i <= x; i++)
+					o.push_back('0');
+			}
+			cout << (int)(o.size()) << '\n';
+			for (auto c: o)
+				cout << c << ' ';
+			cout << "\n";
+		}
+	}
+	return 0;
+}

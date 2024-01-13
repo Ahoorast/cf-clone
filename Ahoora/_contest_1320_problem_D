@@ -1,0 +1,96 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10, mod = 1e9 + 7, P = 3;
+long long n, pw[N], dv;
+string s;
+ 
+long long Pow(long long a, long long b) {
+	return b? (b & 1? a: 1) % mod * Pow(a * a % mod, b >> 1) % mod: 1;
+}
+ 
+int add(int a, int b) {
+	a += b;
+	a += (a < 0) * mod;
+	a -= (a >= mod) * mod;
+	return a;
+}
+ 
+int mul(int a, int b) {
+	return 1LL * a * b % mod;
+}
+ 
+struct Node {
+	int en, st, hsh, len;
+	Node() {
+		en = st = -1;
+		hsh = len = 0;
+	}
+	void merge(Node L, Node R) {
+		if (L.en == -1) {
+			*this = R;
+			return;
+		}
+		if (R.st == -1) {
+			*this = L;
+			return;
+		}
+		if (L.en == 1 && R.st == 1) {
+			len = L.len + R.len - 2;
+			st = (L.len == 1? (R.len == 1? -1: 0): L.st);
+			en = (R.len == 1? (L.len == 1? -1: 0): R.en);
+			hsh = add(add(L.hsh, -mul(pw[L.len - 1], 2)), mul(pw[L.len - 1], mul(add(R.hsh, -2), dv)));
+			return;
+		}
+		hsh = add(L.hsh, mul(R.hsh, pw[L.len]));
+		st = L.st;
+		en = R.en;
+		len = L.len + R.len;
+	}
+	bool operator == (Node x) {
+		return hsh == x.hsh;
+	}
+	void init(int x) {
+		en = st = x, len = 1;
+		hsh = x + 1;
+	}
+} seg[N << 2];
+ 
+void build(int l = 0, int r = n, int id = 1) {
+	if (l + 1 == r) {
+		seg[id].init(s[l] - '0');
+		return;
+	}
+	int mid = l + r >> 1;
+	build(l, mid, id << 1), build(mid, r, id << 1 | 1);
+	seg[id].merge(seg[id << 1], seg[id << 1 | 1]);
+}
+ 
+Node get(int s, int e, int l = 0, int r = n, int id = 1) {
+	Node res;
+	if (s <= l && e >= r)
+		return seg[id];
+	if (s >= r || e <= l)
+		return res;
+	int mid = l + r >> 1;
+	res.merge(get(s, e, l, mid, id << 1), get(s, e, mid, r, id << 1 | 1));
+	return res;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	dv = Pow(P, mod - 2);
+	pw[0] = 1;
+	for (int i = 1; i < N; i++)
+		pw[i] = mul(pw[i - 1], P);
+	int Q;
+	cin >> n >> s >> Q;
+	build();
+	while (Q--) {
+		int x, y, len;
+		cin >> x >> y >> len;
+		--x, --y;
+		cout << (get(x, x + len) == get(y, y + len)? "Yes": "No") << '\n';
+	}
+	return 0;
+}

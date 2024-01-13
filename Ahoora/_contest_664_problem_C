@@ -1,0 +1,39 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		string s;
+		cin >> s;
+		vector<int> num, vec;
+		int n = s.size();
+		for (int i = 4; i < n; i++)
+			num.push_back(s[i] - '0');
+		n = num.size();
+		int x = num.back();
+		unsigned long long ans = 1989;
+		while (ans % 10 != x)
+			ans++;
+		num.pop_back();
+		vec.push_back(x);
+		ans /= 10;
+		while (num.size()) {
+			x = num.back();
+			ans++;
+			while (ans % 10 != x)
+				ans++;
+			ans /= 10;
+			vec.push_back(x);
+			num.pop_back();
+		}
+		if (ans)
+			cout << ans;
+		for (int i = n - 1; i >= 0; i--)
+			cout << vec[i];
+		cout << endl;
+	}
+	return 0;
+}

@@ -1,0 +1,22 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int maxn = 5e5;
+int arr[maxn];
+int main()
+{
+	long long n, a;
+	cin >> n;
+	for(int i = 1; i <= n; i++)
+	{
+		cin >> a;
+		arr[i] = a;
+	}
+	for(int i = 0; i <= n; i++)
+	if(arr[arr[arr[i]]] == i && arr[i] != 0)
+	{
+		cout << "YES";
+		return 0;	
+	}
+	cout << "NO";
+	return 0;
+}

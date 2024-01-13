@@ -1,0 +1,32 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 5 * 100 * 1000 + 100;
+long long n, x, a[N], d[N], mn[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	long long sum = 0;
+	for (int i = 1; i <= (n + 1) / 2; i++)
+		cin >> a[i], sum += a[i];
+	cin >> x, sum += x * (n / 2);
+	if (sum > 0)
+		return cout << n << '\n', 0;
+	if (x >= 0)
+		return cout << "-1\n", 0;
+	long long s = 0;
+	x *= -1;
+	for (int i = (n + 1) / 2, j = 1; i >= 1; i--, j++) {
+		s += a[i];
+		d[i] = j + min(max(0LL, s - 1) / x, n / 2);
+	}
+	mn[1] = d[1];
+	for (int i = 2; i <= (n + 1) / 2; i++)
+		mn[i] = min(mn[i - 1], d[i]);
+	for (int i = 1; i <= (n + 1) / 2; i++)
+		if (d[i] * 2 > n && mn[n - d[i] + 1] >= d[i])
+			return cout << d[i] << '\n', 0;
+	cout << -1 << '\n';
+	return 0;
+}

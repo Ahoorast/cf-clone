@@ -1,0 +1,25 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 110;
+int n, k;
+char c[N][N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> k;
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++)
+			c[i][j] = 'S';
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++)
+			if (k && (i + j) % 2 == 0) 
+				k--, c[i][j] = 'L';
+	if (k)
+		return cout << "NO\n", 0;
+	cout << "YES\n";
+	for (int i = 0; i < n; i++, cout << '\n')
+		for (int j = 0; j < n; j++)
+			cout << c[i][j];
+	return 0;
+}

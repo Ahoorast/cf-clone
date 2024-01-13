@@ -1,0 +1,62 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int maxn = 4e5 + 100;
+long long arr[maxn], a[maxn], bs[maxn], as[maxn];
+int main()
+{
+	unsigned long long n, I, k = 0, ans = 0;
+	cin >> n >> I;
+	for(int i = 0; i < n; i++)
+	cin >> arr[i];
+	sort(arr, arr + n);
+	for(int i = 0; i < n; i++)
+	{
+		if(i == 0)
+		a[k]++;
+		else if(arr[i] == arr[i - 1])
+		{
+			a[k]++;
+			if(i == n - 1)
+			k++;
+		}
+		else
+		{
+			k++;
+			a[k]++;
+			if(i == n - 1)
+			{
+				k++;
+				a[k]++;
+			}
+		}
+	}
+	I *= 8;
+	for(int i = 0; i * n <= I; i++)
+	{
+		ans = pow(2, i);
+		if(ans > maxn)
+		break;
+	}
+	long long out = 1000000000;
+	for(int i = 1; i <= k; i++)
+	bs[i] = bs[i - 1] + a[i - 1];
+	for(int i = k; i >= 1; i--)
+	as[i] = as[i + 1] + a[i - 1];
+	int l = 0, r = ans - 1;
+	if(ans > k)
+	{
+		cout << "0";
+		return 0;
+	}
+	while(true)
+	{
+		if(out > bs[l] + as[r + 2])
+		out = bs[l] + as[r + 2];
+		l++;
+		r++;
+		if(r == k)
+		break;
+	}
+	cout << out;
+	return 0;
+}

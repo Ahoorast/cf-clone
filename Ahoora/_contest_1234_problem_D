@@ -1,0 +1,44 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+set<int> pos[30];
+ 
+void print() {
+	for (int i = 'a'; i <= 'z'; i++, cout << endl)
+		for (auto it: pos[i - 'a'])
+			cout << it << ' ';
+}
+ 
+int main() {
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	string s;
+	cin >> s >> Q;
+	for (int i = 0; i < s.size(); i++) 
+		pos[s[i] - 'a'].insert(i + 1);
+	while (Q--) {
+		int t, l, r, P;
+		char rep;
+		cin >> t;
+		if (t == 1) {
+			cin >> P >> rep;
+			pos[s[P - 1] - 'a'].erase(P);
+			pos[rep - 'a'].insert(P);
+			s[P - 1] = rep;
+		}
+		else {
+			cin >> l >> r;
+			int res = 0;
+			for (int i = 'a'; i <= 'z'; i++) 
+				if (pos[i - 'a'].size()) {
+				auto Pos = pos[i - 'a'].lower_bound(l);
+				if (*Pos < l)
+					++Pos;
+				if (pos[i - 'a'].size() && (*Pos >= l && *Pos <= r))
+					res++;
+				}
+			cout << res << endl;
+		}
+	}
+	return 0;
+}

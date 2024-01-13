@@ -1,0 +1,34 @@
+#include <iostream>
+using namespace std;
+int abs(int a)
+{
+	int ans = a;
+	if(a < 0)
+	ans = -a;
+	return ans;
+}
+int main()
+{
+	string a;
+	cin >> a;
+	int r = 0, l = 0, u = 0, d = 0;
+	int az = a.size();
+	for(int i = 0; i < az; i++)
+	{
+		if(a[i] == 'R')
+		r++;
+		if(a[i] == 'L')
+		l++;
+		if(a[i] == 'U')
+		u++;
+		if(a[i] == 'D')
+		d++;
+	}
+	if(az % 2 == 1 && (abs(r - l) != 0 || abs(u - d) != 0))
+	{
+		cout << "-1";
+		return 0;
+	}
+	cout << (abs(r - l) + abs(u - d)) / 2;
+	return 0;
+}

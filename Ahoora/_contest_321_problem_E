@@ -1,0 +1,40 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 4010;
+int n, k, dp[N], old[N], s[N][N], a[N][N];
+ 
+void upd(int l, int r, int st = 1, int en = n + 1) {
+	if (l >= r)
+		return;
+	int mid = l + r >> 1, par = st;
+	for (int i = st; i < en && i <= mid; i++)
+		if (dp[mid] >= s[i][mid] + old[i - 1])
+			dp[mid] = s[i][mid] + old[i - 1], par = i;
+	upd(l, mid, st, par + 1), upd(mid + 1, r, par, en);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> k;
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= n; j++) {
+			char x;
+			cin >> x;
+			a[i][j] = x - '0';
+		}
+	for (int i = 1; i < n; i++)
+		s[i][i + 1] = a[i][i + 1];
+	for (int i = n; i >= 1; i--)
+		for (int j = i + 2; j <= n; j++)
+			s[i][j] = s[i + 1][j] + s[i][j - 1] - s[i + 1][j - 1] + a[i][j];
+	for (int i = 1; i <= n; i++)
+		dp[i] = 1 << 30;
+	for (int i = 1; i <= k; i++) {
+		for (int j = 0; j <= n; j++)
+			old[j] = dp[j], dp[j] = 1 << 30;
+		upd(1, n + 1);
+	}
+	cout << dp[n] << '\n';
+	return 0;
+}

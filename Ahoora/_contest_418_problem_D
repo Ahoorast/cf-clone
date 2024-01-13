@@ -1,0 +1,141 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10, LG = 20;
+int n, h[N], st[N], en[N], par[N][LG], seg[N << 2], lazy[N << 2], TM, ver[N], ans[N];
+vector<int> adj[N];
+ 
+struct Query {
+	int l, r, id;
+	Query(int x = 0, int y = 0, int z = 0) {
+		l = x, r = y, id = z;
+	}
+};
+ 
+vector<Query> query[N];
+ 
+void dfs(int v) {
+	st[v] = TM++;
+	ver[st[v]] = h[v];
+	for (int i = 1; i < LG; i++)
+		par[v][i] = par[par[v][i - 1]][i - 1];
+	for (auto u: adj[v])
+		if (u != par[v][0]) {
+			par[u][0] = v;
+			h[u] = h[v] + 1;
+			dfs(u);
+		}
+	en[v] = TM;
+}
+ 
+int k_par(int v, int k) {
+	for (int i = 0; i < LG; i++)
+		if (k >> i & 1)
+			v = par[v][i];
+	return v;
+}
+ 
+int lca(int v, int u) {
+	if (h[v] < h[u])
+		swap(v, u);
+	v = k_par(v, h[v] - h[u]);
+	if (v == u)
+		return v;
+	for (int i = LG - 1; i >= 0; i--)
+		if (par[v][i] != par[u][i])
+			v = par[v][i], u = par[u][i];
+	return par[v][0];
+}
+ 
+int d(int v, int u) {
+	return h[v] + h[u] - 2 * h[lca(v, u)];
+}
+ 
+void build(int l = 0, int r = n, int id = 1) {
+	if (l + 1 == r) {
+		seg[id] = ver[l];
+		return;
+	}
+	int mid = l + r >> 1;
+	build(l, mid, id << 1), build(mid, r, id << 1 | 1); 
+	seg[id] = max(seg[id << 1], seg[id << 1 | 1]);
+}
+ 
+void add(int id, int x) {
+	seg[id] += x;
+	lazy[id] += x;
+}
+ 
+void shift(int id) {
+	add(id << 1, lazy[id]);
+	add(id << 1 | 1, lazy[id]);
+	lazy[id] = 0;
+}
+ 
+int get(int s, int e, int l = 0, int r = n, int id = 1) {
+	if (s <= l && e >= r) 
+		return seg[id];
+	if (s >= r || e <= l)
+		return 0;
+	shift(id);
+	int mid = l + r >> 1;
+	return max(get(s, e, l, mid, id << 1), get(s, e, mid, r, id << 1 | 1));
+}
+ 
+void upd(int s, int e, int x, int l = 0, int r = n, int id = 1) {
+	if (s <= l && e >= r) {
+		add(id, x);
+		return;
+	}
+	if (s >= r || e <= l)
+		return;
+	shift(id);
+	int mid = l + r >> 1;
+	upd(s, e, x, l, mid, id << 1), upd(s, e, x, mid, r, id << 1 | 1);
+	seg[id] = max(seg[id << 1], seg[id << 1 | 1]);
+}
+ 
+void dfs_ans(int v) {
+	for (auto q: query[v]) 
+		ans[q.id] = max(ans[q.id], get(q.l, q.r));
+	for (auto u: adj[v])
+		if (u != par[v][0]) {
+			upd(st[u], en[u], -1);
+			upd(0, st[u], +1);
+			upd(en[u], n, +1);
+			dfs_ans(u);
+			upd(st[u], en[u], +1);
+			upd(0, st[u], -1);
+			upd(en[u], n, -1);
+		}
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 1, v, u; i < n; i++) {
+		cin >> v >> u;
+		--v, --u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+	dfs(0);
+	build();
+	int Q;
+	cin >> Q;
+	for (int i = 0, v, u; i < Q; i++) {
+		cin >> v >> u;
+		--v, --u;
+		if (h[v] < h[u])
+			swap(v, u);
+		int dis = d(v, u);
+		int w = k_par(v, (dis - 1) / 2);
+		query[v].push_back(Query(st[w], en[w], i));
+		query[u].push_back(Query(0, st[w], i));
+		query[u].push_back(Query(en[w], n, i));
+	}
+	dfs_ans(0);
+	for (int i = 0; i < Q; i++)
+		cout << ans[i] << '\n';
+	return 0;
+}

@@ -1,0 +1,27 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int n;
+		cin >> n;
+		vector<int> a(n);
+		map<int, int> cnt;
+		for (auto &x: a) {
+			cin >> x;
+			cnt[x]++;
+		}
+		for (auto x: cnt)
+			cout << x.first << ' ';
+		for (auto x: cnt) {
+			int t = x.second - 1;
+			while (t--)
+				cout << x.first << ' ';
+		}
+		cout << '\n';
+	}
+	return 0;
+}

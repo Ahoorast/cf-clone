@@ -1,0 +1,27 @@
+#include <bits/stdc++.h>
+using namespace std;
+long long m, n, k;
+long long tk(long long x)
+{
+	long long ans = 0;
+	for(int i = 1; i <= n; i++)
+	ans += min(m, (x - 1) / i);
+	return ans;
+}
+long long ans(long long l, long long r)
+{
+	long long mid = (r + l) / 2 + ((r + l) % 2);
+	if(l == r)
+	return l;
+	if(tk(mid) <= k - 1)
+	return ans(mid, r);
+	else
+	return ans(l, mid - 1);
+}
+int main()
+{
+	cin >> n >> m >> k;
+	long long l = 1, r = m * n;
+	cout << ans(l, r);
+	return 0;
+}

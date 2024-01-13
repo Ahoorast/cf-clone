@@ -1,0 +1,16 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int maxn = 1e5 + 100;
+int arr[maxn];
+int main()
+{
+	string s;
+	int ans = 100100, n, k;
+	cin >> n >> k >> s;
+	for(int i = 0; i < n; i++) arr[s[i] - 'A']++;
+	for(int i = 0; i < k; i++) 
+		if(arr[i] < ans)
+			ans = arr[i];
+	cout << ans * k;		
+	return 0;
+}

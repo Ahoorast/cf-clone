@@ -1,0 +1,67 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2010;
+int n, first_r[N][10], last_r[N][10], first_c[N][10], last_c[N][10];
+string s[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> n;
+		for (int i = 0; i < n; i++)
+			cin >> s[i];
+		long long ans[10];
+		for (int i = 0; i < 10; i++)
+			ans[i] = 0;
+		for (int i = 0; i < n; i++) {
+			int first[10], last[10];
+			for (int j = 0; j < 10; j++)
+				first[j] = n, last[j] = 0;
+			for (int j = 0; j < n; j++) {
+				int x = s[i][j] - '0';
+				first[x] = min(first[x], j);
+				last[x] = max(last[x], j);
+			}
+			for (int j = 0; j < 10; j++)
+				ans[j] = max(ans[j], 1LL * max(i, n - i - 1) * (last[j] - first[j]));
+			for (int j = 0; j < 10; j++)
+				first_r[i][j] = first[j], last_r[i][j] = last[j];
+		}
+		for (int j = 0; j < n; j++) {
+			int first[10], last[10];
+			for (int i = 0; i < 10; i++)
+				first[i] = n, last[i] = 0;
+			for (int i = 0; i < n; i++) {
+				int x = s[i][j] - '0';
+				first[x] = min(first[x], i);
+				last[x] = max(last[x], i);
+			}
+			for (int i = 0; i < 10; i++)
+				ans[i] = max(ans[i], 1LL * max(j, n - j - 1) * (last[i] - first[i]));
+			for (int i = 0; i < 10; i++)
+				first_c[j][i] = first[i], last_c[j][i] = last[i];
+		}
+		for (int d = 0; d < 10; d++)
+			for (int i = 0; i < n; i++)
+				for (int j = 0; j < n; j++) {
+					int d1 = last_r[i][d] - j;
+					int d2 = j - first_r[i][d];
+					int d3 = last_c[j][d] - i;
+					int d4 = i - first_c[j][d];
+					int X = max(d1, d2);
+					int Y = max(d3, d4);
+					if (X > 0 && Y > 0) {
+						ans[d] = max(ans[d], 1LL * X * Y);
+						ans[d] = max(ans[d], 1LL * X * max(last_c[j][d], n - first_c[j][d] - 1));
+						ans[d] = max(ans[d], 1LL * max(last_r[i][d], n - first_r[i][d] - 1) * Y);
+					}
+				}
+		for (int i = 0; i < 10; i++)
+			cout << ans[i] << ' ';
+		cout << '\n';
+	}
+	return 0;
+}

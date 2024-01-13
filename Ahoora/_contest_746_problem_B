@@ -1,0 +1,27 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int maxn = 1e5 + 100;
+int arr[maxn];
+int main()
+{
+	string s, ans;
+	int n, np;
+	for(int i = 0; i < 2010; i++)
+	ans += '.';
+	cin >> n >> s;
+	int f = n;
+	for(int i = 0; i < f; i++) {
+		np = n / 2 + n % 2;
+		int cnt = 0;
+		for(int j = 0; j < f; j++) {
+			if(ans[j] == '.') cnt++;
+			if(cnt == np) {
+				ans[j] = s[i];
+				break;
+			}
+		}
+		n--;
+	}
+	for(int i = 0; i < f; i++) cout << ans[i];
+	return 0;
+}

@@ -1,0 +1,15 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+	int arr[10],  ans = 1000;
+	cin >> arr[0] >> arr[1] >> arr[2] >> arr[3] >> arr[4];
+	arr[2] /= 2;
+	arr[3] /=7;
+	arr[4] /= 4;
+	for(int i = 0; i < 5; i++)
+	if(ans > arr[i])
+	ans = arr[i];
+	cout << ans;
+	return 0;
+}

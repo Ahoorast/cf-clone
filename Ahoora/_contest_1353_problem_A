@@ -1,0 +1,31 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 1000 + 10;
+int n, K, cnt[N], dp[N][2];
+char s[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> n >> K >> s;
+		for (int i = 0; i < n; i++)
+			cnt[i % K] += s[i] - '0';
+		int sum = 0;
+		for (int i = 0; i < K; i++)
+			sum += cnt[i], cnt[i] = 0;
+		for (int i = 0; i < K; i++)
+			for (int j = i; j < n; j += K) {
+				dp[i][1] = min(dp[i][0], dp[i][1]) + s[j] - '0';
+				dp[i][0] = min(min(dp[i][0] + (s[j] != '1'), cnt[i] + (s[j] != '1')), cnt[i]);
+				cnt[i] += s[j] == '1';
+			}
+		int ans = 1 << 30;
+		for (int i = 0; i < K; i++)
+			ans = min(ans, min(dp[i][0], dp[i][1]) + sum - cnt[i]), dp[i][0] = cnt[i] = 0;
+		cout << ans << endl;
+	}
+	return 0;
+}

@@ -1,0 +1,16 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+	string s;
+	cin >> s;
+	int sz = s.size(), k = 1, k1 = 0, ans = 0;
+	for(int i = 0; i < sz; i++)
+	{
+		k1 = s[i] - 'a' + 1;
+		ans += min(26 - abs(k1 - k), abs(k1 - k));
+		k = k1;
+	}
+	cout << ans;
+	return 0;
+}

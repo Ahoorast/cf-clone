@@ -1,0 +1,41 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int N = 100 * 1000 + 100;
+int s[N], n, K;
+ 
+void read() {
+	cin >> n >> K;
+	for (int i = 0; i < n; i++)
+		cin >> s[i];
+}
+ 
+bool cal(int x) {
+	int i = 0, j = n - 1, k = 0;
+	while (i <= j) {
+		if (s[i] + s[j] <= x)
+			i++, j--, k++;
+		else if (s[i] > s[j] && s[i] <= x)
+			i++, k++;
+		else if (s[j] <= x)
+			j--, k++;
+		else
+			return false;
+	}
+	return k <= K;
+}
+ 
+int main() {
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	read();
+	int l = 0, r = N * 20;
+	while (l < r) {
+		int m = (l + r) / 2;
+		if (cal(m))
+			r = m;
+		else
+			l = m + 1;
+	}
+	cout << r << endl;
+	return 0;
+}

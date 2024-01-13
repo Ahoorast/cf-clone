@@ -1,0 +1,54 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 5010;
+long long dp[N][N];
+bool vis[N];
+int n, m, T;
+vector<pair<int, int>> adj[N];
+ 
+void dfs(int root) {
+	vis[root] = true;
+	for (int j = 1; j <= n; j++)
+		dp[root][j] = 1LL << 55;
+	for (auto u: adj[root]) {
+		if (!vis[u.first]) {
+			dfs(u.first);
+			for (int j = 2; j <= n; j++)
+				dp[root][j] = min(dp[root][j], u.second + dp[u.first][j - 1]);
+		}
+		for (int j = 2; j <= n; j++)
+			dp[root][j] = min(dp[root][j], u.second + dp[u.first][j - 1]);
+	}
+	for (int j = n - 1; j >= 1; j--)
+		dp[root][j] = min(dp[root][j], dp[root][j + 1]);
+	if (root == n)
+		dp[root][1] = 0;
+}
+ 
+void pp(int root, int t) {
+	cout << root << ' ';
+	int nxt = -1;
+	for (auto u: adj[root])
+		if (dp[u.first][t - 1] + u.second == dp[root][t])
+			nxt = u.first;
+	if (nxt > 0)
+		pp(nxt, t - 1);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m >> T;
+	for (int i = 0, v, u, t; i < m; i++) {
+		cin >> v >> u >> t;
+		adj[v].push_back({u, t});
+	}
+	dfs(1);
+	int ans = 1;
+	for (int j = 1; j <= n; j++)
+		if (dp[1][j] <= T)
+			ans = j;
+	cout << ans << endl;
+	pp(1, ans);
+	return 0;
+}

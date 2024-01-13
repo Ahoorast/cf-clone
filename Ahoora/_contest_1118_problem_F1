@@ -1,0 +1,58 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 3 * 1000 * 100 + 10;
+int n, a[N], ans, cnt[2], c[N][2];
+vector<int> adj[N];
+ 
+void dfs(int root, int par = -1, bool t = true) {
+	if (t) {
+		if (a[root] != 2)
+			c[root][a[root]]++;
+		for (auto u: adj[root])
+			if (u ^ par) {
+				dfs(u, root, t);
+				for (int i = 0; i < 2; i++)
+					c[root][i] += c[u][i];
+			}
+	}
+	else {
+		for (auto u: adj[root])
+			if (u ^ par) {
+				int tmp[2] = {cnt[0], cnt[1]};
+				for (int i = 0; i < 2; i++)
+					tmp[i] -= c[u][i];
+				if (!(tmp[0] > 0 && tmp[1] > 0) && !(c[u][0] > 0 && c[u][1] > 0))
+					ans++;
+			}
+		for (auto u: adj[root])
+			if (u ^ par)
+				dfs(u, root, t);
+	}
+}		
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 1; i <= n; i++) {
+		cin >> a[i];
+		if (a[i] == 0)
+			a[i] = 2;
+		else if (a[i] == 1)
+			a[i] = 0;
+		else 
+			a[i] = 1;
+	}
+	for (int i = 1; i <= n; i++)
+		if (a[i] != 2)
+			cnt[a[i]]++;
+	for (int i = 1, v, u; i < n; i++) {
+		cin >> v >> u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+	dfs(1);
+	dfs(1, -1, 0);
+	cout << ans << endl;
+	return 0;	
+}

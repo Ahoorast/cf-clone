@@ -1,0 +1,103 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1010;
+int n, m, k, C1, C2, A[N][N], mark[N * 2];
+bitset<N> adj[N];
+vector<int> in[N * 2], out[N * 2];
+ 
+void add_edge(int v, int u) {
+	out[v].push_back(u), in[u].push_back(v);
+}
+ 
+void add_clause(int v, int u, bool x, bool y) {
+	add_edge(v << 1 | !x, u << 1 | y);
+	add_edge(u << 1 | !y, v << 1 | x);
+}
+ 
+void ban(int v, int x) {
+	x = (x == C1? 0: 1);
+	add_edge(v << 1 | !x, v << 1 | x);
+}
+ 
+void dfs(int v, vector<int> *adj, vector<int> &vec) {
+	mark[v] = true;
+	for (auto u: adj[v])
+		if (!mark[u])
+			dfs(u, adj, vec);
+	vec.push_back(v);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m >> k >> C1 >> C2;
+	vector<pair<int, int>> vec;
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < m; j++) {
+			cin >> A[i][j];
+			if (A[i][j] == 0)
+				vec.push_back({i, j});
+		}
+	int sz = (int)(vec.size());
+	for (int i = 0; i < sz; i++)
+		for (int j = i + 1; j < sz; j++) {
+			int x[2] = {vec[i].first, vec[i].second};
+			int y[2] = {vec[j].first, vec[j].second};
+			vector<int> c;
+			c.push_back(A[x[0]][y[1]]);
+			c.push_back(A[y[0]][x[1]]);
+			if (c[0] == c[1]) {
+				if (c[0] == C1)
+					add_clause(i, j, 0, 0);
+				else if (c[0] == C2)
+					add_clause(i, j, 1, 1);
+			}
+		}
+	for (auto col: {C1, C2}) {
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < m; j++)
+				if (A[i][j] == col)
+					adj[i][j] = true;
+		int ind = 0;
+		for (auto e: vec) {
+			for (int i = 0; i < n; i++)
+				if (i != e.first && A[i][e.second] == col && ((adj[i] & adj[e.first]).count()))  
+					ban(ind, col);
+			ind++;
+		}
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < m; j++)
+				adj[i][j] = false;
+	}
+	vector<int> L;
+	for (int i = 0; i < sz * 2; i++)
+		if (!mark[i]) 
+			dfs(i, out, L);
+	reverse(L.begin(), L.end());
+	fill(mark, mark + sz * 2, false);
+	int cnt = 0;
+	for (auto v: L)
+		if (!mark[v]) {
+			vector<int> vec;
+			dfs(v, in, vec);
+			cnt++;
+			for (auto v: vec)
+				mark[v] = cnt;
+		}
+	for (int i = 0; i < sz; i++)
+		if (mark[i << 1] == mark[i << 1 | 1])
+			return cout << "No\n", 0;
+	cout << "Yes\n";
+	for (int i = 0; i < sz; i++) {
+		int col = (mark[i << 1] > mark[i << 1 | 1]);
+		if (col == 0)
+			col = C1;
+		else
+			col = C2;
+		A[vec[i].first][vec[i].second] = col;
+	}
+	for (int i = 0; i < n; i++, cout << '\n')
+		for (int j = 0; j < m; j++)
+			cout << A[i][j] << ' ';
+	return 0;
+}

@@ -1,0 +1,90 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 100;
+int n, a[N];
+long long ans[N];
+vector<int> adj[N];
+unordered_map<int, int> cnt[N];
+ 
+void dfs(int root, int par = 0) {
+	cnt[root][a[root]]++;
+	ans[a[root]]++;
+	for (auto u: adj[root])
+		if (u ^ par) {
+			dfs(u, root);
+			for (auto x: cnt[root])
+				for (auto y: cnt[u])
+					ans[__gcd(x.first, y.first)] += 1LL * x.second * y.second;
+			for (auto y: cnt[u])
+				cnt[root][__gcd(a[root], y.first)] += y.second;
+			cnt[u].clear();
+		}
+}
+ 
+/*void dfs(int root, int par = 0) {
+	sz[root] = mx[root] = 0;
+	for (auto u: adj[root])
+		if (u ^ par && !vis[u]) {
+			dfs(u, root);
+			if (sz[u] > sz[mx[root]])
+				mx[root] = u;
+			sz[root] += sz[u];
+		}
+	sz[root]++;
+}
+ 
+void Dfs(int root, int X, int t, int par = 0) {
+	X = __gcd(X, a[root]);
+	if (t)
+		R[X]++;
+	else
+		L[X]++;
+	for (auto u: adj[root])
+		if (u ^ par && !vis[u]) 
+			Dfs(u, X, t, root);
+}
+ 
+void cal(int root, int par = 0) {
+	dfs(root, par);
+	int S = sz[root];
+	if (S == 1) {
+		ans[a[root]]++;
+		return;
+	}
+	if (S == 2) {
+		ans[a[root]]++;
+		ans[a[mx[root]]]++;
+		ans[__gcd(a[root], a[mx[root]])]++;
+		return;
+	}
+	while (2 * sz[mx[root]] > S)
+		root = mx[root];
+	int v = root, u = mx[root];
+	int X = __gcd(a[v], a[u]);
+	L.clear(), R.clear();
+	vis[v] = vis[u] = true;
+	Dfs(v, X, 0, u), Dfs(u, X, 1, v);
+	cal(v, u), cal(u, v);
+	for (auto x: L)
+		for (auto y: R)
+			ans[__gcd(x.first, y.first)] += 1LL * x.second * y.second;
+} */
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 1; i <= n; i++)
+		cin >> a[i];
+	for (int i = 1, v, u; i < n; i++) {
+		cin >> v >> u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+	//cal(1);
+	dfs(1);
+	for (int i = 1; i < N; i++)
+		if (ans[i])
+			cout << i << ' ' << ans[i] << '\n';
+	return 0;
+}

@@ -1,0 +1,48 @@
+use std::io::{BufWriter, stdin, stdout, Write};
+use std::mem;
+ 
+#[derive(Default)]
+struct Scanner {
+    buffer: Vec<String>,
+}
+ 
+impl Scanner {
+    fn next<T: std::str::FromStr>(&mut self) -> T {
+        loop {
+            if let Some(token) = self.buffer.pop() {
+                return token.parse().ok().expect("Failed parse");
+            }
+            let mut input = String::new();
+            stdin().read_line(&mut input).expect("Failed read");
+            self.buffer = input.split_whitespace().rev().map(String::from).collect();
+        }
+    }
+}
+ 
+fn gcd(mut x:i32, mut y:i32) -> i32 {
+	if x > y {
+		mem::swap(&mut x, &mut y);
+	} if x == 0 {
+		return y;
+	}
+	return gcd(x, y % x);
+}
+ 
+fn main() {
+	let mut scan = Scanner::default();
+	let out = &mut BufWriter::new(stdout());
+	let tc = scan.next::<i32>();
+	for _test in 0..tc {
+		let n = scan.next::<i32>();
+		let mut last = 1;
+		let mut g = -1;
+		for _i in 0..n {
+			last = scan.next::<i32>();
+			if g == -1 {
+				g = last;
+			}
+			g = gcd(last, g);
+		}
+		writeln!(out, "{}", last / g).ok();
+	}
+}

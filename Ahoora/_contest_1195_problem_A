@@ -1,0 +1,30 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int maxn = 2000;
+int arr[maxn];
+int main()
+{
+	int n, k, a, cnt = 0;
+	long long ans = 0;
+	cin >> n >> k;
+	for(int i = 0; i < maxn; i++)
+	arr[i] = 0;
+	for(int i = 0; i < n; i++)
+	{
+		cin >> a;
+		arr[a - 1]++;
+	}
+	int set = n / 2 + n % 2;
+	sort(arr, arr + k);
+	for(int i = k - 1; i >= 0; i--)
+	{
+		if(arr[i] % 2 == 1)
+		cnt++;
+		set -= arr[i] / 2;
+		if(set < 0)
+		break;
+		ans += arr[i] - (arr[i] % 2);
+	}
+	cout << ans + min(cnt, set);
+	return 0;
+}

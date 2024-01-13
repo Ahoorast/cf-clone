@@ -1,0 +1,41 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10, LG = 20;
+int a[N], n, mx[N][LG];
+long long dp[N];
+ 
+int cmp(int i, int j) {
+	return (a[i] <= a[j]? j: i);
+}
+ 
+int get(int l, int r) {
+	int res = l, len = r - l;
+	for (int i = 0; i < LG; i++)
+		if (len >> i & 1) {
+			res = cmp(res, mx[l][i]);
+			l += 1 << i;
+		}
+	return res;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 0; i + 1 < n; i++)
+		cin >> a[i], mx[i][0] = i;
+	mx[n - 1][0] = n - 1, a[n - 1] = 1 << 30;
+	for (int j = 1; j < LG; j++)
+		for (int i = 0; i < n; i++)
+			if (i + (1 << j) <= n)
+				mx[i][j] = cmp(mx[i][j - 1], mx[i + (1 << (j - 1))][j - 1]);
+	long long ans = 0;
+	for (int i = n - 2; i >= 0; i--) {
+		int j = get(i + 1, a[i]);
+		dp[i] += dp[j] + n - a[i];
+		dp[i] += j - i;
+		ans += dp[i];
+	}
+	cout << ans << '\n';
+	return 0;
+}

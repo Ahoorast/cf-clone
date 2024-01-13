@@ -1,0 +1,37 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int n;
+		cin >> n;
+		long long ans = 0;
+		vector<int> deg(n), w(n);
+		for (int i = 0; i < n; i++)
+			cin >> w[i], ans += w[i];
+		for (int i = 1, v, u; i < n; i++) {
+			cin >> v >> u;
+			--v, --u;
+			deg[v]++, deg[u]++;
+		}
+		set<pair<int, int>> s;
+		for (int i = 0; i < n; i++)
+			if (deg[i] > 1)
+				s.insert({w[i], i});
+		for (int k = 1; k <= n - 1; k++) {
+			cout << ans << ' ';
+			if (k == n - 1)
+				break;
+			auto it = *--s.end();
+			deg[it.second]--;
+			ans += w[it.second];
+			if (deg[it.second] == 1)
+				s.erase(--s.end());
+		}
+		cout << '\n';
+	}
+	return 0;
+}

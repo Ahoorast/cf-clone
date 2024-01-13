@@ -1,0 +1,89 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 55, mod = 1LL * 1000 * 1000 * 1000 + 7;
+int dp[N][N][2], ans[N][N][2], n, cnt50, cnt100, W, c[N][N], seen[N][N];
+bool vis[N][N][2], vis2[N][N][2];
+ 
+int C(int r, int n) {
+	if (r == 0 || r == n)
+		return 1;
+	if (r > n)
+		return 0;
+	if (seen[r][n])
+		return c[r][n];
+	seen[r][n] = true;
+	return c[r][n] = (C(r - 1, n - 1) + C(r, n - 1)) % mod;
+}
+ 
+ 
+int dfs(int x, int y, int tp) {
+	if (vis2[x][y][tp])
+		return ans[x][y][tp];
+	vis2[x][y][tp] = true;
+	if (tp) {
+		for (int i = 0; i <= cnt50 - x; i++)
+			for (int j = 0; j <= cnt100- y; j++)
+				if (i * 50 + j * 100 <= W && (i || j) && dp[x][y][tp] == dp[x + i][y + j][!tp] + 1)
+					(ans[x][y][tp] += 1LL * dfs(x + i, y + j, !tp) * C(i, cnt50 - x) % mod * C(j, cnt100 - y) % mod) %= mod;
+	} else {
+		for (int i = 0; i <= x; i++)
+			for (int j = 0; j <= y; j++)
+				if ((i || j) && i * 50 + j * 100 <= W && dp[x][y][tp] == dp[x - i][y - j][!tp] + 1)
+					(ans[x][y][tp] += 1LL * dfs(x - i, y - j, !tp) * C(i, x) % mod * C(j, y) % mod) %= mod;
+	}
+	return ans[x][y][tp];
+}
+ 
+struct Node {
+	int x = 0, y = 0, tp = 0;
+	Node (int a = 0, int b = 0, int c = 0) {
+		x = a, y = b, tp = c;
+	}
+};
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	for (int i = 0; i < N; i++)
+		for (int j = 0; j < N; j++)
+			for (int k = 0; k < 2; k++)
+				dp[i][j][k] = 1 << 29;
+	cin >> n >> W;
+	for (int i = 0, a; i < n; i++) {
+		cin >> a;
+		cnt50 += (a == 50);
+		cnt100 += (a == 100);
+	}
+	dp[0][0][0] = dp[0][0][1] = 0;
+	vis[0][0][0] = vis[0][0][1] = true;
+	ans[0][0][0] = ans[0][0][1] = 1;
+	queue<Node> q;
+	q.push(Node(0, 0, 0)), q.push(Node(0, 0, 1));
+	while (q.size()) {
+		Node tmp = q.front(); 
+		q.pop();
+		int x = tmp.x, y = tmp.y, tp = tmp.tp;
+		if (tp) {
+			for (int i = 0; i <= cnt50 - x; i++)
+				for (int j = 0; j <= cnt100 - y; j++) 
+					if (i * 50 + j * 100 <= W && (i || j) && !vis[x + i][y + j][!tp]) {
+						q.push(Node(x + i, y + j, !tp));
+						dp[x + i][y + j][!tp] = dp[x][y][tp] + 1;
+						vis[x + i][y + j][!tp] = true;
+					}
+		} else {
+			for (int i = 0; i <= x; i++)
+				for (int j = 0; j <= y; j++) 
+					if ((i || j) && i * 50 + 100 * j <= W && !vis[x - i][y - j][!tp]) {
+						q.push(Node(x - i, y - j, !tp));
+						dp[x - i][y - j][!tp] = dp[x][y][tp] + 1;
+						vis[x - i][y - j][!tp] = true;
+					}
+		}
+	}
+	dfs(cnt50, cnt100, 0);
+	if (dp[cnt50][cnt100][0] >= (1 << 29))
+		dp[cnt50][cnt100][0] = -1;
+	cout << dp[cnt50][cnt100][0] << '\n' << ans[cnt50][cnt100][0] << '\n';
+	return 0;
+}

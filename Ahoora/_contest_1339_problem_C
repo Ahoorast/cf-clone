@@ -1,0 +1,23 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int n, mx = -1 * (1 << 30), d = 0;
+	//	cout << mx << endl;
+		cin >> n;
+		for (int i = 0, a; i < n; i++) {
+			cin >> a;
+			mx = max(a, mx);
+			d = max(d, mx - a);
+		}
+		int cnt = 0;
+		while (d)
+			cnt++, d /= 2;
+		cout << cnt << endl;
+	}
+	return 0;
+}

@@ -1,0 +1,45 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10;
+int n;
+pair<int, int> p[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 1; i <= n; i++)
+		cin >> p[i].first;
+	for (int i = 1; i <= n; i++)
+		cin >> p[i].second;
+	sort(p + 1, p + n + 1);
+	multiset<int> s;
+	long long l = 1, sum = 0, x, ans = 0;
+	sum += p[l].second;
+	s.insert(p[l].second);
+	x = p[l].first;
+	while (l <= n) {
+		while (p[l + 1].first == x) {
+			sum += p[l + 1].second;
+			s.insert(p[l + 1].second);
+			l++;
+		}
+		if (s.size()) {
+			auto it = --s.end();
+			sum -= *it;
+			x++;
+			ans += sum;
+			s.erase(--s.end());
+		}
+		if (!(int)s.size()) {
+			if (l == n)
+				break;
+			x = p[l + 1].first;
+			sum += p[l + 1].second;
+			s.insert(p[l + 1].second);
+			l++;
+		}
+	}
+	cout << ans << endl;
+	return 0;
+}

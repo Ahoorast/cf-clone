@@ -1,0 +1,93 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 110;
+const int mod = 1e9 + 7;
+ 
+int add(int a, int b) {
+	a += b;
+	a += (a < 0) * mod;
+	a -= (a >= mod) * mod;
+	return a;
+}
+ 
+int mul(int a, int b) {
+	return 1LL * a * b % mod;
+}
+ 
+struct mat {
+	int a[N][N];
+	mat() {
+		for (int i = 0; i < N; i++)
+			for (int j = 0; j < N; j++)
+				a[i][j] = 0;
+	}
+	inline void clear() {
+		for (int i = 0; i < N; i++)
+			for (int j = 0; j < N; j++)
+				a[i][j] = 0;
+	}
+	inline mat operator * (const mat &b) { 
+		mat res; 
+		for (int i = 0; i < N; i++)
+			for (int j = 0; j < N; j++)
+				for (int k = 0; k < N; k++)
+					res.a[i][j] = add(res.a[i][j], mul(a[i][k], b.a[k][j]));
+		return res;
+	}
+	inline void operator *= (const mat &b) {
+		*this = *this * b;
+	}
+	inline void identity() {
+		for (int i = 0; i < N; i++)
+			for (int j = 0; j < N; j++)
+				a[i][j] = i == j;
+	}
+	inline mat operator ^ (long long b) {
+		mat res;
+		for (int i = 0; i < N; i++)
+			res.a[i][i] = 1;
+		mat a = *this;
+		for (; b; b >>= 1, a *= a)
+			if (b & 1)
+				res *= a;
+		return res;
+	}
+	inline void operator ^= (long long b) {
+		*this = *this ^ b;
+	}
+	inline void print() {
+		for (int i = 0; i < 5; i++, cout << '\n')
+			for (int j = 0; j < 5; j++)
+				cout << a[i][j] << ' ';
+		cout << '\n';
+	}
+};
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int m, k;
+	long long n;
+	cin >> n >> m >> k;
+	mat res;
+	for (int i = 0; i < m; i++)
+		for (int j = 0; j < m; j++)
+			res.a[i][j] = 1;
+	for (int i = 0; i < k; i++) {
+		char aC, bC;
+		cin >> aC >> bC;
+		int x = aC - 'a', y = bC - 'a';
+		if (aC >= 'A' && aC <= 'Z')
+			x = aC - 'A' + 26;
+		if (bC >= 'A' && bC <= 'Z')
+			y = bC - 'A' + 26;
+		res.a[x][y] = 0;
+	}
+	res ^= (n - 1);
+	int ans = 0;
+	for (int i = 0; i < m; i++)
+		for (int j = 0; j < m; j++)
+			ans = add(ans, res.a[i][j]);
+	cout << ans << '\n';
+	return 0;
+}

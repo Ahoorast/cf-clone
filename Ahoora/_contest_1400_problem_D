@@ -1,0 +1,31 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 3010;
+int n, a[N], cnt[N][N];
+long long how[N][N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> n;
+		for (int i = 1; i <= n; i++)
+			cin >> a[i];
+		for (int i = 1; i <= n; i++)
+			for (int j = 1; j <= n; j++)
+				how[i][j] = cnt[i][j] = 0;
+		long long ans = 0;
+		for (int i = 1; i <= n; i++) {
+			for (int j = 1; j <= n; j++)
+				how[j][a[i]] += cnt[i - 1][j];
+			for (int l = i + 2; l <= n; l++)
+				ans += how[a[i + 1]][a[l]];
+			for (int j = 1; j <= n; j++)
+				cnt[i][j] = cnt[i - 1][j] + (a[i] == j);
+		}
+		cout << ans << '\n';
+	}
+	return 0;
+}

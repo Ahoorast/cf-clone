@@ -1,0 +1,17 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int n, ans = 0;
+	cin >> n;
+	for (int i = 1, a, g; i <= n; i++) {
+		cin >> a >> g;
+		if (abs(ans + a) <= 500)
+			ans += a, cout << 'A';
+		else 
+			ans -= g, cout << 'G';
+	}
+	cout << endl;
+	return 0;
+}

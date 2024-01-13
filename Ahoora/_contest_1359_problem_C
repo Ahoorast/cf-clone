@@ -1,0 +1,39 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+long double h, c, t;
+ 
+long double cal(long double x) {
+	return (x * c + (x + 1) * h) / (x * 2 + 1);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> h >> c >> t;
+		long long l = 0, r = 1000 * 1000 * 4;
+		while (l + 1 < r) {
+			long double mid = l + r >> 1;
+			if (cal(mid) <= t)
+				r = mid - 1;
+			else
+				l = mid;
+		}
+		long double d1 = abs(t - (0.5 * h + 0.5 * c)), d2 = abs(t - cal(l));
+		int res = l;
+		for (int i = max(0LL, l - 5); i <= l + 10; i++) {
+			if (abs(t - cal((long double)(i))) < d2)
+				d2 = abs(t - cal((long double)(i))), res = i;
+		}
+		l = res;
+		if (d1 < d2)
+			cout << 2 << '\n';
+		else if (d1 != d2)
+			cout << 2 * l + 1 << '\n';
+		else
+			cout << min(2LL, 2 * l + 1) << '\n';
+	}
+	return 0;
+}

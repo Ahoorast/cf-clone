@@ -1,0 +1,29 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 39800 + 1000;
+long long a, b, n, p[N];
+ 
+long long get(long long x) {
+	return x / n * p[n] + p[x % n];
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int a, b, q;
+		cin >> a >> b >> q;
+		n = a * b / __gcd(a, b);
+		for (int i = 1; i <= n; i++)
+			p[i] = p[i - 1] + (i % a % b != i % b % a);
+		while (q--) {
+			long long l, r;
+			cin >> l >> r;
+			cout << get(r) - get(l - 1) << ' ';
+		}
+		cout << '\n';
+	}
+	return 0;
+}

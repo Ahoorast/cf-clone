@@ -1,0 +1,30 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int N = 100;
+int n, a[N];
+ 
+int main() {
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 0; i < n; i++)
+		cin >> a[i];
+	int i = 0, j = n - 1;
+	while (i < j) {
+		bool flag = false;
+		if (a[i] < a[i + 1])
+			i++, flag = true;
+		if (a[j] < a[j - 1])
+			j--, flag = true;
+		if (flag == false) {
+			for (int k = i + 1; k <= j; k++)
+				if (a[k] != a[k - 1])
+					return cout << "NO", 0;
+			return cout << "YES", 0;
+		}
+	}
+	if (i == j)
+		return cout << "YES", 0;
+	cout << "NO" << endl;
+	return 0;
+}

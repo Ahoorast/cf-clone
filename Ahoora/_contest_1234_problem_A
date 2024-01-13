@@ -1,0 +1,23 @@
+// dont skip thissssssssssssssssssssss
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int maxn = 1e5;
+ 
+int main() {
+ 	ios_base:: sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	long long q, n, s = 0, a, res;
+	cin >> q;
+	while (q--) {
+		cin >> n;
+		s = 0;
+		long long k = n;
+		while (n--)
+			cin >> a, s += a;
+		n = k;
+		res = s / n;
+		if (res * n >= s) cout << res << endl;
+		else cout << res + 1 << endl;
+	}
+ 	return 0;
+}

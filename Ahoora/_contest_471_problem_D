@@ -1,0 +1,40 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int n, m;
+	cin >> n >> m;
+	vector<int> src, pat;
+	for (int i = 0, prv, a; i < n; i++) {
+		cin >> a;
+		if (i)
+			src.push_back(a - prv);
+		prv = a;
+	}
+	for (int i = 0, a, prv; i < m; i++) {
+		cin >> a;
+		if (i)
+			pat.push_back(a - prv);
+		prv = a;
+	}
+	n = (int)(src.size()), m = (int)(pat.size());
+	if (m == 0)
+		return cout << n + 1 << '\n', 0;
+	vector<int> F(m);
+	for (int i = 1, len = 0; i < m; i++) {
+		while (len && pat[i] != pat[len])
+			len = F[len - 1];
+		F[i] = len += pat[i] == pat[len];
+	}
+	int ans = 0;
+	for (int i = 0, len = 0; i < n; i++) {
+		while (len && src[i] != pat[len])
+			len = F[len - 1];
+		len += src[i] == pat[len];
+		if (len == m) 
+			ans++, len = F[len - 1];
+	}
+	cout << ans << '\n';
+	return 0;
+}

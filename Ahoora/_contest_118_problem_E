@@ -1,0 +1,66 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10;
+int n, m, comp[N], cnt, h[N];
+bool vis[N];
+vector<pair<int, int>> ans;
+vector<int> adj[N], out[N], in[N], L;
+ 
+void dfs(int v, int par = 0) {
+	vis[v] = true;
+	h[v] = h[par] + 1;
+	for (auto u: adj[v])
+		if (!vis[u]) {
+			ans.push_back({v, u});
+			out[v].push_back(u);
+			in[u].push_back(v);
+			dfs(u, v);
+		}
+		else if (u != par && h[u] < h[v]) {
+			ans.push_back({v, u});
+			out[v].push_back(u);
+			in[u].push_back(v);
+		}
+}
+ 
+void dfs_topol(int v) {
+	vis[v] = true;
+	for (auto u: out[v])
+		if (!vis[u])
+			dfs_topol(u);
+	L.push_back(v);
+}
+ 
+void dfs_comp(int v) {
+	comp[v] = cnt;
+	for (auto u: in[v])
+		if (!comp[u])
+			dfs_comp(u);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m;
+	for (int i = 0, v, u; i < m; i++) {
+		cin >> v >> u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+	dfs(1);
+	fill(vis, vis + N, false);
+	for (int i = 1; i <= n; i++)
+		if (!vis[i])
+			dfs_topol(i);
+	reverse(L.begin(), L.end());
+	for (auto v: L)
+		if (!comp[v]) {
+			cnt++;
+			if (cnt > 1)
+				return cout << "0\n", 0;
+			dfs_comp(v);
+		}
+	for (auto it: ans)
+		cout << it.first << ' ' << it.second << '\n';
+	return 0;
+}

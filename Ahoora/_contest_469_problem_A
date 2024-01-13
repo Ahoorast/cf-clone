@@ -1,0 +1,30 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+	int n, p, y, arr[1000];
+	cin >> n;
+	cin >> p;
+	for(int i = 0; i < p; i++)
+	{
+		cin >> y;
+		arr[y - 1] = 1;
+	}
+	cin >> y;
+	for(int i = 0; i < y; i++)
+	{
+		cin >> p;
+		arr[p - 1] = 1;
+	}
+	for(int i = 0; i < n; i++)
+	{
+	//	cout << arr[i] << endl;
+		if(arr[i] != 1)
+		{
+			cout << "Oh, my keyboard!";
+			return 0;
+		}
+	}
+	cout << "I become the guy.";
+	return 0;
+}

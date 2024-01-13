@@ -1,0 +1,49 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+long long cal(long long x,long long y, long long z) {
+	return (z - x) * (z - x) + (z - y) * (z - y) + (y - x) * (y - x);
+}
+ 
+const int N = (1000 * 100 + 100) * 3;
+int L[N][4], R[N][4];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		vector<pair<int, int>> vec;
+		int k[3];
+		cin >> k[0] >> k[1] >> k[2];
+		vec.push_back({-1, -1});
+		for (int i = 0; i < 3; i++) 
+			for (int j = 0, a; j < k[i]; j++)
+				cin >> a, vec.push_back({a, i + 1});
+		int n = vec.size();
+		long long ans = 1LL << 62;
+		sort(vec.begin(), vec.end());
+		for (int i = 1; i < n; i++)
+			for (int j = 1; j <= 3; j++) 
+				if (j == vec[i].second)
+					L[i][j] = i;
+				else
+					L[i][j] = L[i - 1][j];
+		for (int i = n - 1; i >= 1; i--)
+			for (int j = 1; j <= 3; j++)
+				if (j == vec[i].second)
+					R[i][j] = i;
+				else
+					R[i][j] = R[i + 1][j];
+		for (int i = 1; i < n; i++) 
+			for (int k1 = 1; k1 <= 3; k1++)
+				for (int k2 = 1; k2 <= 3; k2++)
+					if (k1 != vec[i].second && k2 != vec[i].second && L[i][k1] != 0 && R[i][k2] != 0 && k1 != k2) 
+						ans = min(ans, cal(1LL * vec[L[i][k1]].first, 1LL * vec[i].first, 1LL * vec[R[i][k2]].first));
+		for (int i = 0; i <= n; i++)
+			for (int j = 1; j <= 3; j++)
+				L[i][j] = R[i][j] = 0;
+		cout << ans << endl;
+	}
+	return 0;
+}

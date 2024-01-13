@@ -1,0 +1,61 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const long long N = 3 * 1000 * 100 + 10;
+long long dp[N][2], w[N], n;
+vector<pair<long long, int>> adj[N];
+ 
+void dfs(long long root, int par = -1, bool t = false) {
+	if (t) {
+		vector<long long> vec;
+		if (par == -1)
+			dp[root][1] = w[root];
+		for (auto u: adj[root])
+			if (u.first ^ par) {
+				dp[u.first][1] = max(dp[u.first][1], w[u.first]);
+				dp[u.first][1] = max(dp[u.first][1], dp[root][1] - u.second + w[u.first]);
+				vec.push_back(dp[u.first][0] - u.second + w[root]);
+			}
+		sort(vec.begin(), vec.end());
+		for (auto u: adj[root])
+			if (u.first ^ par) {
+				long long r = vec.size() - 1;
+				if (vec[r] != dp[u.first][0] - u.second + w[root])
+					dp[u.first][1] = max(dp[u.first][1], vec[r] - u.second + w[u.first]);
+				else if (vec.size() > 1) {
+					r--;
+					dp[u.first][1] = max(dp[u.first][1], vec[r] - u.second + w[u.first]);
+				}
+			}
+		for (auto u: adj[root])
+			if (u.first ^ par)
+				dfs(u.first, root, t);
+	}
+	else {
+		dp[root][0] = w[root];
+		for (auto u: adj[root])
+			if (par ^ u.first) {
+				dfs(u.first, root);
+				dp[root][0] = max(dp[u.first][0] - u.second + w[root], dp[root][0]);
+			}
+	}
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (long long i = 1; i <= n; i++)
+		cin >> w[i];
+	for (long long i = 1, v, u, w; i < n; i++) {
+		cin >> v >> u >> w;
+		adj[v].push_back({u, w});
+		adj[u].push_back({v, w});
+	}
+	dfs(1);
+	dfs(1, -1, 1);
+	long long mx = -1;
+	for (long long u = 1; u <= n; u++)
+		mx = max({dp[u][0], dp[u][1], dp[u][0] + dp[u][1] - w[u], mx});
+	cout << mx << endl;
+	return 0;
+}

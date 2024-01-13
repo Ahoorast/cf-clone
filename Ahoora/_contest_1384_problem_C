@@ -1,0 +1,40 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int Z = 21;
+ 
+int solve() {
+	string s, t;
+	int n;
+	cin >> n >> s >> t;
+	for (int i = 0; i < n; i++)
+		if (t[i] < s[i])
+			return -1;
+	set<int> S[Z + 2];
+	for (int i = 0; i < n; i++)
+		if (t[i] > s[i])
+			S[s[i] - 'a'].insert(t[i] - 'a');
+	int ans = 0;
+	for (int i = 0; i < Z; i++) {
+		int nxt = -1;
+		if (S[i].size()) {
+			nxt = *S[i].begin();
+			ans++;
+		}
+		if (nxt >= 0)
+			for (auto x: S[i])
+				if (x > nxt)
+					S[nxt].insert(x);
+		
+	}
+	return ans;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) 
+		cout << solve() << '\n';
+	return 0;
+}

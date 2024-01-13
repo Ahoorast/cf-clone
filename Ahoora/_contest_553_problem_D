@@ -1,0 +1,61 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10;
+int n, m, k, a[N];
+double deg[N], dg[N];
+vector<int> adj[N];
+bool vis[N];
+ 
+bool check(double x) {
+	fill(vis, vis + N, false);
+	for (int i = 1; i <= n; i++)
+		deg[i] = dg[i];
+	queue<int> q;
+	for (int i = 0; i < k; i++)
+		q.push(a[i]), vis[a[i]] = true;
+	while (q.size()) {
+		int v = q.front();
+		q.pop();
+		for (auto u: adj[v]) {
+			deg[u]--;
+			if (!vis[u] && (deg[u] / dg[u]) < x) 
+				q.push(u), vis[u] = true;
+		}
+	}
+	for (int i = 1; i <= n; i++)
+		if (!vis[i])
+			return true;
+	return false;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m >> k;
+	for (int i = 0; i < k; i++) 
+		cin >> a[i];
+	for (int i = 0, v, u; i < m; i++) {
+		cin >> v >> u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+		dg[v]++, dg[u]++;
+	}
+	double l = 0., r = 1.;
+	for (int i = 0; i < 100; i++) {
+		double mid = (l + r) / 2.;	
+		if (check(mid))
+			l = mid;
+		else 
+			r = mid;
+	}
+	check(l);
+	vector<int> ans;
+	for (int i = 1; i <= n; i++)
+		if (!vis[i])
+			ans.push_back(i);
+	cout << (int)(ans.size()) << '\n';
+	for (auto v: ans)
+		cout << v << ' ';
+	cout << '\n';
+	return 0;
+}

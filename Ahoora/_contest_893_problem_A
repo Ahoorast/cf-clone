@@ -1,0 +1,20 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int main() {
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int temp[3] = {1, 1, 0}, n, a, res = 1;
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		cin >> a;
+		if (temp[a - 1] == 0) res = 0;
+		else {
+			for (int j = 0; j < 3; j++) {
+				if (j != a - 1)
+					temp[j] = (temp[j] + 1) % 2;
+			}
+		}
+	}
+	cout << (res == 0? "NO": "YES") << endl;
+	return 0;
+}

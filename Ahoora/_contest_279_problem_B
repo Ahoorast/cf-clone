@@ -1,0 +1,24 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int maxn = 1e5 + 100;
+int main()
+{
+	long long arr[maxn], n, t, sum = 0, ans1 = 0, ans = 0, k = 0;
+	cin >> n >> t;
+	for(int i = 0; i < n; i++)
+	{
+		cin >> arr[i];
+		sum += arr[i];
+		ans1++;
+		while(sum > t)
+		{
+			sum -= arr[k];
+			k++;
+			ans1--;	
+		}
+		if(ans1 > ans)
+		ans = ans1;
+	}
+	cout << ans;
+	return 0;
+}

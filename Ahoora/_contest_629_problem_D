@@ -1,0 +1,43 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10;
+const double pi = 3.14159265358;
+int n;
+long long r[N], h[N], val[N], dp[N], fen[N];
+ 
+void upd(int x, long long w) {
+	for (; x <= n; x += x & (-x))
+		fen[x] = max(fen[x], w);
+}
+ 
+long long get(int r) {
+	long long res = 0;
+	for (; r; r -= r & (-r))
+		res = max(res, fen[r]);
+	return res;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	vector<long long> all;
+	for (int i = 0; i < n; i++) {
+		cin >> r[i] >> h[i];
+		val[i] = 1LL * r[i] * r[i] * h[i];
+		all.push_back(val[i]);
+	}
+	sort(all.begin(), all.end());
+	all.resize(unique(all.begin(), all.end()) - all.begin());
+	for (int i = 0; i < n; i++) {
+		dp[i] = val[i];
+		val[i] = lower_bound(all.begin(), all.end(), val[i]) - all.begin() + 1;
+		dp[i] += get(val[i] - 1);
+		upd(val[i], dp[i]);
+	}
+	cout << setprecision(6) << fixed;
+	double ans = *max_element(dp, dp + n);
+	ans *= pi;
+	cout << ans << '\n';
+	return 0;
+}

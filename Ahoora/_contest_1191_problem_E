@@ -1,0 +1,23 @@
+#include <bits/stdc++.h>
+using namespace std; 
+ 
+int main() {
+	string s;
+	int n, r[2] = {-1, -1}, l[2] = {110000, 110000}, k;
+	cin >> n >> k >> s;
+	for (int i = 0; i < n; i++)
+		l[s[i] - '0'] = min(l[s[i] - '0'], i), r[s[i] - '0'] = max(r[s[i] - '0'], i);
+	for (int i = 0; i < 2; i++)
+		if (l[i] + k - 1 >= r[i])
+			return cout << "tokitsukaze", 0;
+	for (int i = 0; i < 2; i++)
+		if (l[i] == 110000)
+			return cout << "quailty", 0;
+	if (l[0] + k == r[0] && l[1] + k == r[1])
+		if (n == (k + 1) * 2)
+			return cout << "once again", 0;
+		else 
+			return cout << "quailty", 0;
+	cout << "once again";
+	return 0; 
+}

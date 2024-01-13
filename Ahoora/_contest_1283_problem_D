@@ -1,0 +1,63 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 100;
+int n, m, x[N];
+long long ans;
+set<pair<int, int>> st[2];
+map<int, bool> mp;
+vector<int> res;
+ 
+void read() {
+	cin >> n >> m;
+	for (int i = 0; i < n; i++) {
+		cin >> x[i];
+		mp[x[i]] = true;
+		st[0].insert({1, i});
+		st[1].insert({1, i});
+	}
+}
+ 
+int main() {
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	read();
+	while (m) {
+		auto it1 = st[0].begin(), it2 = st[1].begin();
+		pair<int, int> X[2];
+		X[0] = {(*it1).first, (*it1).second};
+		X[1] = {(*it2).first, (*it2).second};
+		if (X[0].first < X[1].first) {
+			if (!mp[x[X[0].second] + X[0].first]) {
+				mp[x[X[0].second] + X[0].first] = true;
+				st[0].erase(it1);
+				st[0].insert({X[0].first + 1, X[0].second});
+				res.push_back(x[X[0].second] + X[0].first);
+				ans += X[0].first;
+				m--;
+			}
+			else {
+				st[0].erase(it1);
+				st[0].insert({1 << 30, X[0].second});
+			}
+		}
+		else {
+			if (!mp[x[X[1].second] - X[1].first]) {
+				mp[x[X[1].second] - X[0].first] = true;
+				st[1].erase(it2);
+				st[1].insert({X[1].first + 1, X[1].second});
+				res.push_back(x[X[1].second] - X[1].first);
+				ans += X[1].first;
+				m--;
+			}
+			else {
+				st[1].erase(it2);
+				st[1].insert({1 << 30, X[0].second});
+			}
+		}
+	}
+	cout << ans << endl;
+	for (auto i: res)
+		cout << i << ' ';
+	cout << endl;
+	return 0;
+}

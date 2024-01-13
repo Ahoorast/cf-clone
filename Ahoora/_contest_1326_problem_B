@@ -1,0 +1,22 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 100;
+int b[N], ans[N], n;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 1; i <= n; i++)
+		cin >> b[i];
+	ans[1] = b[1];
+	int mx = max(ans[1], 0);
+	for (int i = 2; i <= n; i++) {
+		ans[i] = b[i] + mx;
+		mx = max(mx, ans[i]);
+	}
+	for (int i = 1; i <= n; i++)
+		cout << ans[i] << ' ';
+	cout << '\n';
+	return 0;
+}

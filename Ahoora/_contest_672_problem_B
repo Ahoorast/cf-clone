@@ -1,0 +1,20 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int maxn = 30;
+int arr[maxn];
+ 
+int main() {
+ 	ios_base:: sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int n;
+	string s;
+	cin >> n >> s;
+	if (n > 26) return cout << "-1", 0;
+	for (int i = 0; i < n; i++)
+	 	arr[s[i] - 'a']++;
+	int res = 0;
+	for (int i = 0; i < maxn; i++)
+		res += max(arr[i] - 1, 0);
+	cout << res << endl;
+	return 0;
+}

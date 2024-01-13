@@ -1,0 +1,38 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 200;
+int ans[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int n;
+		cin >> n;
+		set<int> s;
+		for (int i = 1; i <= n << 1; i++)
+			s.insert(i);
+		for (int i = 1, b; i <= n; i++) {
+			cin >> b;
+			s.erase(b);
+			ans[2 * i - 1] = b;
+		}
+		bool res = true;
+		for (int i = 1; i <= n; i++) {
+			auto it = s.upper_bound(ans[2 * i - 1]);
+			if (it != s.end())
+				ans[2 * i] = *it, s.erase(it);
+			else
+				res = false;
+		}
+		if (res)
+			for (int i = 1; i <= n << 1; i++)
+				cout << ans[i] << ' ';
+		else
+			cout << -1;
+		cout << endl;
+	}
+	return 0;
+}

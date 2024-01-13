@@ -1,0 +1,40 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int N = 100 * 1000 * 2 + 1000;
+unsigned long long a[N], n;
+ 
+void build() {
+	a[0] = 1;
+	for (int i = 1; i < 20; i++)
+		a[i] = a[i - 1] * 3;
+}
+void solve() {
+	unsigned long long k = 0, carry = 0, xind = -1, tmp = 1, res = 0;
+	while (n) {
+		if (n % 3)
+			res += tmp;
+		if (n % 3 > 1)
+			carry = 1;
+		if (carry > 0 && n % 3 == 0)
+			res = tmp, carry = 0;
+		n /= 3;
+		tmp *= 3;
+		k++;
+	}
+	if (carry == 1)
+		res = tmp;
+	cout << res << endl;
+}
+ 
+int main() {
+	ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+	long long Q;
+	cin >> Q;
+	build();
+	while(Q--) {
+		cin >> n;
+		solve();	
+	}
+	return 0;
+}

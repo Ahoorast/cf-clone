@@ -1,0 +1,46 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const long long N = 7 * 1000 * 100 + 10, mod = 998244353;
+long long l[N], r[N], n, k, fact[N], inv[N];
+map<long long, long long> cnt[2];
+set<long long> s;
+ 
+long long Pow(long long a, long long b) {
+	return b? (b & 1? a: 1) % mod * Pow(a * a % mod, b >> 1) % mod: 1;
+}
+ 
+void prep() {
+	fact[0] = 1;
+	for (long long i = 1; i < N; i++)
+		fact[i] = 1LL * fact[i - 1] * i % mod;
+	inv[N - 1] = Pow(fact[N - 1], mod - 2);
+	for (long long i = N - 2; i >= 0; i--)
+		inv[i] = 1LL * inv[i + 1] * (i + 1) % mod;
+}
+ 
+long long C(long long r, long long n) {
+	if (r > n)
+		return 0;
+	return 1LL * fact[n] * inv[r] % mod * inv[n - r] % mod;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	prep();
+	cin >> n >> k;
+	for (long long i = 0; i < n; i++) {
+		cin >> l[i] >> r[i];
+		cnt[0][l[i]]++;
+		cnt[1][r[i] + 1]++;
+		s.insert(l[i]), s.insert(r[i] + 1);
+	}
+	long long ans = 0, ted = 0, prv = 0;
+	for (auto i: s) {
+		prv = ted;
+		ted += cnt[0][i] - cnt[1][i];
+		(ans += (((C(k, ted) - C(k, prv - cnt[1][i])) % mod + mod) % mod)) %= mod;
+	}
+	cout << ans << '\n';
+return 0;
+}

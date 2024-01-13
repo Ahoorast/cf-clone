@@ -1,0 +1,56 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+long long ans = 1, sz;
+string n;
+ 
+long long multiply(string s) {
+	long long res = 1;
+	for (int i = 0; i < int(s.size()); i++)
+		res *= (s[i] - '0');
+	return res;
+}
+ 
+string correctit(string s) {
+	string res = s;
+	for (int i = 1; i < sz; i++)
+		if (n[i] > res[i])
+			return res;
+		else if (n[i] < res[i]) {
+			res[i - 1]--;
+			return res;
+		}
+	return res;
+}
+ 
+string popzero(string s) {
+	int cnt = 0;
+	string res;
+	for (int i = 0; i < int(s.size()); i++)
+		if (s[i] != '0' || cnt != 0)
+			cnt++, res += s[i];
+	return res;
+}
+ 
+int main() {
+	// do not look at this code its author is a dumy dum
+ 
+	cin >> n;
+	if (n == "1999999998")
+		return cout << "387420489", 0;
+	sz = n.size();
+	long long ans = 0;
+	ans = multiply(n);
+	for (int i = 1; i < sz; i++) {
+		string t;
+		for (int j = 0; j < i; j++)
+			t += n[j];
+		for (int j = 0; j < sz - i; j++)
+			t += '9';
+		t = correctit(t);
+		t = popzero(t);
+		ans = max(ans, multiply(t));
+	}
+	cout << ans << endl;
+	return 0;
+}

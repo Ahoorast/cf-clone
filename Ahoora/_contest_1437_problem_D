@@ -1,0 +1,36 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int n;
+		cin >> n;
+		vector<int> a(n + 1);
+		for (int i = 1; i <= n; i++)
+			cin >> a[i];
+		int last_av = 1, ans = 1, nxt = 0, last_cld = -1;
+		for (int i = 2; i <= n; i++) {
+			if (a[i] > last_cld) {
+				nxt++;
+				last_cld = a[i];
+			}
+			else {
+				last_av--;
+				if (last_av) {
+					last_cld = a[i];
+					nxt++;
+				} else {
+					last_av = nxt;
+					nxt = 1;
+					ans++;
+					last_cld = a[i];
+				}
+			}
+		}
+		cout << ans << '\n';
+	}
+	return 0;
+}

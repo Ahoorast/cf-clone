@@ -1,0 +1,29 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 1000 + 10;
+int d[N], n;
+ 
+int main() { 
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> n;
+		set<int> s, p;
+		for (int i = 1; i <= n; i++) {
+			cin >> d[i];
+			s.insert(d[i]);
+		}
+		sort(d + 1, d + n + 1);
+		long long res = 1LL * d[1] * d[n];
+		bool ans = true;
+		for (int i = 2; 1LL * i * i <= res; i++)
+			if (res % i == 0) {
+				p.insert(i);
+				p.insert(res / i);
+			}
+		ans = s == p;
+		cout << (ans? res: -1) << '\n';
+	}
+	return 0;
+}

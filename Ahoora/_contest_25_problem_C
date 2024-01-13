@@ -1,0 +1,30 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 310;
+int n, d[N][N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= n; j++)
+			cin >> d[i][j];
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int s, t, w;
+		cin >> s >> t >> w;
+		d[s][t] = d[t][s] = min(d[s][t], w);
+		for (int i = 1; i <= n; i++)
+			for (int j = 1; j <= n; j++)
+				d[i][j] = min({d[i][j], d[i][s] + d[s][t] + d[t][j], d[i][t] + d[s][t] + d[s][j]});
+		long long sum = 0;
+		for (int i = 1; i <= n; i++)
+			for (int j = i; j <= n; j++)
+				sum += d[i][j];
+		cout << sum << ' ';
+	}
+	cout << '\n';
+	return 0;
+}

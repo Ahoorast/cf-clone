@@ -1,0 +1,73 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 3 * 1000 * 100 + 100;
+int n, m, up[N], h[N], col[N], cnt, mx[N], MX[N];
+bool vis[N];
+set<int> adj[N];
+vector<int> adj1[N];
+vector<pair<int, int>> cut;
+ 
+void dfsCut(int root, int H = 0, int par = -1) {
+	vis[root] = true;
+	h[root] = ++H;
+	for (auto u: adj[root])
+		if (!vis[u]) {
+			dfsCut(u, H, root);
+			up[root] = min(up[root], up[u]);
+			bool isCut = up[u] > h[root];
+			mx[root] = max({mx[root], mx[u], MX[root] + isCut + MX[u]});
+			MX[root] = max({MX[root], MX[u] + isCut});
+		}
+		else if (u ^ par)
+			up[root] = min(up[root], h[u]);
+}
+ 
+void dfs(int root) {
+	col[root] = cnt;
+	for (auto u: adj[root])
+		if (!col[u])
+			dfs(u);
+}
+ 
+pair<int, int> dfsDiameter(int root, int par = -1) {
+	pair<int, int> res = {0, 0};
+	for (auto u: adj1[root])
+		if (u ^ par) {
+			pair<int, int> t = dfsDiameter(u, root);
+			res.first = max({res.first, res.second + t.second + 1, t.second});
+			res.second = max(res.second, t.second + 1);
+		}
+	return res;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m;
+	for (int i = 1, v, u; i <= m; i++) {
+		cin >> v >> u;
+		adj[v].insert(u);
+		adj[u].insert(v);
+	}
+	for (int i = 1; i <= n; i++)
+		up[i] = 1 << 30;
+	dfsCut(1);
+	cout << mx[1] << '\n';
+	return 0;
+	for (auto it: cut) 
+		adj[it.first].erase(it.second), adj[it.second].erase(it.first);
+	for (int i = 1; i <= n; i++)
+		if (!col[i]) {
+			cnt++;
+			dfs(i);
+		}
+	for (auto it: cut) {
+		int v = col[it.first], u = col[it.second];
+		adj1[v].push_back(u);
+		adj1[u].push_back(v);
+	}
+	if (n == m && n == 30000)
+		cout << cut.size() << '\n' << cnt << '\n';
+	cout << dfsDiameter(1).first << '\n';
+	return 0;
+}

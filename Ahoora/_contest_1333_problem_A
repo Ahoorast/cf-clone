@@ -1,0 +1,16 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int n, m;
+		cin >> n >> m;
+		for (int i = 1; i <= n; i++, cout << '\n')
+			for (int j = 1; j <= m; j++)
+				cout << (i == 1 && j == 1? 'W': 'B');
+	}
+	return 0;
+}

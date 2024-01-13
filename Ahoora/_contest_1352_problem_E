@@ -1,0 +1,30 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 8010;
+int a[N], n, s[N];
+bool ex[N];
+ 
+int main() { 
+	int Q;
+	scanf("%d", &Q);
+	while (Q--) {
+		scanf("%d", &n);
+		for (int i = 1; i <= n; i++) {
+			scanf("%d", &a[i]);
+			s[i] = s[i - 1] + a[i];
+		}
+		for (int i = 0; i <= n; i++)
+			for (int j = i + 2; j <= n; j++)
+				if (s[j] - s[i] <= n && s[j] - s[i] >= 1)
+					ex[s[j] - s[i]] = true;
+		int ans = 0;
+		for (int i = 1; i <= n; i++)
+			if (ex[a[i]])
+				ans++;
+		for (int i = 0; i <= n; i++)
+			ex[i] = false;
+		printf("%d\n", ans);
+	}
+	return 0;
+}

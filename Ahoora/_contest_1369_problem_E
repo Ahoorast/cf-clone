@@ -1,0 +1,47 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 100;
+int n, m, w[N], deg[N], ans[N];
+vector<pair<int, int>> adj[N];
+bool vis[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m;
+	for (int i = 1; i <= n; i++)
+		cin >> w[i];
+	for (int i = 1, v, u; i <= m; i++) {
+		cin >> v >> u;
+		deg[v]++, deg[u]++;
+		adj[v].push_back({u, i});
+		adj[u].push_back({v, i});
+	}
+	queue<int> q;
+	for (int i = 1; i <= n; i++)
+		if (deg[i] <= w[i])
+			q.push(i), vis[i] = true;
+	int ind = m;
+	while (q.size()) {
+		int x = q.front();
+		q.pop();
+		for (auto u: adj[x]) {
+			deg[u.first]--, deg[x]--;
+			if (deg[u.first] <= w[u.first] && !vis[u.first]) 
+				vis[u.first] = true, q.push(u.first);
+			if (!ans[u.second])
+				ans[u.second] = ind--;
+		}
+	}
+	vector<int> res(m + 10);
+	for (int i = 1; i <= m; i++) {
+		if (!ans[i])
+			return cout << "DEAD\n", 0;
+		res[ans[i]] = i;
+	}
+	cout << "ALIVE\n";
+	for (int i = 1; i <= m; i++)
+		cout << res[i] << ' ';
+	cout << '\n';
+	return 0;
+}

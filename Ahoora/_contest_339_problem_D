@@ -1,0 +1,56 @@
+// hummmmmmmmm
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1 << 19;
+int T[N], A[N], n, cnt, L[N], R[N];
+ 
+void build(int l, int r, int h = n + 1, int root = 0) {
+	--h;
+	if (l == r) {
+		T[root] = A[r];
+		return;
+	}
+	int mid = (l + r) >> 1;
+	L[root] = ++cnt;
+	build(l, mid, h, L[root]);
+	R[root] = ++cnt;
+	build(mid + 1, r, h, R[root]);
+	if (h & 1)
+		T[root] = T[L[root]] | T[R[root]];
+	else
+		T[root] = T[L[root]] ^ T[R[root]];
+}
+ 
+void upd(int p, int b, int h = n + 1, int root = 0, int l = 1, int r = 1 << n) {
+	--h;
+	if (l == r) {
+		T[root] = b;
+		return;
+	}
+	int mid = (l + r) >> 1;
+	if (p <= mid) 
+		upd(p, b, h, L[root], l, mid);
+	else
+		upd(p, b, h, R[root], mid + 1, r);
+	if (h & 1)
+		T[root] = T[L[root]] | T[R[root]];
+	else
+		T[root] = T[L[root]] ^ T[R[root]];
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> n >> Q;
+	for (int i = 1; i <= 1 << n; i++)
+		cin >> A[i];
+	build(1, 1 << n);
+	while (Q--) {
+		int p, b;
+		cin >> p >> b;
+		upd(p, b);
+		cout << T[0] << endl;
+	}
+	return 0;
+}

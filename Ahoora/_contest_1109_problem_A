@@ -1,0 +1,22 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 3 * 1000 * 100 + 10;
+int cnt[2][(1 << 20) + 10], a[N], n;
+ 
+int main() { 
+	cin >> n;
+	cnt[0][0]++;
+	for (int i = 1, x = 0, a; i <= n; i++) {
+		cin >> a;
+		x ^= a;
+		cnt[i & 1][x]++;
+	}
+	long long ans = 0;
+	for (int i = 0; i < 2; i++)
+		for (int j = 0; j < 1 << 20; j++)
+			if (cnt[i][j])
+				(ans += 1LL * cnt[i][j] * (cnt[i][j] - 1) / 2);
+	cout << ans << endl;
+	return 0;
+}

@@ -1,0 +1,25 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+	int t, arr[110], sum = 0, f1 = 0, f2 = 0;
+	for(int i = 0; i <= 110; i++)
+	arr[i] = 0;
+	for(int i = 0; i < 5; i++)
+	{
+		cin >> t;
+		sum += t;
+		arr[t]++;
+	}
+	for(int i = 110; i >= 0; i--)
+	{
+		if(arr[i] >= 3 && f1 == 0)
+		f1 = i * 3;
+		if(arr[i] >= 2 && f2 == 0)
+		f2 = i * 2;
+		if(f1 > 0 && f2 > 0)
+		break;
+	}
+	cout << sum - max(f1, f2);
+	return 0;
+}

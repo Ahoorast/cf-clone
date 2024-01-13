@@ -1,0 +1,29 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int maxn = 1e5 + 100;
+int main()
+{	
+	int arr[maxn], n, cnt = 0, ans = 0, a;
+	cin >> n;
+	for(int i = 0; i < maxn; i++)
+	arr[i] = -1;
+	for(int i = 0; i < n; i++)
+	{
+		cin >> a;
+		if(a == i)
+		ans++;
+		arr[a] = i;
+	}
+	for(int i = 0; i < n; i++)
+	{
+		if(i == arr[arr[i]] && i != arr[i])
+		cnt++;
+	}
+	if(ans == n)
+	cout << ans;
+	else  if(cnt == 0)
+	cout << ans + 1;
+	else
+	cout << ans + 2;
+	return 0;
+}

@@ -1,0 +1,48 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 100;
+int L[N], R[N], a[N], n;
+ 
+int upd(int ind, int x) {
+	if (!ind)
+		return 0;
+	if (a[ind] < x)
+		return ind;
+	return upd(L[ind], x);
+}
+ 
+int updd(int ind, int x) {
+	if (ind > n)
+		return n + 1;
+	if (a[ind] < x)
+		return ind;
+	return updd(R[ind], x);
+}
+ 
+int main() {
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 1; i <= n; i++)
+		cin >> a[i];
+	L[1] = 0;
+	for (int i = 2; i <= n; i++) 
+		L[i] = upd(i - 1, a[i]);
+	R[n] = n + 1;
+	for (int i = n - 1; i >= 1; i--) 
+		R[i] = updd(i + 1, a[i]);
+	vector<pair<int, int>> vec;
+	for (int i = 1; i <= n; i++)
+		vec.push_back({a[i], R[i] - L[i] - 1});
+	sort(vec.begin(), vec.end());
+	//for (auto it: vec)
+	//	cout << it.first << ' ' << it.second << endl;
+	int l = vec.size() - 1;
+	for (int i = 1; i <= n; i++) {
+		while (vec[l].second < i)
+			l--;
+		cout << vec[l].first << ' ';
+	}
+	cout << endl;
+	return 0;
+}

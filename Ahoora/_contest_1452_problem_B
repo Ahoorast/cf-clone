@@ -1,0 +1,24 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int n;
+		cin >> n;
+		vector<int> a(n);
+		for (auto &x: a)
+			cin >> x;
+		sort(a.begin(), a.end());
+		long long sum = 0;
+		for (int i = 0; i < n; i++)
+			sum += a[i];
+		if (sum >= 1LL * a[n - 1] * (n - 1))
+			cout << ((n - 1) - ((sum) % (n - 1))) % (n - 1) << '\n';
+		else 
+			cout << 1LL * a[n - 1] * (n - 1) - sum << '\n';
+	}
+	return 0;
+}

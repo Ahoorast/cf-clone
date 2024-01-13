@@ -1,0 +1,46 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10;
+int mx[N], sz[N], n;
+vector<int> adj[N];
+bool mark[N];
+char ans[N];
+ 
+void dfs(int root, int par = -1) {
+	sz[root] = mx[root] = 0;
+	for (auto u: adj[root])
+		if (u ^ par && !mark[u]) {
+			dfs(u, root);
+			if (sz[mx[root]] < sz[u])
+				mx[root] = u;
+			sz[root] += sz[u];
+		}
+	sz[root]++;
+}
+ 
+void LMAO(int root, int h = 0) {
+	dfs(root);
+	int v = root;
+	while (sz[mx[v]] * 2 > sz[root])
+		v = mx[v];
+	mark[v] = true, ans[v] = 'A' + h;
+	for (auto u: adj[v])
+		if (!mark[u])
+			LMAO(u, h + 1);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 1, v, u; i < n; i++) {
+		cin >> v >> u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+	LMAO(1);
+	for (int i = 1; i <= n; i++)
+		cout << ans[i] << ' ';
+	cout << '\n';
+	return 0;
+}

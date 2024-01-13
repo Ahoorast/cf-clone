@@ -1,0 +1,21 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int maxn = 1000 * 100 + 100;
+int socks[maxn];
+ 
+int main() {
+	int n, x, res = 0, tmp = 0;
+	cin >> n;
+	n *= 2;
+	while (n--) {
+		cin >> x;
+		if (socks[x] == 0)
+			socks[x]++, tmp++;
+		else
+			socks[x]++, tmp--;
+		res = max(res, tmp);
+	}
+	cout << res << endl;
+	return 0;
+}

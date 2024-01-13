@@ -1,0 +1,26 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int main() {
+	ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+	int a, b, ares = 0, k, carry = 0, x, res = 0, flag;
+	cin >> a >> b;
+	k = a;
+	while(k)
+		(ares < k % 10? ares = k % 10, k /= 10: k /= 10);
+	k = b;
+	while(k)
+		(ares < k % 10? ares = k % 10, k /= 10: k /= 10);
+	ares++;
+	flag = 1;
+	carry = 0;
+	while(flag != 0 || carry != 0 || a != 0 || b != 0) {
+		x = a % 10 + b % 10 + carry;
+		flag = x % ares;
+		carry = x / ares;
+		a /= 10, b /= 10;
+		res++;
+	}
+	cout << res - 1 << endl;
+	return 0;
+}

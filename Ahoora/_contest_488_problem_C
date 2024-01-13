@@ -1,0 +1,20 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int hp[2], at[2], def[2], a, b, c, ans = 1 << 30;
+	cin >> hp[0] >> at[0] >> def[0] >> hp[1] >> at[1] >> def[1] >> a >> b >> c;
+	for (int i = 0; i <= 1000; i++)
+		for (int j = 0; j <= 200; j++)
+			for (int k = 0; k <= 200; k++) {
+				int dy = max(at[0] + j - def[1], 0);
+				int dm = max(at[1] - def[0] - k, 0);
+				int x = (dm > 0? (hp[0] + i) / dm - ((hp[0] + i) % dm == 0): 1 << 29);
+				int y = (dy > 0? (hp[1]) / dy + (hp[1] % dy != 0): (1 << 30));
+				if (x >= y)
+					ans = min(ans, i * a + b * j + c * k);
+			}
+	cout << ans << endl;
+	return 0;
+}

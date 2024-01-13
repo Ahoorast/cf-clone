@@ -1,0 +1,36 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1010;
+int cnt[N], have[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int n;
+	cin >> n;
+	vector<pair<int, int>> a(n);
+	set<int> s;
+	for (auto &x: a)
+		cin >> x.first >> x.second, s.insert(x.first);
+	for (auto x: a) {
+		if (x.first != x.second)
+			s.erase(x.second);
+		else {
+			cnt[x.first]++;
+			if (cnt[x.first] > 1)
+				s.erase(x.second);
+		}
+	}
+	int ans = 0;
+	for (auto x: a) {
+		if (s.count(x.first)) {
+			if (cnt[x.first] == 1)
+				ans += !have[x.first];
+			else
+				ans++;
+			have[x.first]++;
+		}
+	}
+	cout << ans << '\n';
+	return 0;
+}

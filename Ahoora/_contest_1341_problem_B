@@ -1,0 +1,34 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10;
+int a[N], n, K;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> n >> K;
+		for (int i = 1; i <= n; i++)
+			cin >> a[i];
+		int l = 1, ans = -1, lans, t = 0;
+		for (int i = 2; i < K; i++)
+			if (a[i] > a[i - 1] && a[i] > a[i + 1])
+				t++;
+		ans = t, lans = 1;
+		a[0] = a[n + 1] = 1 << 30;
+		while (l + K - 1 <= n) {
+			l++;
+			if (a[l] > a[l - 1] && a[l] > a[l + 1])
+				t--;
+			int j = l + K - 2;
+			if (a[j] > a[j - 1] && a[j] > a[j + 1])
+				t++;
+			if (t + 1 > ans + 1)
+				ans = t, lans = l;
+		}
+		cout << ans + 1 << ' ' << lans << endl;
+	}
+	return 0;
+}

@@ -1,0 +1,30 @@
+/*
+ 
+ 
+*/
+#include <bits/stdc++.h>
+using namespace std;
+#define		debug(x)	cout << #x << '=' << x << endl
+#define		print(x, n)	for(int i = 0; i < n; i++) cout << x[i] << ' ';
+#define		pb			push_back
+#define		sep			' '
+const int maxn = 1e6 + 100;
+long long arr[maxn];
+vector <long long> t;
+int main()
+{
+	ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+	long long n, m, k = 0;
+	cin >> n >> m;
+	for(int i = 0; i < n; i++) cin >> arr[i];
+	sort(arr, arr + n);
+	long long i = 1;
+	while(m - i >= 0) {
+		if(arr[k] != i) m -= i, t.pb(i);
+		else k++;
+		i++;
+	}
+	cout << t.size() << endl;
+	for(i = 0; i < t.size(); i++) cout << t[i] << sep;
+	return 0;
+}

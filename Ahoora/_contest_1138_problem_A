@@ -1,0 +1,24 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int maxn = int(1e5) + 100;
+vector<int> v;
+int arr[maxn], n;
+ 
+int main() {
+	ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+	int n, res = 0;
+	cin >> n;
+	for (int i = 0; i < n; i++)
+		cin >> arr[i];
+	v.push_back(1);
+	for (int i = 1; i < n; i++)
+		if (arr[i] == arr[i - 1])
+			v[v.size() - 1]++;
+		else
+			v.push_back(1);
+	for (int i = 1; i < v.size(); i++) 
+		res = max(res, min(v[i], v[i - 1]) * 2);
+	cout << res << endl;
+	return 0;
+}

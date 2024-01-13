@@ -1,0 +1,85 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+struct DP {
+	map<int, long long> dp;
+	multiset<long long> s;
+	long long lazy;
+	long long get_min() {
+		if (s.empty())
+			return 1LL << 60;
+		long long x = *s.begin();
+		x += lazy;
+		return x;
+	}
+	void set(int x, long long y) {
+		if (dp.count(x))
+			s.erase(s.find(dp[x]));
+		s.insert(dp[x] = y);
+	}
+	void add(int y, int v) {
+		long long x = get_min();
+		lazy += v;
+		set(y, x - lazy);
+	}
+	int size() {
+		return (int)(s.size());
+	}
+	void add(DP &x) {
+		if (size() < x.size()) {
+			x.add(*this);
+			swap(*this, x);
+		}
+		for (auto it: x.dp)
+			set(it.first, min(it.second + x.lazy - lazy, (dp.count(it.first)? dp[it.first]: 1LL << 60)));
+	}
+};
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q, s;
+	cin >> Q >> s;
+	vector<DP> all;
+	vector<int> p;
+	DP x;
+	x.lazy = 0;
+	x.set(0, 0);
+	all.push_back(x);
+	while (Q--) {
+		string q;
+		cin >> q;
+		if (q == "if") {
+			int x;
+			cin >> x;
+			p.push_back(x);
+			DP nxt;
+			nxt.lazy = 0;
+			if (all.back().dp.count(x))
+				nxt.set(x, all.back().dp[x] + all.back().lazy);
+			else
+				nxt.set(x, 1LL << 60);
+			all.push_back(nxt);
+		} else if (q == "end") {
+			int x = p.back();
+			p.pop_back();
+			long long val = all.back().dp[x] + all.back().lazy;
+			int sz = (int)(all.size());
+			all[sz - 2].add(all[sz - 1]);
+			all.pop_back();
+			all.back().set(x, val - all.back().lazy);
+		} else {
+			int y, v;
+			cin >> y >> v;
+			if (y != s)
+				all.back().add(y, v);
+			else  
+				all.back().lazy += v;
+		}
+	}
+	long long ans = 1LL << 60;
+	for (auto it: all.back().dp)
+		if (it.first != s)
+			ans = min(ans, it.second + all.back().lazy);
+	cout << ans << '\n';
+	return 0;
+}

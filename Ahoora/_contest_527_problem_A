@@ -1,0 +1,22 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int maxn = 200;
+int arr[maxn], b[maxn];
+ 
+int main() {
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	unsigned long long n, a, b, res = 0;
+	cin >> a >> b;
+	if (a < b)
+		swap(a, b);
+	while (a && b) {
+		long long tmp = a / b;
+		a -= tmp * b;
+		res += tmp;
+		if (a < b)
+			swap(a, b);
+	}
+	cout << res << endl;
+	return 0;
+}

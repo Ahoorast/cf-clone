@@ -1,0 +1,41 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 100;
+vector<pair<int, int>> adj[N];
+int n, dp[N];
+bool mark[N];
+ 
+void read() {
+	cin >> n;
+	int v, u, t;
+	for (int i = 1; i < n; i++) {
+		cin >> v >> u >> t;
+		adj[v].push_back({u, t});
+		adj[u].push_back({v, t});
+	}
+}
+ 
+void dfs(int v, bool type) {
+	mark[v] = true;
+	for (auto u: adj[v])
+		if (!mark[u.first]) {
+			dfs(u.first, type);
+			if (!type)
+				dp[v] += dp[u.first] + (u.second == 2 && dp[u.first] == 0);
+			else if (dp[u.first] == 0 && u.second == 2 && type)
+				cout << u.first << ' ';
+		}
+}
+ 
+int main() {
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	read();
+	dfs(1, 0);
+	cout << dp[1] << endl;
+	for (int i = 0; i < N; i++)
+		mark[i] = false;
+	dfs(1, 1);
+	cout << endl;
+	return 0;
+}

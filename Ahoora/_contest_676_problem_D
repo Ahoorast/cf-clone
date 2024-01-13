@@ -1,0 +1,86 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1010;
+int n, m, sx, sy, tx, ty;
+int dist[N * N * 4];
+bool vis[N * N * 4];
+int dx[4] = {0, 0, -1, +1}, dy[4] = {-1, +1, 0, 0};
+ 
+struct Node {
+	bool c[4] = {0};
+	int x, y, trn;
+	void rot() {
+		bool bf[4] = {0};
+		for (int i = 0; i < 4; i++)
+			bf[i] = c[i];
+		trn++, trn %= 4;
+		c[0] = bf[3];
+		c[3] = bf[1];
+		c[1] = bf[2];
+		c[2] = bf[0];
+	}
+	void init(char C, int i, int j, int k) {
+	 	c[0] = (C == '+' || C == '-' || C == '<' || C == 'R' || C == 'D' || C == 'U'); // left
+		c[1] = (C == '+' || C == '-' || C == '>' || C == 'L' || C == 'D' || C == 'U'); // right
+		c[2] = (C == '+' || C == '|' || C == '^' || C == 'D' || C == 'L' || C == 'R'); // up
+		c[3] = (C == '+' || C == '|' || C == 'v' || C == 'U' || C == 'L' || C == 'R'); // down
+		x = i, y = j, trn  = k;
+	}
+} v[N * N * 4];
+ 
+int id(int x, int y, int k) {
+	return k * n * m + x * m + y;
+}
+ 
+bool vld(int x, int y) {
+	return x >= 0 && y >= 0 && x < n && y < m;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m;
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < m; j++) {
+			char c;
+			cin >> c;
+			for (int k = 0; k < 4; k++) {
+				v[id(i, j, k)].init(c, i, j, 0);
+				for (int x = 0; x < k; x++)
+					v[id(i, j, k)].rot();
+			}
+		}
+	fill(dist, dist + N * N * 4, 1 << 30);
+	cin >> sx >> sy >> tx >> ty;
+	sx--, sy--, tx--, ty--;
+	queue<int> q;
+	q.push(id(sx, sy, 0)), vis[id(sx, sy, 0)] = true, dist[id(sx, sy, 0)] = 0;
+	while (q.size()) {
+		int idd = q.front();
+		q.pop();
+		int d = dist[idd];
+		int x = v[idd].x, y = v[idd].y, t = v[idd].trn;
+		for (int i = 0; i < 4; i++) {
+			int nx = x + dx[i], ny = y + dy[i];
+			int you = (i % 2 == 0? i + 1: i - 1);
+			if (vld(nx, ny) && v[idd].c[i] && v[id(nx, ny, t)].c[you] && !vis[id(nx, ny, t)]) {
+				int nxt = id(nx, ny, t);
+				q.push(nxt), vis[nxt] = true, dist[nxt] = d + 1;
+			}
+		}
+		t++;
+		t %= 4;
+		int nxt = id(x, y, t);
+		if (!vis[nxt]) {
+			vis[nxt] = true;
+			q.push(nxt);
+			dist[nxt] = d + 1;
+		}
+	}
+	int ans = 1 << 30;
+	for (int i = 0; i < 4; i++)
+		if (vis[id(tx, ty, i)])
+			ans = min(ans, dist[id(tx, ty, i)]);
+	cout << (ans < 1 << 30? ans: -1) << '\n';
+	return 0;
+}

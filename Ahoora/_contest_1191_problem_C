@@ -1,0 +1,35 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int maxn = 1e5 + 100;
+unsigned long long n, m, s[maxn], k, lim, ans = 0;
+void solve()
+{
+	lim = k;
+	long long cnt = 0, i = 0;
+	while(i < m) {
+		if(s[i] <= lim) cnt++, i++;
+		else {
+			if(cnt != 0) {
+				lim += cnt; 
+				ans++;
+			}
+			else {
+				long long x = (s[i] - lim) / k;
+				if((s[i] - lim) % k != 0) x++;
+				lim += x * k;
+			//	ans += x; 
+			}
+			cnt = 0;
+		}	
+	//	cout << lim << endl;
+		if(i == m) ans++;
+	}
+}
+int main()
+{
+	cin >> n >> m >> k;
+	for(int i = 0; i < m; i++) cin >> s[i];
+	solve();
+	cout << ans;
+	return 0;
+}

@@ -1,0 +1,18 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+string s;
+ 
+int main()
+{
+	ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);	
+	cout << setprecision(8) << fixed;
+	long double n, m, a, b, res = 10000;
+	cin >> n >> m;
+	while (n--) {
+		cin >> a >> b;
+		res = min(res, a / b * m);
+	}
+	cout << res;
+	return 0;
+}

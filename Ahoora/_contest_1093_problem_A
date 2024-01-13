@@ -1,0 +1,22 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+	int n, a, ans = 0;
+	cin >> n;
+	for(int i = 0; i < n; i++)
+	{
+		cin >> a;
+		for(int j = 2; j <= 7; j++)
+		if(a % j != 1)
+		{
+			ans = 0;
+			ans = a / j;
+			if(a % j != 0)
+			ans++;
+			break;
+		}
+		cout << ans << endl;
+	}
+	return 0;
+}

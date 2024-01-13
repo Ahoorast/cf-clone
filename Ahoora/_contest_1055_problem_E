@@ -1,0 +1,52 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1510;
+int n, s, K, m, dp[N][N], a[N], l[N], r[N], w[N];
+pair<int, int> t[N];
+vector<int> L[N], vec[N];
+ 
+bool check(int v) {
+	l[0] = n + 1;
+	for (int i = 0; i <= n; i++) 
+		for (int j = 0; j <= m; j++)
+			dp[i][j] = 0;
+	for (int i = 1; i <= s; i++)
+		w[i] = 0;
+	for (int i = 1; i <= n; i++) {
+		if (a[i] <= v)
+			for (auto x: vec[i]) 
+				w[x]++;
+		int mn = 0;
+		for (auto x: vec[i])
+			if (l[mn] > l[x])
+				mn = x;
+		for (int j = 1; j <= m; j++)
+			dp[i][j] = max({dp[i][j - 1], dp[i - 1][j], (mn? w[mn] + dp[l[mn] - 1][j - 1]: 0)});
+	}
+	return dp[n][m] >= K;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> s >> m >> K;
+	for (int i = 1; i <= n; i++)
+		cin >> a[i], t[i].first = a[i], t[i].second = i;
+	sort(t + 1, t + n + 1);
+	t[n + 1].first = 1 << 30, t[n + 1].second = n + 1, a[n + 1] = 1 << 30;
+	for (int i = 1; i <= s; i++) {
+		cin >> l[i] >> r[i];
+		for (int j = l[i]; j <= r[i]; j++)
+			vec[j].push_back(i);
+	}
+	int l = 1, r = n + 1;
+	while (l < r) {
+		int mid = l + r >> 1;
+		if (check(t[mid].first)) 
+			r = mid;
+		else
+			l = mid + 1;
+	}
+	cout << (r <= n? t[r].first: -1) << endl;
+	return 0;
+}

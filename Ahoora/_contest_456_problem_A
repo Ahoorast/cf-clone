@@ -1,0 +1,27 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int maxn = 1e5 + 100;
+int p[maxn], q[maxn], arr[maxn];
+int main()
+{
+	int n, pr, cnt = 0, last, flag = 0;
+	cin >> n;
+	for(int i = 0; i < n; i++) {
+		cin >> pr >> q[i];
+		p[pr - 1]++;
+		arr[pr - 1] = i;
+	}	
+	for(int i = 0; i < maxn; i++) {
+		if(flag > 0 && p[i] > 0) {
+			if(last > q[arr[i]]) cnt++;
+			last = q[arr[i]];
+		}
+		if(p[i] > 0 && flag == 0) {
+			last = q[arr[i]];
+			flag++;
+		}
+	}	
+	if(cnt == 0) cout << "Poor Alex";
+	else cout << "Happy Alex";
+	return 0;
+}

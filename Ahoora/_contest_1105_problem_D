@@ -1,0 +1,62 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1010;
+int n, m, p, sz[N], dx[4] = {0, 0, 1, -1}, dy[4] = {1, -1, 0, 0}, d[N][N], s[12], lim[12];
+char c[N][N];
+bool vis[N][N];
+queue<pair<int, int>> q[12];
+ 
+bool vld(int x, int y) {
+	return x >= 1 && y >= 1 && x <= n && y <= m && c[x][y] == '.' && !vis[x][y];
+}
+ 
+bool bfs(int c) {
+	queue<pair<int, int>> nxt;
+	lim[c] += s[c];
+	while (q[c].size()) {
+		pair<int, int> t = q[c].front();
+		q[c].pop();
+		int x = t.first, y = t.second;
+		for (int i = 0; i < 4; i++) {
+			int nx = x + dx[i], ny = y + dy[i];
+			if (vld(nx, ny) && d[x][y] + 1 <= lim[c]) {
+				q[c].push({nx, ny}), vis[nx][ny] = true, sz[c]++;
+				d[nx][ny] = d[x][y] + 1;
+				if (d[nx][ny] == lim[c])
+					nxt.push({nx, ny});
+			}
+		}
+	}
+	while (nxt.size()) {
+		pair<int, int> t = nxt.front();
+		q[c].push(t);
+		nxt.pop();
+	}
+	return !q[c].empty();
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m >> p;
+	for (int i = 1; i <= p; i++)
+		cin >> s[i];
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= m; j++) {
+			cin >> c[i][j];
+			if (c[i][j] >= '0' && c[i][j] <= '9')
+				q[c[i][j] - '0'].push({i, j}), vis[i][j] = true, sz[c[i][j] - '0']++;
+		}
+	int x = 0;
+	bool flag = true;
+	while (flag) {
+		bool lol = false;
+		for (int i = 1; i <= p; i++)
+			lol |= bfs(i);
+		flag &= lol;
+	}
+	for (int i = 1; i <= p; i++)
+		cout << sz[i] << ' ';
+	cout << '\n';
+	return 0;
+}

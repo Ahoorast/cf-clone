@@ -1,0 +1,27 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+long long a[3], inp, t[3];
+ 
+int main() { 
+	cin >> a[0] >> a[1] >> a[2];
+	inp = 1;
+	cout << "First" << endl, cout.flush();
+	bool flag = false;
+	while (inp > 0) {
+		t[0] = a[0], t[1] = a[1], t[2] = a[2];
+		sort(t, t + 3);
+		long long d1 = t[1] - t[0], d2 = t[2] - t[1];
+		long long y = d1 + d2 + d2;
+		if (d1 == d2 && flag)
+			y = d1;
+		cout << y << endl, cout.flush();
+		cin >> inp;
+		if (inp) {
+			a[inp - 1] += y;
+			if (a[inp - 1] = max({a[0], a[1], a[2]}))
+				flag = true;
+		}
+	}
+	return 0;
+}

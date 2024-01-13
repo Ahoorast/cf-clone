@@ -1,0 +1,29 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int n;
+vector<pair<int, int>> ans;
+ 
+void solve(int l, int r) {
+	if (l + 1 == r) 
+		return;
+	int mid = l + r >> 1;
+	solve(l, mid), solve(mid, r);
+	for (int i = l; i < mid; i++)
+		ans.push_back({i, mid + i - l});
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	int k = 0;
+	while ((1 << k) <= n)
+		k++;
+	k--;
+	solve(0, 1 << k);
+	solve(n - (1 << k), n);
+	cout << (int)(ans.size()) << '\n';
+	for (auto it: ans)
+		cout << it.first + 1 << ' ' << it.second + 1 << '\n';
+	return 0;
+}

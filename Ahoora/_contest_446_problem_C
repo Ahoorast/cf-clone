@@ -1,0 +1,76 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 3 * 1000 * 100 + 10, SQ = 525, mod = 1LL * 1000 * 1000 * 1000 + 9;
+int n, Q, a[N], sum[N], lazy1[N], lazy2[N], f[N], ps[N];
+ 
+int add(int x, int y) {
+	x += y;
+	if (x >= mod)
+		x -= mod;
+	return x;
+}
+ 
+int get_sum(int l, int r) {
+	int res = ps[r] - ps[l];
+	while (res < 0)
+		res += mod;
+	return res;
+}
+ 
+int get(int f1, int f2, int shift) {
+	if (shift == 0)
+		return f1;
+	if (shift == 1)
+		return f2;
+	int res = 0;
+	res = add(res, 1LL * f[shift - 1] * f1 % mod);
+	res = add(res, 1LL * f[shift] * f2 % mod);
+	return res;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	scanf("%d%d", &n, &Q);
+	for (int i = 0; i < n; i++)
+		scanf("%d", &a[i]), sum[i / SQ] = add(sum[i / SQ], a[i]);
+	f[1] = f[2] = 1;
+	for (int i = 3; i < N; i++)
+		f[i] = add(f[i - 1], f[i - 2]);
+	for (int i = 1; i < N; i++)
+		ps[i] = add(ps[i - 1], f[i]);
+	while (Q--) {
+		int t, l, r;
+		scanf("%d%d%d", &t, &l, &r);
+		--l;
+		if (t == 1) {
+			int s = l;
+			while (l < r) {
+				if (l % SQ != 0 || l + SQ >= r) {
+					a[l] = add(a[l], f[l - s + 1]);
+					sum[l / SQ] = add(sum[l / SQ], f[l - s + 1]);
+					l++;
+				} else {
+					lazy1[l / SQ] = add(lazy1[l / SQ], f[l - s + 1]);
+					lazy2[l / SQ] = add(lazy2[l / SQ], f[l - s + 2]);
+					sum[l / SQ] = add(sum[l / SQ], get_sum(l - s, l + SQ - s));
+					l += SQ;
+				}
+			}
+		} else {
+			int s = 0;
+			while (l < r) {
+				if (l % SQ != 0 || l + SQ >= r) {
+					s = add(s, a[l]);
+					s = add(s, get(lazy1[l / SQ], lazy2[l / SQ], l % SQ));
+					l++;
+				} else {
+					s = add(s, sum[l / SQ]);
+					l += SQ;
+				}
+			}
+			printf("%d\n", s);
+		}
+	}
+	return 0;
+}

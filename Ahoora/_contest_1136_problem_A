@@ -1,0 +1,25 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int maxn = 1e5;
+int main()
+{
+	int n, l, r, arr[maxn], k, carry = 0;
+	for(int i = 0; i < maxn; i++)
+	arr[i] = 0;
+	cin >> n;
+	for(int i = 0; i < n; i++)
+	{
+		cin >> l >> r;
+		for(int j = l; j <= r; j++)
+		{
+			arr[j] = i + 1;
+			carry = r;
+		}
+	}
+	cin >> k;
+	int ans = n - arr[k - 1];
+	if(arr[k - 1] == arr[k])
+	ans++;
+	cout << ans;
+	return 0;
+}

@@ -1,0 +1,58 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const long long N = 100 * 1000 + 1000;
+long long n, a[N], k = 0, A[N];
+bool b[12];
+ 
+void build() {
+	long long tmp = 0, p = 1;
+	while (tmp < 10000) {
+		tmp += p;
+		a[k] = tmp;
+		k++;
+		p *= 3;
+	}
+	A[0] = 1;
+	for (int i = 1; i <= 10; i++)
+		A[i] = A[i - 1] * 3;
+	
+}
+ 
+void nxt() {
+	for (long long i = 0; i < 10; i++)
+		if (b[i] == 0) {
+			b[i] = 1;
+			break;
+		}
+		else
+			b[i] = 0;
+}
+ 
+int main() {
+	ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+	long long Q;
+	cin >> Q;
+	build();
+	while (Q--) {
+		cin >> n;
+		long long ind = -1, res = 0;
+		for (int i = 0; i < k && ind == -1; i++)
+			if (a[i] >= n)
+				res = a[i], ind = i;
+		long long k1 = res;
+		for (int i = 0; i < 2047; i++) {
+			long long tmp2 = k1;
+			for (int j = 0; j < 10; j++) 
+				if (b[j] == 1)
+					tmp2 -= A[j];
+			if (tmp2 > 0 && tmp2 >= n && tmp2 < res)
+				res = tmp2;
+			nxt();
+		}
+		cout << res << endl;
+		for (long long i = 0; i < k; i++)
+			b[i] = 0;
+	}
+	return 0;
+}

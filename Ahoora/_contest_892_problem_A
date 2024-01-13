@@ -1,0 +1,20 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int maxn = 100 * 1000 + 100;
+long long b[maxn];
+ 
+int main() {
+	unsigned long long sum = 0;
+	long long a, n;
+	cin >> n;
+	for (int i = 0; i < n; i++)
+		cin >> a, sum += a;
+	for (int i = 0; i < n; i++)
+		cin >> b[i];
+	sort(b, b + n);
+	if (b[n - 1] + b[n - 2] >= sum)
+		return cout << "YES", 0;
+	cout << "NO";
+	return 0;
+}

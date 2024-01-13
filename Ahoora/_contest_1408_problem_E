@@ -1,0 +1,48 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 100;
+int par[N], sz[N], m, n, a[N], b[N], s[N];
+ 
+int get_par(int v) {
+	return par[v] == v? v: par[v] = get_par(par[v]);
+}
+ 
+bool Union(int v, int u) {
+	v = get_par(v), u = get_par(u);
+	if (v == u)
+		return false;
+	if (sz[u] > sz[v])
+		swap(v, u);
+	sz[v] += sz[u], par[u] = v;
+	return true;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> m >> n;
+	for (int i = 1; i <= m; i++)
+		cin >> a[i];
+	for (int i = 1; i <= n; i++)
+		cin >> b[i];
+	long long sum = 0, ans = 0;
+	vector<pair<int, int>> E;
+	for (int i = 1; i <= m; i++) {
+		cin >> s[i];
+		for (int j = 1, x; j <= s[i]; j++) {
+			cin >> x;
+			E.push_back({x, n + i});
+			sum += b[x] + a[i];
+		}
+	}
+	sort(E.begin(), E.end(), [](pair<int, int> x, pair<int, int> y) {
+			return b[x.first] + a[x.second - n] > b[y.first] + a[y.second - n];
+			});
+	for (int i = 0; i <= n + m; i++)
+		par[i] = i, sz[i] = 1;
+	for (auto e: E)
+		if (Union(e.first, e.second)) 
+			ans += b[e.first] + a[e.second - n];
+	cout << sum - ans << '\n';
+	return 0;
+}

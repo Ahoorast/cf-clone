@@ -1,0 +1,46 @@
+/*
+ 
+ 
+*/
+#include <bits/stdc++.h>
+using namespace std;
+#define		debug(x)	cout << #x << '=' << x << endl
+#define		print(x, n)	for(int i = 0; i < n; i++) cout << x[i] << ' ';
+#define		pb			push_back
+#define		sep			' '
+const int maxn = 2e5 + 100;
+string s[5];
+long long n, vsize[5];
+vector<vector<long long> > v;
+vector<long long> nc;
+void read()
+{
+	cin >> n >> s[0] >> s[1];
+}
+void solve()
+{
+	int res = 0;
+	v.pb(nc), v.pb(nc);
+	for(int i = 0; i < n; i++) if(s[0][i] != s[1][i]) v[s[0][i] - 'a'].pb(i + 1);
+	for(int i = 0; i < 2; i++) if(v[i].size() % 2 == 0) res++;
+	if(res == 1) cout << "-1" << endl;
+	else if(res == 2) {
+		cout << (v[0].size() + v[1].size()) / 2 << endl;
+		for(int i = 0; i < 2; i++)
+			for(int j = 0; j + 1 < v[i].size(); j += 2) cout << v[i][j] << sep << v[i][j + 1] << endl;
+	}
+	else {
+		int cnt = 0, point = 0;
+		cout << (v[0].size() + v[1].size()) / 2 + 1 << endl << v[0][0] << sep << v[0][0] << endl, v[1].insert(v[1].begin(), v[0][0]);
+		for(int i = 1; i + 1 < v[0].size(); i += 2) cout << v[0][i] << sep << v[0][i + 1] << endl;
+		for(int i = 0; i + 1 < v[1].size(); i += 2) cout << v[1][i] << sep << v[1][i + 1] << endl;
+	}
+}
+int main()
+{
+	ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+	read();
+	solve();
+	return 0;
+}
+ 

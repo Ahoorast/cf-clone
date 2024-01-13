@@ -1,0 +1,16 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+	int x, y, a[10], b[10], ans1 = 0, ans2 = 0, ans3 = 0;
+	cin >> x >> y;
+	for(int i = 1; i <= 6; i++)
+	if(abs(x - i) > abs(y - i))
+	ans1++;
+	else if(abs(x - i) == abs(y - i))
+	ans2++;
+	else if(abs(y - i) > abs(x - i))
+	ans3++;
+	cout << ans3 << " " << ans2 << " " << ans1;
+	return 0;
+}

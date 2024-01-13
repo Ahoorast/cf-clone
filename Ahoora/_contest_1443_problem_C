@@ -1,0 +1,28 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10;
+int n;
+pair<int, int> p[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> n;
+		for (int i = 0; i < n; i++)
+			cin >> p[i].first;
+		long long sum = 0;
+		for (int i = 0; i < n; i++)
+			cin >> p[i].second, sum += p[i].second;
+		sort(p, p + n);
+		long long ans = sum;
+		for (int i = 0; i < n; i++) {
+			sum -= p[i].second;
+			ans = min(ans, max(sum, 1LL * p[i].first));
+		}
+		cout << ans << '\n';
+	}
+	return 0;
+}

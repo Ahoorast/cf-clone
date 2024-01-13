@@ -1,0 +1,76 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10, MXHSH = 531440 + 100, P = 27;
+int n, m, k, mx[N], mt[N], cnt[N];
+bool vis[N];
+unordered_map<int, int> ind[MXHSH];
+vector<int> adj[N], jda[N], L;
+ 
+void dfs(int v) {
+	vis[v] = true;
+	for (auto u: adj[v])
+		if (!vis[u])
+			dfs(u);
+	L.push_back(v);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m >> k;
+	for (int i = 0; i < n; i++) {
+		string s;
+		cin >> s;
+		int msk = 0, hsh = 0;
+		for (int j = 0; j < k; j++)
+			if (s[j] != '_') {
+				msk ^= 1 << j;
+				hsh = (s[j] - 'a' + 1) + hsh * P;
+			}
+		ind[hsh][msk] = i;
+	}
+	for (int i = 0; i < m; i++) {
+		string s;
+		cin >> s >> mt[i];
+		mt[i]--;
+		vector<int> vec;
+		for (int msk = 0; msk < 1 << k; msk++) {
+			int hsh = 0;
+			for (int j = 0; j < k; j++) 
+				if (msk >> j & 1)
+					hsh = (s[j] - 'a' + 1) + hsh * P;
+			if (ind[hsh].count(msk)) {
+				int u = ind[hsh][msk];
+				vec.push_back(u);
+			}
+		}
+		bool flag = false;
+		for (auto x: vec)
+			flag |= (x == mt[i]);
+		if (!flag)
+			return cout << "NO\n", 0;
+		for (auto x: vec)
+			if (x != mt[i]) {
+				adj[mt[i]].push_back(x);
+				jda[x].push_back(mt[i]);
+			}
+	}
+	for (int i = 0; i < n; i++)
+		if (!vis[i])
+			dfs(i);
+	reverse(L.begin(), L.end());
+	vector<int> pos(n);
+	for (int i = 0; i < n; i++)
+		pos[L[i]] = i;
+	for (int i = 0; i < n; i++) {
+		int v = L[i];
+		for (auto u: adj[v])
+			if (pos[u] < pos[v])
+				return cout << "NO\n", 0;
+	}
+	cout << "YES\n";
+	for (auto x: L)
+		cout << x + 1 << ' ';
+	cout << '\n';
+	return 0;
+}

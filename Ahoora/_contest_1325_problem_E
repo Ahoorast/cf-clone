@@ -1,0 +1,82 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 1000 + 10;
+int d[N], n, col[N], cnt, deep[N], par[N], res[N];
+vector<int> adj[N];
+bool mark[N], vis[N];
+ 
+int cycle(int root) {
+	vector<int> vec;
+	queue<int> q;
+	q.push(root), deep[root] = 0, vis[root] = true, vec.push_back(root);
+	while (q.size()) {
+		int x = q.front();
+		q.pop();
+		for (auto u: adj[x]) 
+			if (!vis[u]) 
+				deep[u] = deep[x] + 1, vis[u] = true, par[u] = x, q.push(u), vec.push_back(u);
+			else if (u != par[x]) {
+				int res = deep[u] + deep[x] + 1;
+				for (auto it: vec)
+					vis[it] = false, deep[it] = -2, par[it] = -1;
+				return res;
+			}
+	}
+	for (auto it: vec)
+		vis[it] = false, deep[it] = -2, par[it] = -1;
+	return n + 10;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	set<int> s;
+	for (int i = 1, a; i <= n; i++) {
+		int x[2] = {1, 1}, cnt = 0;
+		cin >> a;
+		for (int j = 2; j * j <= a; j++)
+			if (a % j == 0) {
+				int td = 0;
+				while (a % j == 0)
+					a /= j, td++;
+				if (td & 1)
+					x[cnt] = j, cnt++;
+			}
+		if (a > 1)
+			x[cnt] = a, cnt++;
+		a = x[0] * x[1];
+		if (a == 1)
+			return cout << "1\n", 0;
+		if (cnt == 1)
+			mark[a] = true;
+		else
+			adj[x[0]].push_back(x[1]), adj[x[1]].push_back(x[0]);
+		s.insert(x[0] * x[1]);
+	}
+	if (s.size() != n)
+		return cout << "2\n", 0;
+	for (int i = 1; i < N; i++)
+		d[i] = res[i] = 1 << 29;
+	int ans = n + 10;
+	for (int i = 1; i < N; i++)
+		if (mark[i]) {
+			cnt++;
+			queue<int> q;
+			q.push(i), d[i] = 0;
+			while (q.size()) {
+				int x = q.front();
+				q.pop();
+				for (auto u: adj[x]) 
+					if (d[x] + 1 < d[u]) {
+						q.push(u), d[u] = d[x] + 1;
+						if (mark[u])
+							ans = min(ans, d[u] + 2);
+					}
+			}
+		}
+	for (int i = 1; i * i < N; i++) 
+		ans = min(ans, cycle(i));
+	cout << (ans <= n? ans: -1) << '\n';
+	return 0;
+}

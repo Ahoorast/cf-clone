@@ -1,0 +1,13 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+	string s;
+	long long arr[10], ans = 0;
+	cin >> arr[1] >> arr[2] >> arr[3] >> arr[4] >> s;
+	int sz = s.size();
+	for(int i = 0; i < sz; i++)
+	ans += arr[s[i] - '0'];
+	cout << ans;
+	return 0;
+}

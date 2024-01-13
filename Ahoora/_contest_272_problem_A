@@ -1,0 +1,19 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int maxn = 200;
+int arr[maxn], b[maxn];
+ 
+int main() {
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int n, s = 0, a;
+	cin >> n;
+	for (int i = 0; i < n; i++)
+		cin >> a, s += a;
+	int res = 0;
+	for (int i = 1; i <= 5; i++)
+		if ((s + i) % (n + 1) != 1)
+			res++;
+	cout << res << endl;
+	return 0;
+}

@@ -1,0 +1,20 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int maxn = 1e5 + 100;
+int main()
+{
+	int n, m, arr[maxn], ans = 0;
+	cin >> n >> m;
+	for(int i = 0; i < n; i++)
+	cin >> arr[i];
+	sort(arr, arr + n);
+	for(int i = n; i >= 0; i--)
+	{
+		if(m <= 0)
+		break;
+		m -= arr[i];
+		ans++;
+	}
+	cout << ans - 1;
+	return 0;
+}

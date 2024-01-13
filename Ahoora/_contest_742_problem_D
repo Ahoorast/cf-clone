@@ -1,0 +1,53 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1010;
+int n, m, W, w[N], b[N], dp[N][N], sz;
+bool vis[N];
+vector<int> adj[N];
+vector<pair<int, int>> vec[N];
+ 
+void read() {
+	cin >> n >> m >> W;
+	for (int i = 1; i <= n; i++)
+		cin >> w[i];
+	for (int i = 1; i <= n; i++)
+		cin >> b[i];
+	for (int i = 1, v, u; i <= m; i++) {
+		cin >> v >> u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+}
+ 
+pair<int, int> dfs(int root) {
+	vis[root] = true;
+	vec[sz].push_back({w[root], b[root]});
+	pair<int, int> res = {w[root], b[root]};
+	for (auto u: adj[root])
+		if (!vis[u])  {
+			pair<int, int> t = dfs(u);
+			res.first += t.first, res.second += t.second;
+		}
+	return res;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	read();
+	for (int i = 1; i <= n; i++)
+		if (!vis[i]) {
+			sz++;
+			pair<int, int> t = dfs(i);
+			vec[sz].push_back(t);
+		}
+	for (int i = 1; i <= sz; i++) 
+		for (int j = 1; j <= W; j++) {
+			dp[i][j] = dp[i - 1][j];
+			for (auto it: vec[i]) 
+				if (j - it.first >= 0)
+					dp[i][j] = max(dp[i][j], dp[i - 1][j - it.first] + it.second);
+		}
+	cout << dp[sz][W] << endl;
+	return 0;
+}
