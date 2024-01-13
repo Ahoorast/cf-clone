@@ -54,7 +54,7 @@ async function getAccepted() {
         let url = getLink(subs[i]);
         await new Promise(resolve => setTimeout(resolve, 1000));
         clickSub(subs[i]);
-        await new Promise(resolve => setTimeout(resolve, 7000));
+        await new Promise(resolve => setTimeout(resolve, 5000));
         let solution = getSolution();
         solutionToServer(url, solution);
         console.log(url);
