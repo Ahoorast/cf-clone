@@ -1,0 +1,34 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int maxn = int(1e5) + 100;
+int arr[maxn];
+vector<int> p;
+ 
+void build() {
+	for (int i = 1; i < maxn; i++)
+		for (int j = i; j < maxn; j += i)
+			arr[j]++;
+	for (int i = 1; i < maxn; i++)
+		if (arr[i] == 2)
+			p.push_back(i);
+}
+ 
+bool cal(int x) {
+	int cnt = 0;
+	for (int i = 0; i < p.size(); i++)
+		if (x % p[i] == 0)
+			cnt++;
+	return cnt == 2;
+}
+ 
+int main() {
+	ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+	build();
+	int n, res = 0;
+	cin >> n;
+	for (int i = 2; i <= n; i++)
+		res += cal(i);
+	cout << res << endl;
+	return 0;
+}

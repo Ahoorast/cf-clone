@@ -1,0 +1,137 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2000 * 100 + 10;
+const long long INF = 1LL * 20000000000000 * N * 2LL;
+int n, from[N], to[N], st[N], en[N], TM;
+long long we[N], h[N];
+vector<int> adj[N], L;
+ 
+void path(int v, int par = -1) {
+	st[v] = TM++;
+	L.push_back(v);
+	for (auto i: adj[v]) {
+		int u = from[i] + to[i] - v;
+		if (u != par) {
+			h[u] = h[v] + we[i];
+			path(u, v);
+			L.push_back(v);
+		}
+	}
+	en[v] = TM++;
+}
+ 
+struct Node {
+	long long dp[4][4], lazy;
+	Node() {
+		lazy = 0;
+		for (int i = 0; i < 4; i++)
+			for (int j = 0; j < 4; j++) {
+				dp[i][j] = 0;
+				if (i <= 1 && j > 1)
+					dp[i][j] = -INF;
+			}
+	}
+	void init(long long x) {
+		for (int i = 0; i < 4; i++)
+			for (int j = i + 1; j < 4; j++) {
+				dp[i][j] = x * (j - i);
+				if (i <= 1 && j > 1)
+					dp[i][j] -= 3LL * x;
+			}
+	}
+	Node operator + (Node R) {
+		Node res;
+		for (int i = 0; i < 4; i++)
+			for (int j = i + 1; j < 4; j++)
+				for (int k = i; k <= j; k++)
+					res.dp[i][j] = max(res.dp[i][j], dp[i][k] + R.dp[k][j]);
+		return res;
+	}
+	void add(long long x) {
+		lazy += x;
+		for (int i = 0; i < 4; i++)
+			for (int j = i + 1; j < 4; j++) {
+				dp[i][j] += x * (j - i);
+				if (i <= 1 && j > 1)
+					dp[i][j] -= x * 3LL;
+			}
+	}
+} seg[N << 4];
+ 
+void shift(int id) {
+	seg[id << 1].add(seg[id].lazy), seg[id << 1 | 1].add(seg[id].lazy);
+	seg[id].lazy = 0;
+}
+ 
+void build(int l = 0, int r = 2 * n - 1, int id = 1) {
+	if (l + 1 == r) {
+		seg[id].init(h[L[l]]);
+		return;
+	}
+	int mid = l + r >> 1;
+	build(l, mid, id << 1), build(mid, r, id << 1 | 1);
+	seg[id] = seg[id << 1] + seg[id << 1 | 1];
+}
+ 
+void upd(int s, int e, long long x, int l = 0, int r = 2 * n - 1, int id = 1) {
+	if (s <= l && e >= r) {
+		seg[id].add(x);
+		return;
+	}
+	if (s >= r || e <= l)
+		return;
+	shift(id);
+	int mid = l + r >> 1;
+	upd(s, e, x, l, mid, id << 1), upd(s, e, x, mid, r, id << 1 | 1);
+	seg[id] = seg[id << 1] + seg[id << 1 | 1];
+}
+ 
+void debug(int x, int l = 0, int r = 2 * n - 1, int id = 1) {
+	if (l + 1 == r) {
+		cout << seg[id].dp[0][1] << ' ';
+		return;
+	}
+	shift(id);
+	int mid = l + r >> 1;
+	(x < mid? debug(x, l, mid, id << 1): debug(x, mid, r, id << 1 | 1));
+	seg[id] = seg[id << 1] + seg[id << 1 | 1];
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	long long w_md;
+	int Q;
+	cin >> n >> Q >> w_md;
+	for (int i = 0, v, u; i + 1 < n; i++) {
+		long long w;
+		cin >> v >> u >> w;
+		--v, --u;
+		from[i] = v, to[i] = u, we[i] = w;
+		adj[v].push_back(i);
+		adj[u].push_back(i);
+	}
+	path(0);
+	build();
+	long long last = 0;
+	while (Q--) {
+		long long d, e;
+		cin >> d >> e;
+		d = (d + last) % (n - 1);
+		e = (e + last) % w_md;
+		assert(d >= 0);
+		assert(d < (n - 1));
+		int v = from[d], u = to[d];
+		long long w = we[d];
+		long long x = e - we[d];
+		if (st[v] < st[u])
+			swap(v, u);
+		assert(st[v] >= 0);
+		assert(en[v] > st[v]);
+		assert(en[v] < 2 * n);
+		upd(st[v], en[v], x);
+		we[d] = e;
+		cout << (last = seg[1].dp[0][3]) << '\n';
+	}
+	return 0;
+}

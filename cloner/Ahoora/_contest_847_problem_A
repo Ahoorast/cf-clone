@@ -1,0 +1,45 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 110;
+int l[N], r[N], nxt[N], prv[N], n;
+bool vis[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 1; i <= n; i++) {
+		cin >> l[i] >> r[i];
+		if (l[i])
+			prv[i] = l[i];
+		if (r[i])
+			nxt[i] = r[i];
+	}
+	vector<int> vec[2];
+	int sz = 0;
+	for (int i = 1; i <= n; i++) 
+		if (!vis[i]) {
+			int domR = i;
+			vis[i] = true;
+			while (nxt[domR]) {
+				vis[domR] = true;
+				domR = nxt[domR];
+				vis[domR] = true;
+			}
+			int domL = i;
+			while (prv[domL]) {
+				vis[domL] = true;
+				domL = prv[domL];
+				vis[domL] = true;
+			}
+			vec[0].push_back(domL), vec[1].push_back(domR);
+			sz++;
+		}
+	for (int i = 0; i + 1 < sz; i++)
+		r[vec[1][i]] = vec[0][i + 1];
+	for (int i = sz - 1; i - 1 >= 0; i--) 
+		l[vec[0][i]] = vec[1][i - 1];
+	for (int i = 1; i <= n; i++)
+		cout << l[i] << ' ' << r[i] << '\n';
+	return 0;
+}

@@ -1,0 +1,16 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		long long Xor = 0, s = 0, n, a;
+		cin >> n;
+		for (int i = 1; i <= n; i++)
+			cin >> a, Xor ^= a, s += a;
+		cout << 2 << endl << Xor << ' ' << s + Xor << endl;
+	}
+	return 0;
+}

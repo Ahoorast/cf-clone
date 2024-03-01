@@ -1,0 +1,56 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10, mod = 1LL * 1000 * 1000 * 1000 + 7;
+int n, from[N], to[N], sz[N], m;
+long long val[N];
+vector<int> adj[N];
+ 
+void dfs(int root, int par = 0) {
+	for (auto x: adj[root]) {
+		int u = from[x] + to[x] - root;
+		if (u ^ par) {
+			dfs(u, root);
+			sz[root] += sz[u];
+			val[x] = 1LL * sz[u] * (n - sz[u]);
+		}
+	}
+	sz[root]++;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> n;
+		for (int i = 1; i < n; i++) {
+			cin >> from[i] >> to[i];
+			int v = from[i], u = to[i];
+			adj[v].push_back(i);
+			adj[u].push_back(i);
+		}
+		dfs(1);
+		cin >> m;
+		vector<int> p(m);
+		for (int i = 0; i < m; i++)
+			cin >> p[i];
+		sort(p.begin(), p.end());
+		sort(val + 1, val + n, greater<long long>());
+		int ones = max(0, n - 1 - m);
+		int j = 0;
+		long long ans = 0;
+		for (int i = n - ones; i < n; i++)
+			(ans += val[i]) %= mod;
+		for (int i = n - ones - 1; i >= 2; i--) 
+			(ans += 1LL * val[i] * p[j++] % mod) %= mod;
+		long long t = 1;
+		while (j < m) 
+			(t *= p[j++]) %= mod;
+		(ans += val[1] * t % mod) %= mod;
+		cout << ans << '\n';
+		for (int i = 1; i <= n; i++)
+			sz[i] = 0, val[i] = 0, adj[i].clear();
+	}
+	return 0;
+}

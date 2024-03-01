@@ -1,0 +1,46 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 1000 + 10, LG = 20;
+int par[N][LG], h[N];
+ 
+int lca(int v, int u) {
+	if (h[v] < h[u])
+		swap(v, u);
+	for (int i = 0; i < LG; i++)
+		if ((1 << i) & (h[v] - h[u]))
+			v = par[v][i];
+	if (v == u)
+		return v;
+	for (int i = LG - 1; i >= 0; i--)
+		if (par[v][i] != par[u][i])
+			v = par[v][i], u = par[u][i];
+	return par[v][0];
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int n = 4;
+	h[2] = h[3] = h[4] = 1;
+	par[2][0] = par[3][0] = par[4][0] = 1;
+	int Q;
+	cin >> Q;
+	int ans = 2, mx = 1;
+	while (Q--) {
+		int p;
+		cin >> p;
+		for (auto v: {n + 1, n + 2}) {
+			par[v][0] = p;
+			h[v] = h[p] + 1;
+			for (int i = 1; i < LG; i++)
+				par[v][i] = par[par[v][i - 1]][i - 1];
+		}
+		if (h[n + 1] > h[mx])
+			mx = n + 1, ans++;
+		else 
+			ans = max(ans, h[n + 1] + h[mx] - 2 * h[lca(n + 1, mx)]);
+		cout << ans << '\n';
+		n += 2;
+	}
+	return 0;
+}

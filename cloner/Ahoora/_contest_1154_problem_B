@@ -1,0 +1,30 @@
+/*
+ 
+ 
+*/
+#include <bits/stdc++.h>
+using namespace std;
+#define		debug(x)	cout << #x << '=' << x << endl
+const int maxn = 200;
+int arr[maxn], res[maxn];
+int main()
+{
+	ios_base::sync_with_stdio(false), cin.tie(NULL);
+	int n, k = 0, ans = 500, t = 0;
+	cin >> n;
+	for(int i = 0; i < n; i++) cin >> arr[i];
+	sort(arr, arr + n);
+	for(int i = 0; i <= 100; i++) {
+		int cnt = 0;
+		for(int j = 0; j < n; j++) if((abs(arr[j] - i) != abs(arr[0] - i)) && arr[j] - i != 0) cnt++;
+		if(cnt == 0) res[k] = i, k++;
+	}
+	if(k == 0) return cout << "-1", 0;
+	for(int i = 0; i < k; i++) {
+		t = 0;
+		for(int j = 0; j < n; j++) if(arr[j] - res[i] != 0) t = abs(arr[j] - res[i]);
+		ans = min(ans, t);  
+	}
+	cout << ans;
+	return 0;
+}

@@ -1,0 +1,25 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+string a = "face";
+ 
+int main() {
+ 	ios_base:: sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int n, m, res = 0;
+	string s[100];
+	cin >> n >> m;
+	for (int i = 0; i < n; i++)
+		cin >> s[i];
+	for (int i = 0; i + 1 < n; i++)
+		for (int j = 0; j + 1 < m; j++) {
+			int cnt = 0;
+			for (int k = 0; k < 4; k++) {
+				if (s[i][j] == a[k] || s[i + 1][j] == a[k] || s[i + 1][j + 1] == a[k] || s[i][j + 1] == a[k])
+					cnt++;
+				if (cnt == 4)
+					res++;
+			}
+		}
+	cout << res << endl;
+	return 0;
+}

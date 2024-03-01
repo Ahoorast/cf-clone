@@ -1,0 +1,28 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1010;
+int n;
+pair<int, int> a[N * 2];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> n;
+		for (int i = 1; i <= 2 * n; i++) {
+			cin >> a[i].first;
+			a[i].second = i;
+			a[i].first %= 2;
+		}
+		sort(a + 1, a + 2 * n + 1);
+		vector<pair<int, int>> ans;
+		for (int i = 2; i <= 2 * n; i++) 
+			if (a[i].first == a[i - 1].first)
+				ans.push_back({a[i].second, a[i - 1].second}), i++;
+		for (int i = 0; i < n - 1; i++)
+			cout << ans[i].first << ' ' << ans[i].second << '\n';
+	}
+	return 0;
+}

@@ -1,0 +1,33 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int main() {
+	ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+	int t;
+	cin >> t;
+	while (t--) {
+		int n, m, a, b;
+		cin >> n >> m >> a >> b;
+		vector<int> vec;
+		for (int i = 0, a; i < m; i++) {
+			cin >> a;
+			vec.push_back(a);
+		}
+		sort(vec.begin(), vec.end());
+		int timee;
+		if (a > b)
+			timee = n - b;
+		else
+			timee = b - 1;
+		int et = abs(a - b) - 1;
+		et = min(et, m);
+		int pointer = vec.size() - 1, ans = 0;
+		for (int i = 0; i < et; i++) {
+			while (pointer > -1 && vec[pointer] >= timee - i)
+				pointer--;
+			if (pointer > -1)
+				ans++, pointer--;
+		}
+		cout << ans << endl << endl;
+	}
+}

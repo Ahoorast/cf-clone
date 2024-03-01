@@ -1,0 +1,91 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10;
+int n, m, from[N], to[N], comp[N], cnt_comp, we[N], par[N], ah[N];
+vector<pair<int, int>> adj[N];
+unordered_set<int> has[N], all;
+ 
+void bfs(int v) {
+	int cnt_comp = v + 1;
+	queue<int> q;
+	q.push(v), comp[v] = cnt_comp, all.erase(v);
+	while (q.size()) {
+		int v = q.front();
+		q.pop();
+		vector<int> rm;
+		for (auto u: all)
+			if (!has[v].count(u)) 
+				q.push(u), comp[u] = cnt_comp, rm.push_back(u);
+		for (auto u: rm)
+			all.erase(u);
+	}
+}
+ 
+int get_par(int v) {
+	return par[v] == v? v: par[v] = get_par(par[v]);
+}
+ 
+int fuck(int v) {
+	return ah[v] == v? v: ah[v] = fuck(ah[v]);
+}
+ 
+bool Union(int v, int u) {
+	v = get_par(v), u = get_par(u);
+	if (v == u)
+		return false;
+	par[u] = v;
+	return true;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m;
+	for (int i = 0, v, u, w; i < m; i++) {
+		cin >> v >> u >> w;
+		--v, --u;
+		from[i] = v, to[i] = u, we[i] = w;
+		has[v].insert(u), has[u].insert(v);
+		adj[v].push_back({u, w}), adj[u].push_back({v, w});
+	}
+	for (int i = 0; i < n; i++)
+		all.insert(i);
+	for (int i = 0; i < n; i++)
+		if (!comp[i]) {
+			cnt_comp++;
+			bfs(i);
+		}
+	for (int i = 0; i < n; i++)
+		par[i] = comp[i] - 1;
+	vector<int> E;
+	for (int i = 0; i < m; i++)
+		E.push_back(i);
+	sort(E.begin(), E.end(), [](int x, int y) {
+			return we[x] < we[y];
+			});
+	long long res = 0, mn = 0;
+	for (int i = 0; i < m; i++)
+		mn ^= we[i];
+	iota(ah, ah + n, 0);
+	for (auto i: E) {
+		int v = from[i], u = to[i], w = we[i];
+		if (Union(v, u)) {
+			res += w;
+			v = fuck(v), u = fuck(u);
+			if (v != u)
+				ah[u] = v;
+		}
+	} 
+	if (((1LL * n * (n - 1) / 2) - m > n - cnt_comp))
+		return cout << res << '\n', 0;
+	for (int v = 0; v < n; v++)
+		for (auto u: adj[v]) {
+			int x = v, y = u.first;
+			x = fuck(x), y = fuck(y);
+			if (x != y)
+				mn = min(mn, 1LL * u.second);
+		}
+	res += mn;
+	cout << res << '\n';
+	return 0;
+}

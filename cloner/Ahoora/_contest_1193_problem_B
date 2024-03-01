@@ -1,0 +1,47 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10;
+int n, m, d[N], w[N], k;
+map<int, long long> dp[N];
+vector<int> adj[N];
+ 
+void dfs(int v, int par = 0) {
+	int mx = 0;
+	for (auto u: adj[v])
+		if (u ^ par) {
+			dfs(u, v);
+			if (dp[u].size() > dp[v].size())
+				swap(dp[u], dp[v]);
+			for (auto x: dp[u])
+				dp[v][x.first] += x.second;
+		}
+	auto it = dp[v].upper_bound(d[v]);
+	dp[v][d[v]] += w[v];
+	while (it != dp[v].end() && w[v] >= (*it).second) {
+		w[v] -= (*it).second;
+		auto p = it;
+		it++;
+		dp[v].erase(p);
+	}
+	if (it != dp[v].end())
+		(*it).second -= w[v];
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m >> k;
+	for (int i = 2, p; i <= n; i++) {
+		cin >> p;
+		adj[p].push_back(i);
+		adj[i].push_back(p);
+	}
+	for (int i = 1, v; i <= m; i++) 
+		cin >> v >> d[v] >> w[v];
+	dfs(1);
+	long long ans = 0;
+	for (auto x: dp[1])
+		ans += x.second;
+	cout << ans << '\n';
+	return 0;
+}

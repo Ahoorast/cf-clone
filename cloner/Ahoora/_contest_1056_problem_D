@@ -1,0 +1,23 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10;
+int n;
+vector<int> adj[N];
+ 
+long double dfs(int root, int par = -1) {
+	long double x = adj[root].size() - (par != -1), res = 0;
+	for (auto u: adj[root]) 
+		if (u ^ par) 
+			res += (dfs(u, root) + 1) *  1 / x; 
+	return res;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 1, v, u; i < n; i++) 
+		cin >> v >> u, adj[v].push_back(u), adj[u].push_back(v);
+	cout << setprecision(6) << fixed << dfs(1) << endl;
+	return 0;
+}

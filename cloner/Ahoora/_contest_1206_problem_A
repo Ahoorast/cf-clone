@@ -1,0 +1,35 @@
+/*
+`	...
+	Ahoora BozorgManesh
+	ATCCE Adv
+*/
+#include <bits/stdc++.h>
+using namespace std;
+const int maxn = 210;
+int a[maxn], b[maxn];
+int main()
+{
+	int n, m;
+	cin >> n;
+	for(int i = 0; i < n; i++)
+	cin >> a[i];
+	cin >> m;
+	for(int i = 0; i < m; i++)
+	cin >> b[i];
+	for(int i = 0; i < n; i++)
+	{
+		for(int j = 0; j < m; j++)
+		{
+			int cnt = 0;
+			for(int k = 0; k < max(n, m); k++)
+				if(a[i] + b[j] == a[k] || a[i] + b[j] == b[k])
+					cnt++;
+			if(cnt == 0)
+			{
+				cout << a[i] << " " << b[j];
+				return 0;
+			}		
+		}
+	}
+	return 0;
+}

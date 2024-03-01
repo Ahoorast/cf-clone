@@ -1,0 +1,107 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = (1 << 18) + 100, LG = 20;
+int n, swp[LG], lg[N << 2], rv[LG];
+long long a[N];
+ 
+struct Node {
+	int lft = 0, rgh = 0, cnt = 0, cnt2 = 0;
+	long long sum = 0;
+	void init(long long x) {
+		sum = x;
+	}
+	void merge(Node L, Node R) {
+		sum = L.sum + R.sum;
+	}
+ 
+} seg[N << 2];
+ 
+void shift_stuff(int root) {
+	int h = lg[root];
+	if (swp[h] % 2 != seg[root].cnt % 2) {
+		swap(seg[root].lft, seg[root].rgh);
+		seg[root].cnt++;
+	}
+	if (rv[h] % 2 != seg[root].cnt2 % 2) {
+		swap(seg[root].lft, seg[root].rgh);
+		seg[root].cnt2++;
+		seg[seg[root].lft].cnt2++, seg[seg[root].rgh].cnt2++;
+	}
+}
+ 
+void build(int l = 0, int r = n, int root = 1) {
+	if (l + 1 == r) {
+		seg[root].init(a[l]);
+		return;
+	}
+	int mid = l + r >> 1;
+	seg[root].lft = root << 1, seg[root].rgh = root << 1 | 1;
+	build(l, mid, seg[root].lft);
+	build(mid, r, seg[root].rgh);
+	seg[root].merge(seg[seg[root].lft], seg[seg[root].rgh]);
+}
+ 
+void rep(int x, int k, int l = 0, int r = n, int root = 1) {
+	if (l + 1 == r) {
+		seg[root].init(k);
+		return;
+	}
+	shift_stuff(root);
+	int mid = l + r >> 1;
+	if (x < mid)
+		rep(x, k, l, mid, seg[root].lft);
+	else
+		rep(x, k, mid, r, seg[root].rgh);
+	seg[root].merge(seg[seg[root].lft], seg[seg[root].rgh]);
+}
+ 
+long long sum(int l, int r, int lx = 0, int rx = n, int root = 1) {
+	if (l <= lx && r >= rx)
+		return seg[root].sum;
+	if (l >= rx || r <= lx)
+		return 0LL;
+	int mid = lx + rx >> 1;
+	shift_stuff(root);
+	return sum(l, r, lx, mid, seg[root].lft) + sum(l, r, mid, rx, seg[root].rgh);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	for (int i = 2; i < N << 2; i++)
+		lg[i] = lg[i / 2] + 1;
+	int Q, act;
+	cin >> n >> Q;
+	act = n;
+	n = 1 << n;
+	for (int i = 0; i < n; i++)
+		cin >> a[i];
+	build();
+	while (Q--) {
+		int tp;
+		cin >> tp;
+		if (tp == 1) {
+			int x, k;
+			cin >> x >> k;
+			x--;
+			rep(x, k);
+		}
+		else if (tp == 2) {
+			int k;
+			cin >> k;
+			rv[act - k]++;
+		}
+		else if (tp == 3) {
+			int k;
+			cin >> k;
+			swp[act - k - 1]++;
+		}
+		else {
+			int l, r;
+			cin >> l >> r;
+			l--;
+			cout << sum(l, r) << '\n';
+		}
+	}
+	return 0;
+}

@@ -1,0 +1,32 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+	string a, s, s1;
+	cin >> s;
+	int az = a.size(), sz = s.size(), jn = 0;
+	char l = '9';
+	for(int i = 0; i < sz; i++)
+	{
+		l = '9';
+		for(int j = i; j < sz; j++)
+		{
+			if(l >= s[j])
+			{
+				l = s[j];
+				jn = j;
+			}
+		}
+		swap(s[i], s[jn]);
+	}
+	for(int i = 0; i < sz; i++)
+	{
+		if(s[i] != '+')
+		{
+			cout << s[i];
+			if(i != sz - 1)
+		cout << "+";
+		}
+	}
+	return 0;
+}

@@ -1,0 +1,38 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+string s, t;
+int sz, tz;
+ 
+string removeSub(int l, int r) {
+	string res;
+	for (int i = 0; i < l; i++)
+		res += s[i];
+	for (int i = r + 1; i < sz; i++)
+		res += s[i];
+	return res;
+}
+ 
+bool isItSub(string s1) {
+	int j = 0;
+	for (int i = 0; i < int(s1.size()) && j < tz; i++)
+		if (s1[i] == t[j]) 
+			j++;
+	return j == tz;
+}
+ 
+int main() {
+	ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+	cin >> s >> t;
+	sz = s.size(), tz = t.size();
+	int res = 0;
+	for (int i = 0; i < sz; i++)
+		for (int j = i; j < sz; j++)
+			if (j - i + 1 > res) {
+				string tmp = removeSub(i, j);
+				if (isItSub(tmp) == 1) 
+					res = max(res, j - i + 1);
+			}
+	cout << res << endl;
+	return 0;
+}

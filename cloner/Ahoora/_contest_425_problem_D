@@ -1,0 +1,44 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10;
+int n;
+vector<int> row[N], col[N];
+unordered_map<int, int> mp[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 0, x, y; i < n; i++) {
+		cin >> x >> y;
+		mp[x][y] = true;
+		row[x].push_back(y);
+		col[y].push_back(x);
+	}
+	for (int i = 0; i < N; i++) {
+		sort(row[i].begin(), row[i].end());
+		sort(col[i].begin(), col[i].end());
+	}
+	int ans = 0;
+	for (int x = 0; x < N; x++) {
+		int sz = (int)(row[x].size());
+		for (int i = 0; i < sz; i++) {
+			int y = row[x][i];
+			int them = lower_bound(col[y].begin(), col[y].end(), x) - col[y].begin();
+			for (int j = 0; j < min(them, i); j++) {
+				int a = (them < i? col[y][j]: x), b = (them < i? y: row[x][j]);
+				int d = (them < i? x - a: y - b);
+				int xa = (them < i? x: x - d), xb = (them < i? y - d: y);
+				if (xa < 0 || x - d < 0)
+					continue;
+				if (!mp[xa].count(xb))
+					continue;
+				if (!mp[x - d].count(y - d))
+					continue;
+				ans++;
+			}
+		}
+	}
+	cout << ans << '\n';
+	return 0;
+}

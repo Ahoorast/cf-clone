@@ -1,0 +1,64 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10, mod = 1LL * 1000 * 1000 * 1000 + 7;
+int fact[N], inv[N];
+ 
+long long Pow(long long a, long long b) {
+	return b? (b & 1? a: 1) % mod * Pow(a * a % mod, b >> 1) % mod: 1;
+}
+ 
+int mul(int x, int y) {
+	return 1LL * x * y % mod;
+}
+ 
+int add(int x, int y) {
+	return ((x + y) % mod + mod) % mod;
+}
+ 
+int C(int r, int n) {
+	if (r > n)
+		return 0;
+	return mul(mul(fact[n], inv[r]), inv[n - r]);
+}
+ 
+int get(int r, int n) {
+	return C(r - 1, n - 1);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	fact[0] = 1;
+	for (int i = 1; i < N; i++)
+		fact[i] = mul(fact[i - 1], i);
+	inv[N - 1] = Pow(fact[N - 1], mod - 2);
+	for (int i = N - 2; i >= 0; i--)
+		inv[i] = mul(inv[i + 1], i + 1);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int f, n;
+		cin >> n >> f;
+		vector<int> p;
+		int tmp = n;
+		for (int i = 2; i * i <= n; i++)
+			if (n % i == 0) {
+				p.push_back(i);
+				while (n % i == 0)
+					n /= i;
+			}
+		if (n > 1)
+			p.push_back(n);
+		n = tmp;
+		int kol = get(f, n), sz = (int)(p.size()), bad = 0;
+		for (int msk = 1; msk < 1 << sz; msk++) {
+			int x = 1;
+			for (int i = 0; i < sz; i++)
+				if (msk >> i & 1)
+					x *= p[i];
+			bad = add(bad, (__builtin_popcount(msk) & 1? +1: -1) * get(f, n / x));
+		}
+		cout << add(kol, -bad) << '\n';
+	}
+	return 0;
+}

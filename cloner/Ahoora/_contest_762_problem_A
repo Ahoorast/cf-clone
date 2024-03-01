@@ -1,0 +1,21 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	long long n, k;
+	cin >> n >> k;
+	vector<long long> vec;
+	for (int i = 1; 1LL * i * i <= n; i++)
+		if (n % i == 0) {
+			vec.push_back(i);
+			if (n / i != 1LL * i)
+				vec.push_back(n / i);
+		}
+	sort(vec.begin(), vec.end());
+	int sz = (int)(vec.size());
+	if (k > sz)
+		return cout << "-1\n", 0;
+	cout << vec[--k] << '\n';
+	return 0;
+}

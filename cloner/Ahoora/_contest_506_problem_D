@@ -1,0 +1,51 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10;
+int n, m;
+vector<int> adj[N];
+unordered_map<int, int> mp[N], par[N];
+ 
+int get_par(int c, int v) {
+	return !par[v].count(c)? v: par[v][c] = get_par(c, par[v][c]);
+}
+ 
+void Union(int c, int v, int u) {
+	v = get_par(c, v), u = get_par(c, u);
+	if (v == u)
+		return;
+	par[u][c] = v;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m;
+	for (int i = 0, v, u, c; i < m; i++) {
+		cin >> v >> u >> c;
+		adj[v].push_back(c);
+		adj[u].push_back(c);
+		Union(c, v, u);
+	}
+	for (int i = 1; i <= n; i++) {
+		sort(adj[i].begin(), adj[i].end());
+		adj[i].resize(unique(adj[i].begin(), adj[i].end()) - adj[i].begin());
+	}
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int v, u;
+		cin >> v >> u;
+		if (adj[v].size() > adj[u].size())
+			swap(v, u);
+		if (mp[v].count(u))
+			cout << mp[v][u] << '\n';
+		else {
+			int ans = 0;
+			for (auto c: adj[v])
+				ans += get_par(c, v) == get_par(c, u);
+			mp[v][u] = ans;
+			cout << ans << '\n';
+		}
+	}
+	return 0;
+}

@@ -1,0 +1,61 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 100;
+int n, m, K, sz[N], h[N], p[N];
+vector<int> adj[N];
+bool vis[N];
+ 
+void dfs(int root, int par = 0) {
+	vis[root] = true;
+	h[root] = h[par] + 1;
+	p[root] = par;
+	for (auto u: adj[root])
+		if (!vis[u]) 
+			dfs(u, root);
+		else if (u != par && h[root] - h[u] + 1 <= K) {
+			cout << 2 << '\n';
+			cout << h[root] - h[u] + 1 << '\n';
+			while (h[root] != h[u] - 1) {
+				cout << root << ' ';
+				root = p[root];
+			}
+			cout << '\n';
+			exit(0);
+		}
+	if (h[root] >= K) {
+		int t = root, x = (K + 1) / 2;
+		cout << 1 << '\n';
+		while (h[root]) {
+			if (x && (h[t] % 2 == h[root] % 2))
+				cout << root << ' ', x--;
+			root = p[root];
+		}
+		cout << '\n';
+		exit(0);
+	}
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m >> K;
+	for (int i = 1, v, u; i <= m; i++) {
+		cin >> v >> u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+	dfs(1);
+	if (m == n - 1) {
+		cout << 1 << '\n';
+		int cnt[2] = {0, 0};
+		for (int i = 1; i <= n; i++)
+			cnt[h[i] & 1]++;
+		bool t = cnt[1] > cnt[0];
+		int x = (K + 1) / 2;
+		for (int i = 1; i <= n; i++)
+			if (x && (h[i] & 1) == t)
+				x--, cout << i << ' ';
+		return cout << '\n', 0;
+	}
+	return 0;
+}

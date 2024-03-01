@@ -1,0 +1,49 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const long long N = 2 * 1000 * 100 + 10, mod = 1LL * 1000 * 1000 * 1000 + 7;
+long long fact[N], inv_fact[N], n, a[N], K, s[N], all[N];
+ 
+long long Pow(long long a, long long b) {
+	return b? 1LL * (b & 1? a: 1) * Pow(1LL * a * a % mod, b / 2) % mod: 1;
+}
+ 
+void pre() {
+	fact[0] = 1;
+	for (long long i = 1; i < N; i++)
+		fact[i] = 1LL * fact[i - 1] * i % mod;
+	inv_fact[N - 1] = Pow(fact[N - 1], mod - 2);
+	for (long long i = N - 2; i >= 0; i--)
+		inv_fact[i] = 1LL * inv_fact[i + 1] * (i + 1) % mod;
+}
+ 
+long long C(long long r, long long n) {
+	return 1LL * fact[n] * inv_fact[r] % mod * inv_fact[n - r] % mod;
+}
+ 
+long long F(long long n, long long k) {
+	if (n == k)
+		return 1;
+	if (k > n)
+		return 0;
+	if (k == 1)
+		return 1;
+	long long res = 0;
+	for (long long j = 0; j <= k; j++) {
+		(res += 1LL * ((j + k) & 1? -1: 1) * C(j, k) % mod * Pow(j, n) % mod) %= mod;
+		(res %= mod);
+		(res = res + mod) % mod;
+	}
+	return 1LL * res * inv_fact[k] % mod;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> K;
+	pre();
+	for (long long i = 1; i <= n; i++)
+		cin >> a[i], s[i] = (s[i - 1] + a[i]) % mod;
+	long long C = (1LL * F(n - 1, K) * (n - 1) % mod + F(n, K)) % mod;
+	cout << 1LL * s[n] * C % mod << '\n';
+	return 0;
+}

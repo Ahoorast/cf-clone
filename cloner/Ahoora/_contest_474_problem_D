@@ -1,0 +1,25 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+typedef	long long ll;
+const ll mod = 1000 * 1000 * 1000 + 7;
+const int N = 1000 * 100 + 1000;
+ll dp[N];
+ 
+int main() {
+	ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+	int t, k, a, b;
+	cin >> t >> k;
+	for (int i = 1; i < k; i++)
+		dp[i] = 1;
+	dp[k] = 2;
+	for (int i = k + 1; i < N; i++)
+		dp[i] = (dp[i - 1] + dp[i - k]) % mod;
+	for (int i = 1; i < N; i++)
+		dp[i] = (dp[i - 1] + dp[i]);
+	while (t--) {
+		cin >> a >> b;
+		cout << (dp[b] - dp[a - 1]) % mod << endl;
+	}
+	return 0;
+}

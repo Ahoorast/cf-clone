@@ -1,0 +1,38 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int sz = 10;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		string s;
+		cin >> s;
+		int ans = 10;
+		for (int j = 0; j < 2; j++) {
+			int p0 = 0, p1 = 0;
+			int t0 = 5, t1 = 5;
+			for (int i = 0; i < sz; i++) {
+				if (i & 1) {
+					t1--;
+					if (s[i] == '?')
+						p1 += (j == 1);
+					else
+						p1 += s[i] - '0';
+				} else {
+					t0--;
+					if (s[i] == '?')
+						p0 += (j == 0);
+					else
+						p0 += s[i] - '0';
+				}
+				if (p0 + t0 < p1 || p1 + t1 < p0)
+					ans = min(ans, i + 1);
+			}
+		}
+		cout << ans << '\n';
+	}
+	return 0;
+}

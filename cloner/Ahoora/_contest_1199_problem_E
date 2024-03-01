@@ -1,0 +1,48 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 3 * 1000 * 100 + 100;
+int n, m;
+vector<pair<int, int>> adj[N];
+bool vis[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> n >> m;
+		for (int i = 1, v, u; i <= m; i++) {
+			cin >> v >> u;
+			adj[v].push_back({u, i});
+			adj[u].push_back({v, i});
+		}
+		vector<int> edge;
+		for (int i = 1; i <= n * 3; i++)
+			if (!vis[i]) {
+				for (auto u: adj[i])
+					if (!vis[u.first] && !vis[i]) {
+						vis[i] = vis[u.first] = true;
+						edge.push_back(u.second);
+					}
+			}
+		if ((int)(edge.size()) >= n) {
+			cout << "Matching\n";
+			for (int i = 0; i < n; i++)
+				cout << edge[i] << ' ';
+		}
+		else {
+			cout << "IndSet\n";
+			int k = n;
+			for (int i = 1; i <= n * 3; i++)
+				if (k && !vis[i]) {
+					k--;
+					cout << i << ' ';
+				}
+		}
+		cout << '\n';
+		for (int i = 1; i <= 3 * n; i++)
+			vis[i] = false, adj[i].clear();
+	}
+	return 0;
+}

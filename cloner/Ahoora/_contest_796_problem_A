@@ -1,0 +1,18 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int maxn = 200;
+ 
+int main() {
+ 	ios_base:: sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int n, m, k, a[maxn], res = 12000;
+	cin >> n >> m >> k;
+	for (int i = 0; i < n; i++)
+		cin >> a[i];
+	for (int hahahoho = -1; hahahoho <= 1; hahahoho += 2)
+	 	for (int i = m - 1; i < n && i >= 0; i += hahahoho)
+			if (a[i] != 0 && a[i] <= k)
+				res = min(res, abs(i - m + 1));
+	cout << res * 10 << endl;
+	return 0;
+}

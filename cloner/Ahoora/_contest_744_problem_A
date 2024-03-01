@@ -1,0 +1,50 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1010;
+int n, m, K, c[N];
+vector<int> adj[N];
+bool vis[N];
+ 
+pair<int, int> dfs(int root) {
+	vis[root] = true;
+	pair<int, int> res = {0, 0};
+	for (auto u: adj[root])
+		if (!vis[u]) {
+			pair<int, int> t = dfs(u);
+			res.second += t.second + 1;
+			res.first += t.first;
+		}
+		else
+			res.second++;
+	res.first++;
+	return res;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m >> K;
+	for (int i = 1; i <= K; i++)
+		cin >> c[i];
+	for (int i = 1, v, u; i <= m; i++) {
+		cin >> v >> u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+	int tot = 0, mx = 0, M = 0;
+	long long ans = 0;
+	for (int i = 1; i <= K; i++) 
+		if (!vis[c[i]]) {
+			pair<int, int> t = dfs(c[i]);
+			t.second /= 2;
+			tot += t.first;
+			M += t.second;
+			mx = max(mx, t.first);
+			ans += (1LL * t.first * (t.first - 1) / 2 - t.second);
+		}
+	M = m - M;
+	tot = n - tot;
+	ans += 1LL * tot * mx + 1LL * (tot) * (tot - 1) / 2 - M;
+	cout << ans << endl;
+	return 0;
+}

@@ -1,0 +1,40 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 1000 + 10;
+int n;
+long long a[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+    mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+	cin >> n;
+	for (int i = 0; i < n; i++)
+		cin >> a[i];
+	shuffle(a, a + n, rng);
+	long long ans = 1;
+	for (int i = 0; i < 14; i++) {
+		long long x = a[rng() % n];
+		vector<long long> d;
+		for (int j = 1; 1LL * j * j <= x; j++)
+			if (x % j == 0) 
+				d.push_back(j), d.push_back(x / j);
+		sort(d.begin(), d.end());
+		int sz = (int)(d.size());
+		vector<int> cnt(sz);
+		for (int j = 0; j < n; j++) {
+			long long g = __gcd(x, a[j]);
+			cnt[lower_bound(d.begin(), d.end(), g) - d.begin()]++;
+		}
+		for (int j = sz - 1; j >= 0 && d[j] > ans; j--) {
+			int c = 0;
+			for (int k = j; k < sz; k++)
+				if (d[k] % d[j] == 0)
+					c += cnt[k];
+			if (c >= (n + 1) / 2)
+				ans = d[j];
+		}
+	}
+	cout << ans << '\n';
+	return 0;
+}

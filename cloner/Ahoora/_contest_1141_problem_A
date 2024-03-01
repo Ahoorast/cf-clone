@@ -1,0 +1,21 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int a[3][2];
+ 
+int main() {
+ 	ios_base:: sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	long long n, m, res = 0, k1, k2;
+	cin >> n >> m;
+	k1 = n, k2 = m;
+	while (n % 2 == 0) a[0][0]--, n /= 2;
+	while (n % 3 == 0) a[0][1]--, n /= 3;
+	while (m % 2 == 0) a[0][0]++, m /= 2;
+	while (m % 3 == 0) a[0][1]++, m /= 3;
+	if (a[0][0] < 0 || a[0][1] < 0)
+		return cout << "-1", 0;
+	unsigned long long tmp = pow(2, a[0][0]) * pow(3, a[0][1]) * k1;
+	if (tmp == k2)  cout << a[0][0] + a[0][1] << endl;
+	else return cout << "-1", 0;
+	return 0;
+}

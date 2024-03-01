@@ -1,0 +1,50 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 5010;
+int n, m, s, ans, deg[2][N];
+vector<int> adj[2][N];
+vector<int> vec;
+bool vis[2][N];
+ 
+void read() {
+	cin >> n >> m >> s;
+	for (int i = 1, v, u; i <= m; i++) {
+		cin >> v >> u;
+		adj[0][v].push_back(u);
+		deg[0][v]++;
+		adj[1][u].push_back(v);
+		deg[1][u]++;
+	}
+}
+ 
+void dfs(int root, bool t) {
+	bool cld = false;
+	vis[t][root] = true;
+	for (auto u: adj[t][root])
+		if (!vis[t][u])
+			dfs(u, t), cld = true;
+	if (!cld && t)
+		vec.push_back(root);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	read();
+	dfs(s, 0);
+	for (int i = 1; i <= n; i++)
+		if (!vis[0][i]) {
+			vec.clear();
+			dfs(i, 1);
+			sort(vec.begin(), vec.end(), [] (int v, int u) {
+					if (deg[1][u] != deg[1][v])
+						return deg[1][u] > deg[1][v];
+					return deg[0][u] < deg[0][v];
+				});
+			for (auto u: vec)
+				if (!vis[0][u])
+					dfs(u, 0), ans++;
+		}
+	cout << ans << endl;
+	return 0;
+}

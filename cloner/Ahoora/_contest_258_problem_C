@@ -1,0 +1,47 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10, mod = 1LL * 1000 * 1000 * 1000 + 7;
+int n, a[N];
+vector<int> d[N], vec;
+ 
+long long Pow(long long a, long long b) {
+	return b? (b & 1? a: 1) % mod * Pow(a * a % mod, b >> 1) % mod: 1;
+}
+ 
+int solve() {
+	int res = 1;
+	if (vec.empty())
+		return 0;
+	int sz = (int)(vec.size());
+	vector<int> a;
+	for (int i = 1; i < sz; i++)
+		a.push_back(vec[i - 1] - vec[i]);
+	a.push_back(vec.back());
+	for (int i = 0; i < sz; i++) 
+		res = 1LL * res * Pow(i + 1, a[i]) % mod;
+	return res;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 0; i < n; i++)
+		cin >> a[i];
+	sort(a, a + n);
+	for (int i = 1; i < N; i++)
+		for (int j = i; j < N; j += i)
+			d[j].push_back(i);
+	int ans = 0;
+	for (int i = 1; i < N; i++) {
+		vec.clear();
+		for (auto x: d[i])
+			vec.push_back(n - (lower_bound(a, a + n, x) - a));
+		int x = solve();
+		vec.pop_back();
+		int y = solve();
+		(ans += ((x - y) % mod + mod) % mod) %= mod;
+	}
+	cout << ans << '\n';
+	return 0;
+}

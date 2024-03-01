@@ -1,0 +1,13 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+	long long k2, k3, k5, k6, ans1 = 0, k, ans2 = 0;
+	cin >> k2 >> k3 >> k5 >> k6;
+	k = (min(min(k2,k5), min(k2, k6)));
+	ans1 += k;
+	k2 -= k;
+	ans2 += min(k2, k3);
+	cout << ans1 * 256 + ans2 * 32;
+	return 0;
+}

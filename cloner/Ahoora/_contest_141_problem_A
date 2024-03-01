@@ -1,0 +1,38 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+	string a, b, s;
+	cin >> a >> b >> s;
+	int az = a.size(), bz = b.size(), sz = s.size();
+	for(int i = 0; i < az; i++)
+	for(int j = 0; j < sz; j++)
+	if(a[i] == s[j])
+	{
+		a[i] = ' ';
+		s[j] = ' ';
+	}
+	for(int i = 0; i < bz; i++)
+	for(int j = 0; j < sz; j++)
+	if(b[i] == s[j])
+	{
+		b[i] = ' ';
+		s[j] = ' ';
+	}
+	for(int i = 0; i < a.size(); i++)
+	if(a[i] == ' ')
+	az--;
+	for(int i = 0; i < b.size(); i++)
+	if(b[i] == ' ')
+	bz--;
+	for(int i = 0; i < s.size(); i++)
+	if(s[i] == ' ')
+	sz--;
+	if(sz == bz && sz == az && sz == 0)
+	{
+		cout << "YES";
+		return 0;
+	}
+	cout << "NO";
+	return 0;
+}

@@ -1,0 +1,77 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10;
+long long n, a[N], seg[N << 2];
+ 
+void build(int l = 0, int r = n, int root = 1) {
+	if (l + 1 == r) {
+		seg[root] = a[l];
+		return;
+	}
+	int mid = l + r >> 1;
+	build(l, mid, root << 1), build(mid, r, root << 1 | 1);
+}
+ 
+void shift(int root) {
+	seg[root << 1] += seg[root], seg[root << 1 | 1] += seg[root];
+	seg[root] = 0;
+}
+ 
+void upd(int l, int r, long long x, int lx = 0, int rx = n, int root = 1) {
+	if (l <= lx && r >= rx) {
+		seg[root] += x;
+		return;
+	}
+	if (l >= rx || r <= lx)
+		return;
+	int mid = lx + rx >> 1;
+	shift(root);
+	upd(l, r, x, lx, mid, root << 1), upd(l, r, x, mid, rx, root << 1 | 1);
+}
+ 
+long long get(int p, int l = 0, int r = n, int root = 1) {
+	if (l + 1 == r) 
+		return seg[root];
+	shift(root);
+	int mid = l + r >> 1;
+	return (p < mid? get(p, l, mid, root << 1): get(p, mid, r, root << 1 | 1));
+}
+ 
+long long GET(int i) {
+	if (i == 0 || i == n)
+		return 0LL;
+	return max(0LL, get(i) - get(i - 1));
+}
+ 
+long long query(long long F, long long S) {
+	if ((S + F) % 2 == 0) 
+		return max((S + F) / 2, (F - S) / 2);
+	return max((F + S + 1) / 2, (F - S - 1) / 2);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 0; i < n; i++)
+		cin >> a[i];
+	build();
+	long long S = 0;
+	for (int i = 1; i < n; i++)
+		S += GET(i);
+	int Q;
+	cin >> Q;
+	cout << query(get(0), S) << '\n';
+	while (Q--) {
+		long long l, r, x;
+		cin >> l >> r >> x;
+		l--;
+		S -= GET(l);
+		S -= GET(r);
+		upd(l, r, x);
+		S += GET(l);
+		S += GET(r);
+		cout << query(get(0), S) << '\n';
+	}
+	return 0;
+}

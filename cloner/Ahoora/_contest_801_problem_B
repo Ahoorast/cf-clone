@@ -1,0 +1,16 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int main() {
+ 	ios_base:: sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	string s[2], ans;
+	cin >> s[0] >> s[1];
+	int sz = s[0].size();
+	for (int i = 0; i < sz; i++)
+		ans += min(s[0][i], s[1][i]);
+	for (int i = 0; i < sz; i++)
+		if (s[1][i] > s[0][i])
+		 	return cout << "-1", 0;
+	cout << ans;
+	return 0;
+}

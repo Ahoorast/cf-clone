@@ -1,0 +1,68 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int n;
+		cin >> n;
+		string s[3];
+		int cnt[3][2];
+		for (int i = 0; i < 3; i++)
+			for (int j = 0; j < 2; j++)
+				cnt[i][j] = 0;
+		for (int i = 0; i < 3; i++) {
+			cin >> s[i];
+			for (int j = 0; j < 2 * n; j++)
+				cnt[i][s[i][j] - '0']++;
+		}
+		bool fnd = false;
+		for (int j = 0; j < 2 && !fnd; j++) {
+			int c = 0;
+			for (int i = 0; i < 3; i++)
+				c += cnt[i][j] >= n;
+			if (c >= 2 && !fnd) {
+				fnd = true;
+				int x = -1, y = -1;
+				for (int i = 0; i < 3; i++)
+					if (cnt[i][j] >= n)
+						if (x == -1)
+							x = i;
+						else
+							y = i;
+				if (cnt[x][j] < cnt[y][j])
+					swap(x, y);
+				vector<int> mx(cnt[x][j] + 1);
+				s[x] += j + (char)('0');
+				s[y] += j + (char)('0');
+				for (int i = 0, ah = 0, prv = 0; i <= 2 * n; i++) {
+					if (s[x][i] - '0' == j) {
+						mx[ah] = max(mx[ah], prv);
+						ah++;
+						prv = 0;
+					} else
+						prv++;
+				}
+				for (int i = 0, ah = 0, prv = 0; i <= 2 * n; i++) {
+					if (s[y][i] - '0' == j) {
+						mx[ah] = max(mx[ah], prv);
+						ah++;
+						prv = 0;
+					} else
+						prv++;
+				}
+				for (int i = 0; i < cnt[x][j]; i++) {
+					while (mx[i]--)
+						cout << !j;
+					cout << j;
+				}
+				while (mx[cnt[x][j]]--)
+					cout << !j;
+				cout << '\n';
+			}
+		}
+	}
+	return 0;
+}

@@ -1,0 +1,31 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10;
+int a[N], n;
+ 
+void solve() {
+	int prev[N] = {}, ans = 1 << 30;
+	for (int i = 1; i <= n; i++)
+		if (prev[a[i]] == 0)
+			prev[a[i]] = i;
+		else
+			ans = min(ans, i - prev[a[i]] + 1), prev[a[i]] = i;
+	if (ans < (1 << 30))
+		cout << ans << endl;
+	else
+		cout << -1 << endl;
+}
+ 
+int main() {
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> n;
+		for (int i = 1; i <= n; i++)
+			cin >> a[i];
+		solve();
+	}
+	return 0;
+}

@@ -1,0 +1,22 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	long long n;
+	int Q;
+	cin >> n >> Q;
+	while (Q--) {
+		long long x;
+		cin >> x;
+		long long X = n, ans = 0;
+		while (x % 2 == 0) {
+			long long t = x / 2;
+			X -= t;
+			x = X;
+			ans += t;
+		}
+		cout << (x + 1) / 2 + ans << '\n';
+	}
+	return 0;
+}

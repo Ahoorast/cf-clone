@@ -1,0 +1,129 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10, Z = 26;
+int trie[N][Z], w[N], size_of_trie, sz[N], bg[N], ans[N * 2], n;
+vector<pair<int, int>> LOG;
+pair<int, int> par[N];
+int sack[N][Z], w_sack[N], size_of_sack;
+vector<int> query[N], END_LOG;
+char LMAO[N * 2];
+string s, suf[N];
+ 
+inline void insert() {
+	int j = 0;
+	for (auto c: s) {
+		int x = c - 'a';
+		if (!trie[j][x]) {
+			trie[j][x] = ++size_of_trie;
+			par[trie[j][x]] = {j, x};
+		}
+		j = trie[j][x];
+	}
+	w[j]++;
+	sz[j] += (w[j] == 1? (int)(s.size()): 0);
+}
+ 
+inline void insert_query(int ind) {
+	int j = 0;
+	for (auto c: s) {
+		int x = c - 'a';
+		if (!trie[j][x])
+			return;
+		j = trie[j][x];
+	}
+	query[j].push_back(ind);
+}
+ 
+inline void dfs_sz(int v = 0) {
+	int mx = 0;
+	for (auto u: trie[v])
+		if (u) {
+			dfs_sz(u);
+			sz[v] += sz[u];
+			if (mx < sz[u])
+				bg[v] = u, mx = sz[u];
+		}
+	sz[v]++;
+}
+ 
+inline void clear() {
+	size_of_sack = 0;
+	for (auto x: LOG) 
+		sack[x.first][x.second] = 0;
+	for (auto x: END_LOG)
+		w_sack[x] = 0;
+	LOG.clear(), END_LOG.clear();
+}
+ 
+inline void add_string(int v, int w) {
+	int j = 0;
+	while (v) {
+		if (!sack[j][par[v].second]) {
+			sack[j][par[v].second] = ++size_of_sack;
+			LOG.push_back({j, par[v].second});
+		}
+		j = sack[j][par[v].second];
+		w_sack[j] += w;
+		END_LOG.push_back(j);
+		v = par[v].first;
+	}
+}
+ 
+inline void add(int v, int b) {
+	if (w[v])
+		add_string(v, w[v]);
+	for (auto u: trie[v])
+		if (u && u != b)
+			add(u, b);
+}
+ 
+inline int get(int i) {
+	int j = 0;
+	for (auto c: suf[i]) {
+		int x = c - 'a';
+		if (!sack[j][x])
+			return 0;
+		j = sack[j][x];
+	}
+	return w_sack[j];
+}
+ 
+inline void dfs_ans(int v = 0, bool keep = false) {
+	for (auto u: trie[v])
+		if (u && u != bg[v]) 
+			dfs_ans(u);
+	if (bg[v] != -1)
+		dfs_ans(bg[v], 1);
+	add(v, bg[v]);
+	for (auto i: query[v]) 
+		ans[i] += get(i);
+	if (!keep) 
+		clear();
+}
+ 
+int main() { 
+	for (int i = 0; i < N; i++)
+		bg[i] = -1;
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++) {
+		scanf("%s", LMAO);
+		s = LMAO;
+		insert();
+	}
+	int Q;
+	cin >> Q;
+	for (int i = 0; i < Q; i++) {
+		scanf("%s", LMAO);
+		s = LMAO;
+		scanf("%s", LMAO);
+		suf[i] = LMAO;
+		reverse(suf[i].begin(), suf[i].end());
+		insert_query(i);
+	}
+	dfs_sz();
+	dfs_ans();
+	for (int i = 0; i < Q; i++)
+		printf("%d\n", ans[i]);
+	return 0;
+}

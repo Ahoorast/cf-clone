@@ -1,0 +1,15 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int maxn = 199;
+long long arr[maxn], arr1[maxn];
+int main()
+{
+	long long n, ans = 0, eykhodacadamvarkarkondige = 0;
+	for(int i = 0; i < 25; i++) arr1[i] = 1;
+	cin >> n;
+	for(int i = 1; i <= n; i++) cin >> arr[i];
+	sort(arr, arr + n + 1);
+	for(int i = 1; i <= n; i++) ans += arr[i] - arr[i - 1] - 1;
+	cout << max(ans - 25 + n, eykhodacadamvarkarkondige);
+	return 0;
+}

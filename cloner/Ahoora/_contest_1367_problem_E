@@ -1,0 +1,59 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2100;
+int cnt[30], n, k, vis[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		for (int i = 0; i < 26; i++)
+			cnt[i] = 0;
+		cin >> n >> k;
+		for (int i = 0; i < n; i++) {
+			char c; 
+			cin >> c;
+			cnt[c - 'a']++;
+		}
+		int ans = 1;
+		for (int i = n; i >= 1; i--) {
+			int tmp = k;
+			k %= i;
+			vector<int> need;
+			for (int j = 0; j < i; j++)
+				vis[j] = false;
+			for (int j = 0; j < i; j++)
+				if (!vis[j]) {
+					int res = 0, s = j;
+					while (!vis[s]) {
+						res++;
+						vis[s] = true;
+						(s += k) %= i;
+					}
+					need.push_back(res);
+				}
+			sort(need.begin(), need.end()), reverse(need.begin(), need.end());
+			multiset<int> s;
+			for (int i = 0; i < 26; i++)
+				s.insert(cnt[i]);
+			bool flag = true;
+			for (auto x: need) {
+				int t = *--s.end();
+				s.erase(--s.end());
+				if (t >= x) {
+					t -= x;
+					s.insert(t);
+				}
+				else
+					flag = false;
+			}
+			if (flag)
+				ans = max(ans, i);
+			k = tmp;
+		}
+		cout << ans << '\n';
+	}
+	return 0;
+}

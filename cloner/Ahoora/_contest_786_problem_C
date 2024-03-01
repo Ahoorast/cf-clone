@@ -1,0 +1,53 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10, SQ = 320;
+int n, a[N], nxt[N], s[SQ][N], last[N];
+ 
+int get(int i, int k) {
+	int box = i / SQ, st = box * SQ, ted = 0;
+	for (int j = i; j >= st; j--) {
+		ted += (nxt[j] > i);
+		if (ted == k + 1)
+			return j;
+	}
+	for (int j = box - 1; j >= 0; j--) {
+		if (ted + s[j][i + 1] >= k + 1) {
+			int l = j * SQ, r = min((j + 1) * SQ, n);
+			for (int x = r - 1; x >= l; x--) {
+				ted += (nxt[x] > i);
+				if (ted == k + 1)
+					return x;
+			}
+		}
+		ted += s[j][i + 1];
+	}
+	return -1;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 0; i < n; i++)
+		cin >> a[i], a[i]--;
+	fill(last, last + n, n);
+	for (int i = n - 1; i >= 0; i--) {
+		nxt[i] = last[a[i]];
+		last[a[i]] = i;
+	}
+	for (int i = 0; i < n; i++)
+		s[i / SQ][nxt[i]]++;
+	for (int i = 0; i < SQ; i++)
+		for (int j = n - 1; j >= 0; j--)
+			s[i][j] += s[i][j + 1];
+	for (int i = 1; i <= n; i++) {
+		int x = n - 1, res = 0;
+		while (x != -1) {
+			x = get(x, i);
+			res++;
+		}
+		cout << res << ' ';
+	}
+	cout << '\n';
+	return 0;
+}

@@ -1,0 +1,46 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 100;
+int n, m;
+bool vis[N], mark[N];
+vector<int> adj[N];
+ 
+void read() {
+	cin >> n >> m;
+	for (int i = 1, a; i <= n; i++) {
+		cin >> a;
+		if (a)
+			mark[i] = true;
+	}
+	for (int i = 1, v, u; i < n; i++) {
+		cin >> v >> u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+}
+ 
+int dfs(int root, int c = 0) {
+	if (mark[root])
+		c++;
+	else
+		c = 0;
+	if (c > m)
+		return 0;
+	//cout << root << ' ' << c << endl;
+	bool leaf = true;
+	int res = 0;
+	vis[root] = true;
+	for (auto u: adj[root]) 
+		if (!vis[u]) 
+			res += dfs(u, c), leaf = false;
+//	cout << leaf << endl;
+	return res + leaf;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	read();
+	cout << dfs(1) << endl;
+	return 0;
+}

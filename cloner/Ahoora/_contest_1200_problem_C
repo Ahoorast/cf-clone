@@ -1,0 +1,19 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	long long n, m, g;
+	cin >> n >> m >> Q;
+	g = __gcd(n, m);
+	n /= g, m /= g;
+	while (Q--) {
+		long long sx, sy, ex, ey;
+		cin >> sx >> sy >> ex >> ey;
+		sy--, ey--;
+		long long t1 = sy / (sx == 1? n: m), t2 = ey / (ex == 1? n: m);
+		cout << (t1 == t2? "YES": "NO") << endl;
+	}
+	return 0;
+}

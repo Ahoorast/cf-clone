@@ -1,0 +1,56 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 100, mod = 1LL * 1000 * 1000 * 1000 + 7;
+ 
+struct DSU {
+	vector<int> par, size;
+	int comp;
+	DSU(const int &n) {
+		comp = n;
+		par.push_back(-1), size.push_back(-1);
+		for (int i = 1; i <= n; i++)
+			par.push_back(i), size.push_back(1);
+	}
+	int findRoot(int v) {
+		return par[v] == par[par[v]]? par[v]: par[v] = findRoot(par[v]);
+	}
+	bool Union(int v, int u) {
+		int pv = findRoot(v), pu = findRoot(u);
+		if (pv != pu) {
+			if (size[pv] > size[pu])
+				swap(pv, pu);
+			par[pv] = par[pu], size[pv] += size[pu], size[pu] = size[pv], comp--;
+			return false;
+		}
+		return true;
+	}
+	int sz(int v) {
+		return size[findRoot(v)];
+	}
+	bool check(int v, int u) {
+		return findRoot(v) == findRoot(u);
+	}
+};
+ 
+long long Pow(long long a, long long b) {
+	return b? (b & 1? a: 1) % mod * Pow(a * a % mod, b >> 1) % mod: 1;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int n, K;
+	cin >> n >> K;
+	DSU G(n);
+	for (int i = 1, v, u, t; i < n; i++) {
+		cin >> v >> u >> t;
+		if (!t)
+			G.Union(v, u);
+	}
+	int ans = Pow(n, K);
+	for (int i = 1; i <= n; i++)
+		if (G.findRoot(i) == i)
+			ans = ((ans - Pow(G.sz(i), K)) % mod + mod) % mod; //cout << G.sz(i) << '\n';
+	cout << ans << '\n';
+	return 0;
+}

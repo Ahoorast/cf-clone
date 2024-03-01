@@ -1,0 +1,66 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 5010;
+bool isP[N][N], cool[N];
+ 
+ 
+void test() {
+	string t, s;
+	cin >> t;
+	int n = t.size();
+	s += '0';
+	for (int i = 0; i < n; i++)
+		s += t[i];
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= n; j++)
+			isP[i][j] = false;
+	for (int i = 1; i <= n; i++)
+		isP[i][i] = true;
+	for (int i = 1; i + 1 <= n; i++)
+		isP[i][i + 1] = s[i] == s[i + 1];
+	for (int i = n; i >= 1; i--)
+		for (int j = n; j >= i + 2 && j <= n; j--) {
+			isP[i][j] = isP[i + 1][j - 1] && s[i] == s[j];
+		}
+	for (int i = 1; i <= n; i++) 
+		cool[i] = false;
+	for (int i = 1; n - i + 1 > i; i++) {
+		cool[i] = true;
+		for (int j = 1; j <= i; j++)
+			cool[i] &= s[j] == s[n - j + 1];
+	}
+	int pref = 1, suf = n + 1;
+	for (int i = 1; i <= n; i++)
+		for (int j = n; j > i; j--) {
+			bool res = true;
+			res &= cool[min(i, n - j + 1)];
+			if (i > n - j + 1) 
+				res &= isP[n - j + 2][i];
+			else if (n - j + 1 > i) 
+				res &= isP[j][n - i];
+			if (res) 
+				if (i + n - j + 1 >= pref + n - suf + 1)
+					pref = i, suf = j;
+		}
+	for (int i = 1; i <= n; i++) {
+		if (isP[1][i] && i > pref + n - suf + 1)
+			pref = i, suf = n + 1;
+		if (isP[i][n] && n - i + 1 > pref + n - suf + 1)
+			pref = 0, suf = i;
+	}
+	for (int i = 1; i <= pref; i++)
+		cout << s[i];
+	for (int i = suf; i <= n; i++)
+		cout << s[i];
+	cout << '\n';
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) 
+		test();
+	return 0;
+}

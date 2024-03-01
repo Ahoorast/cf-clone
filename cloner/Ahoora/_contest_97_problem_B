@@ -1,0 +1,33 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 10000 + 10;
+int n;
+pair<int, int> p[N];
+vector<pair<int, int>> ans;
+ 
+void solve(int l, int r) {
+	if (l + 1 == r) 
+		return;
+	int mid = l + r >> 1;
+	solve(l, mid), solve(mid, r);
+	for (int i = l; i < r; i++)
+		if (i != mid)
+			ans.push_back({p[mid].first, p[i].second});
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 0; i < n; i++) 
+		cin >> p[i].first >> p[i].second;
+	sort(p, p + n);
+	solve(0, n);
+	for (int i = 0; i < n; i++)
+		ans.push_back(p[i]);
+	sort(ans.begin(), ans.end()), ans.resize(unique(ans.begin(), ans.end()) - ans.begin());
+	cout << (int)(ans.size()) << '\n';
+	for (auto it: ans)
+		cout << it.first << ' ' << it.second << '\n';
+	return 0;
+}

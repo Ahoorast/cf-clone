@@ -1,0 +1,45 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int maxn = 1e6 + 100;
+unsigned long long arr[maxn], arr1[maxn];
+int main()
+{
+	int k = 0;
+	for(int i = 1; i <= maxn; i++)
+	for(int j = i; j <= maxn; j += i)
+	arr[j]++;
+	for(unsigned long long i = 1; i <= maxn; i++)
+	if(arr[i] == 2)
+	{
+		arr1[k] = i * i;
+		k++;
+	}
+	unsigned long long t, n;
+	cin >> t;
+	for(int i = 0; i < t; i++)
+	{
+		cin >> n;
+		int l = 0, r = k - 1, mid, cnt = 0, cnt1 = 0;
+		while(r - l >= 1)
+		{
+			mid = (r - l) / 2 + l;
+			if(arr1[mid] > n)
+			r = mid;
+			else if(arr1[mid] < n)
+			l = mid;
+			else if(arr1[mid] == n)
+			{
+				cout << "YES" << endl;
+				cnt++;
+				break;
+			}
+			if(r - l == 1)
+			cnt1++;
+			if(cnt1 == 2)
+			break;
+		}
+		if(cnt == 0)
+		cout << "NO" << endl;
+	}
+	return 0;
+}

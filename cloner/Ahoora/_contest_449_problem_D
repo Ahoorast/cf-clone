@@ -1,0 +1,31 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 1000 + 10, LG = 22, mod = 1LL * 1000 * 1000 * 1000 + 7;
+int n, a[N], dp[1 << LG];
+ 
+int add(int x, int y) {
+	return ((x + y) % mod + mod) % mod;
+}
+ 
+long long Pow(long long a, long long b) {
+	return b? (b & 1? a: 1) % mod * Pow(a * a % mod, b >> 1) % mod: 1;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		cin >> a[i];
+		dp[a[i]]++;
+	}
+	for (int i = 0; i < LG; i++)
+		for (int msk = 0; msk < 1 << LG; msk++)
+			if (((1 << i) & (msk)) == 0)
+				dp[msk] += dp[msk ^ (1 << i)];
+	int ans = 0;
+	for (int i = 1; i < 1 << LG; i++)
+		ans = add(ans, (__builtin_popcount(i) % 2? 1: -1) * add(Pow(2, dp[i]), -1));
+	cout << add(add(Pow(2, n), -1), -ans) << '\n';
+	return 0;
+}

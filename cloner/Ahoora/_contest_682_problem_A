@@ -1,0 +1,20 @@
+/*
+ 
+ 
+*/
+#include <bits/stdc++.h>
+using namespace std;
+#define		debug(x)	cout << #x << '=' << x << endl
+ 
+int main()
+{
+	ios_base::sync_with_stdio(false), cin.tie(NULL);
+	long long n, m, ans = 0, t;
+	cin >> n >> m;
+	for(long long i = 1; i <= n; i++) {
+		t = 5 - (i % 5);
+		if(t <= m) ans += (m - t) / 5 + 1;
+	}
+	cout << ans;
+	return 0;
+}

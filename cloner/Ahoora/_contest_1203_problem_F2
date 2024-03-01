@@ -1,0 +1,51 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int N = 110;
+pair<int, int> pos[N], neg[N];
+int n, r, ans, Size[2], dp[N][300000];
+ 
+void read() {
+	Size[1] = 1;
+	cin >> n >> r;
+	for (int i = 0; i < n; i++) {
+		int a1, a2;
+		cin >> a1 >> a2;
+		if (a2 >= 0)
+			pos[Size[0]].first = a1, pos[Size[0]++].second = a2;
+		else
+			neg[Size[1]].first = a1, neg[Size[1]++].second = a2;
+	}
+}
+ 
+void solvePositive() {
+	bool mark[N] = {};
+	for (int t = 0; t <= 120; t++)
+		for (int i = 0; i < Size[0]; i++)
+			if (pos[i].first <= r && !mark[i])
+				r += pos[i].second, ans++, mark[i] = true;
+}
+ 
+bool cmp(pair<int, int> x, pair<int, int> y) {
+	return x.second + x.first < y.second + y.first;
+}
+ 
+void solveNegative() {
+	sort(neg + 1, neg + Size[1], cmp);
+	for (int i = 1; i < Size[1]; i++) 
+		for (int j = 0; j <= r + 10; j++)
+			 if (j + neg[i].second >= 0 && neg[i].first <= j)
+				dp[i][j] = max(dp[i - 1][j], dp[i - 1][j + neg[i].second] + 1);
+			 else
+				dp[i][j] = dp[i - 1][j];
+	ans += dp[Size[1] - 1][r];
+}
+ 
+int main() {
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	read();
+	solvePositive();
+	solveNegative();
+	cout << ans << endl;
+	return 0;
+}

@@ -1,0 +1,30 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int mod = 1LL * 1000 * 1000 * 1000 + 7;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	string s;
+	cin >> s;
+	s += 'b', s += 'a';
+	int sz = s.size(), cnt = 0;
+	long long ans = 1;
+	vector<int> vec;
+	bool seenB = false;
+	for (int i = 0; i < sz; i++) {
+		seenB |= s[i] == 'b';
+		if (seenB && s[i] == 'a') {
+			seenB = false;
+			if (cnt)
+				vec.push_back(cnt);
+			cnt = 1;
+		}
+		else
+			cnt += s[i] == 'a';
+	}
+	for (auto it: vec)
+		(ans *= it + 1) %= mod;
+	cout << --ans << endl;
+	return 0;
+}

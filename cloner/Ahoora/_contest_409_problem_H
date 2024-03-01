@@ -1,0 +1,9 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+	long long thistime, itworkss;
+	cin >> thistime >> itworkss;
+	cout << thistime + itworkss;
+	return 0;
+}

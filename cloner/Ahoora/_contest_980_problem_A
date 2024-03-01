@@ -1,0 +1,20 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int maxn = 100 * 1000 + 100;
+int a[maxn];
+ 
+int main() {
+	string s;
+	cin >> s;
+	int cnt[2] = {0, 0}, sz = s.size();
+	for (int i = 0; i < sz; i++)
+		(s[i] == '-'? cnt[0]++: cnt[1]++);
+	if (cnt[1] == 0)
+		return cout << "YES", 0;
+	if (cnt[0] % (cnt[1]) == 0)
+		cout << "YES";
+	else
+		cout << "NO";
+	return 0;
+}

@@ -1,0 +1,60 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 5000 + 2;
+int n, m, a[N], b[N], g[N], f[N];
+vector<pair<int, int>> adj[N];
+bool mark[N], vis[N];
+ 
+void read() {
+	cin >> n;
+	for (int i = 1, v, u; i < n; i++) {
+		cin >> v >> u;
+		adj[v].push_back({u, i});
+		adj[u].push_back({v, i});
+	}
+	cin >> m;
+	for (int i = 1; i <= m; i++)
+		cin >> a[i] >> b[i] >> g[i];
+}
+ 
+int dfs(int root, int v, int i) {
+	int res = 1 << 28;
+	vis[root] = true;
+	if (root == v)
+		mark[root] = true;
+	for (auto u: adj[root])
+		if (!vis[u.first]) {
+			int x = dfs(u.first, v, i);
+			if (mark[u.first]) {
+				f[u.second] = max(f[u.second], g[i]);
+				res = min(res, f[u.second]);
+				res = min(res, x);
+				mark[root] = true;
+			}
+		}
+	return res;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	read();
+	for (int i = 1; i <= m; i++) {
+		dfs(a[i], b[i], i);
+		memset(vis, false, sizeof(vis));
+		memset(mark, false, sizeof(mark));
+	}
+	for (int i = 1; i <= n; i++)
+		if (!f[i])
+			f[i] = 1000 * 1000;
+	for (int i = 1; i <= m; i++) {
+		if (dfs(a[i], b[i], i) != g[i])
+			return cout << -1 << endl, 0;
+		memset(vis, false, sizeof(vis));
+		memset(mark, false, sizeof(mark));
+	}
+	for (int i = 1; i < n; i++)
+		cout << f[i] << ' ';
+	cout << endl;
+	return 0;
+}

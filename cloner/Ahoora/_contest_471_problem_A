@@ -1,0 +1,31 @@
+/*
+ 
+ 
+*/
+#include <bits/stdc++.h>
+using namespace std;
+#define		debug(x)	cout << #x << '=' << x << endl
+ 
+string ans[5];
+int n, a[12], b[12];
+void read()
+{
+	ans[0] = "Alien", ans[1] = "Bear", ans[2] = "Elephant"; 
+	for(int i = 0; i < 6; i++) cin >> a[i];
+	for(int i = 0; i < 6; i++) b[a[i]]++;
+}
+void solve()
+{
+	int l = 0, l1 = 0;
+	for(int i = 0; i < 11; i++) if(b[i] >= 4) l1 = i, l = 10;
+	for(int i = 0; i < 11; i++) if((b[l1] == 4 && b[i] == 2) || b[l1] == 6) l = 2;
+	if(l != 2 && l != 0) l = 1;
+	cout << ans[l];
+}
+int main()
+{
+	ios_base::sync_with_stdio(false), cin.tie(NULL);
+	read();
+	solve();
+	return 0;
+}

@@ -1,0 +1,44 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1010;
+int n, m, d[N], from[N * 5], to[N * 5];
+bool mark[2][N];
+vector<int> adj[N], jda[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m;
+	for (int i = 0, v, u; i < m; i++) {
+		cin >> v >> u;
+		--v, --u;
+		from[i] = v, to[i] = u;
+		adj[v].push_back(u);
+		jda[u].push_back(v);
+	}
+	mark[0][0] = true, mark[1][n - 1] = true;
+	for (int v = 0; v < n; v++)
+		for (auto u: jda[v])
+			mark[0][v] |= mark[0][u];
+	for (int v = n - 1; v >= 0; v--)
+		for (auto u: adj[v])
+			mark[1][v] |= mark[1][u];
+	for (int i = 1; i <= n; i++)
+		for (int v = 0; v < n; v++) {
+			for (auto u: adj[v])
+				if (mark[0][v] && mark[1][u])
+					d[v] = min(d[v], d[u] - 1);
+			for (auto u: jda[v])
+				if (mark[0][u] && mark[1][v])
+					d[v] = min(d[v], d[u] + 2);
+		}
+	vector<int> o;
+	for (int i = 0; i < m; i++)
+		o.push_back((mark[0][from[i]] && mark[1][to[i]]? d[to[i]] - d[from[i]]: 1));
+	if (*min_element(o.begin(), o.end()) <= 0 || *max_element(o.begin(), o.end()) > 2)
+		return cout << "No\n", 0;
+	cout << "Yes\n";
+	for (auto e: o)
+		cout << e << '\n';
+	return 0;
+}

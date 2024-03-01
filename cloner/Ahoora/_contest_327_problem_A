@@ -1,0 +1,38 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int maxn = 110;
+int bef[maxn], af[maxn], a[maxn];
+int main()
+{
+	int l, r, n, count = 0, ans = 0, ans1 = 0;
+	cin >> n;
+	for(int i = 0; i < n; i++)
+	cin >> a[i];
+	for(int i = 0; i < n; i++)
+	{
+		if(a[i] == 1)
+		count++;
+		bef[i + 1] = count;
+	}
+	count = 0;
+	for(int i = n - 1; i >= 0; i--)
+	{
+		if(a[i] == 1)
+		count++;
+		af[i] = count;
+	}
+	for(int i = 0; i < n; i++)
+	{
+		for(int j = i; j < n; j++)
+		{
+			ans1 = 0;
+			for(int k = i; k <= j; k++)
+			if(a[k] == 0)	ans1++;
+			ans1 = bef[i] + ans1 + af[j + 1];
+			if(ans1 > ans)
+			ans = ans1;
+		}
+	}
+	cout << ans << endl;
+	return 0;
+}

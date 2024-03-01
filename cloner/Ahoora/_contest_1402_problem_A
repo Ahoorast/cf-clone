@@ -1,0 +1,86 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10, mod = 1LL * 1000 * 1000 * 1000 + 7;
+int n, h[N], w[N], L[N], R[N], s[N], hh[N];
+vector<int> pos[N];
+ 
+int sum(int x, int y) {
+	return (x + y) % mod;
+}
+ 
+int mul(int x, int y) {
+	return 1LL * x * y % mod;
+}
+ 
+int sub(int x, int y) {
+	return ((x - y) % mod + mod) % mod;
+}
+ 
+int getL(int i, int x) {
+	return h[i] < x? i: getL(L[i], x);
+}
+ 
+int getR(int i, int x) {
+	return h[i] < x? i: getR(R[i], x);
+}
+ 
+int cal(int w) {
+	return 1LL * w * (w + 1) / 2 % mod;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	vector<int> vec;
+	for (int i = 1; i <= n; i++)
+		cin >> h[i], hh[i] = h[i], vec.push_back(h[i]);
+	sort(vec.begin(), vec.end());
+	vec.resize(unique(vec.begin(), vec.end()) - vec.begin());
+	for (int i = 1; i <= n; i++)
+		hh[i] = lower_bound(vec.begin(), vec.end(), hh[i]) - vec.begin();
+	int sz = (int)(vec.size());
+	for (int i = 1; i <= n; i++)
+		pos[hh[i]].push_back(i);
+	for (int i = 1; i <= n; i++)
+		if (pos[hh[i]].back() != n + 1)
+			pos[hh[i]].push_back(n + 1);
+	for (int i = 1; i <= n; i++)
+		cin >> w[i];
+	for (int i = 1; i <= n; i++) {
+		s[i] = sum(s[i - 1], w[i]);
+		L[i] = getL(i - 1, h[i]);
+	}
+	for (int i = n; i >= 1; i--) 
+		R[i] = getR(i + 1, h[i]);
+	int ans = 0;
+	vector<int> v;
+	for (int i = 1; i <= n; i++)
+		v.push_back(i);
+	sort(v.begin(), v.end(), [](int x, int y) {
+			return (L[x] != L[y]? L[x] < L[y]: R[x] < R[y]);
+			});
+	for (int x = 0; x < n; x++) {
+		if (x == 0 || L[v[x]] != L[v[x - 1]] || R[v[x]] != R[v[x - 1]]) {
+			int i = v[x];
+			int len = sub(s[R[i] - 1], s[L[i]]);
+			int t = cal(len);
+			int last = 0;
+			auto x = lower_bound(pos[hh[i]].begin(), pos[hh[i]].end(), L[i]);
+			int cnt = 0;
+			while (x != pos[hh[i]].end()) {
+				int l = sub(s[min(*x - 1, R[i] - 1)], s[max(last, L[i])]);
+				if (*x >= R[i])
+					cnt++;
+				if (cnt >= 2)
+					break;
+				t = sub(t, cal(l));
+				last = *x;
+				x++;
+			}
+			(ans += mul(cal(h[i]), t)) %= mod;
+		}
+	}
+	cout << ans << '\n';
+	return 0;
+}

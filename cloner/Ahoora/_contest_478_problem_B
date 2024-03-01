@@ -1,0 +1,13 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	long long n, m;
+	cin >> n >> m;
+	long long mx = (n - m + 1) * (n - m) / 2, t = n / m, mn = 0;
+	mn += m * t * (t - 1) / 2;
+	mn += t * (n % m);
+	cout << mn << ' ' << mx << endl;
+	return 0;
+}

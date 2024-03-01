@@ -1,0 +1,16 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int N = 200;
+int n, a[N], t;
+ 
+int main() {
+	int n, k;
+	t = 1;
+	cin >> n >> k;
+	for (int i = 1; i < n - k; i++)
+		cout << i << ' ';
+	for (int i = n; i >= n - k; i--)
+		cout << i << ' ';
+	return 0;
+}

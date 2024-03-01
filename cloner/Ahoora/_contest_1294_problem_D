@@ -1,0 +1,22 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int N = 4 * 1000 * 100 + 100;
+map<int, bool> mp;
+int A[N];
+ 
+int main() {
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q, x, MEX = 0;
+	cin >> Q >> x;
+	while (Q--) {
+		int y;
+		cin >> y;
+		mp[A[y % x] * x + y % x] = true;
+		A[y % x]++;
+		while (mp[MEX])
+			MEX++;
+		cout << MEX << endl;
+	}
+	return 0;
+}

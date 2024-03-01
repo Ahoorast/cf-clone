@@ -1,0 +1,46 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+	int n, m, k;
+	string s, a[2100];
+	cin >> n >> m >> k;
+	long long ans = 0, cnt = 0;
+	for(int i = 0; i < n; i++)
+	{
+		cnt = 0;
+		cin >> s;
+		for(int j = 0; j < m; j++)
+		a[j] += s[j];
+		for(int j = 0; j < m; j++)
+		{
+			if(s[j] == '.')
+			cnt++;
+			if(s[j] == '*' || j == m - 1)
+			{
+				if(cnt < (k - 1))
+				cnt = k - 1;
+				ans += cnt - (k - 1);
+				cnt = 0;
+			}
+		}
+	}
+	cnt = 0;
+	for(int i = 0; i < m; i++)
+	for(int j = 0; j < n; j++)
+	{
+		if(a[i][j] == '.')
+		cnt++;
+		if(a[i][j] == '*' || j == n - 1)
+		{
+			if(cnt < k - 1)
+			cnt = k - 1;
+			ans += cnt - (k - 1);
+			cnt = 0;
+		}
+	}
+	if(k == 1)
+	ans /= 2;
+	cout << ans;
+	return 0;
+}

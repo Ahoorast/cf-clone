@@ -1,0 +1,14 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		long long a, b, x, y;
+		cin >> a >> b >> x >> y;
+		cout << max(max(b - y - 1, y) * a, max(a - x - 1, x) * b) << endl;
+	}
+	return 0;
+}

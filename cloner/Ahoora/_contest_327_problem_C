@@ -1,0 +1,27 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const unsigned long long mod = 1LL * 1000 * 1000 * 1000 + 7;
+const unsigned long long N = 1000 * 100 + 100;
+char c[N];
+unsigned long long S1;
+unsigned long long n, k;
+ 
+unsigned long long poww(unsigned long long a, unsigned long long b) {
+	return b? (b & 1? a: 1) % mod * poww(a * a % mod, b >> 1) % mod: 1;
+}
+ 
+unsigned long long ans(unsigned long long t, unsigned long long l) {
+	return t != 1? (((t & 1)) * poww(2, (t - 1) * l) + ans(t / 2, l) % mod * (1 + poww(2, t / 2 * l)) % mod) % mod: 1;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> c >> n;
+	k = strlen(c);
+	for (unsigned long long i = 0; i < k; i++)
+		if (c[i] == '0' || c[i] == '5')
+			(S1 += poww(2, i)) %= mod;
+	cout << (ans(n, k)) * S1 % mod << endl;
+	return 0;
+}

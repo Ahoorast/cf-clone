@@ -1,0 +1,60 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 531440 + 100;
+int n;
+string s;
+vector<int> vec[N];
+unordered_map<int, int> mp[N];
+ 
+void solve() {
+	int hsh[2] = {0, 0}, len[2];
+	for (int i = 0; i < 2; i++) {
+		string a;
+		cin >> a;
+		len[i] = (int)(a.size());
+		for (int j = 0; j < len[i]; j++)
+			hsh[i] = hsh[i] * 27 + (a[j] - 'a' + 1);
+	}
+	if (vec[hsh[0]].size() > vec[hsh[1]].size())
+		swap(hsh[0], hsh[1]), swap(len[0], len[1]);
+	if (mp[hsh[0]].count(hsh[1])) {
+		cout << mp[hsh[0]][hsh[1]] << '\n';
+		return;
+	}
+	int ans = 1 << 30;
+	for (auto x: vec[hsh[0]]) {
+		auto it = upper_bound(vec[hsh[1]].begin(), vec[hsh[1]].end(), x);
+		if (it != vec[hsh[1]].end()) {
+			int y = *it;
+			ans = min(ans, max(x + len[0], y + len[1]) - min(x, y));
+		}
+		if (it != vec[hsh[1]].begin()) {
+			it--;
+			int y = *it;
+			ans = min(ans, max(x + len[0], y + len[1]) - min(x, y));
+		}
+	}
+	if (ans == 1 << 30)
+		ans = -1;
+	mp[hsh[0]][hsh[1]] = ans;
+	cout << ans << '\n';
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> s;
+	n = (int)(s.size());
+	for (int len = 1; len <= 4; len++)
+		for (int i = 0; i + len <= n; i++) {
+			int hsh = 0;
+			for (int j = i; j < i + len; j++)
+				hsh = hsh * 27 + (s[j] - 'a' + 1);
+			vec[hsh].push_back(i);
+		}
+	int Q;
+	cin >> Q;
+	while (Q--) 
+		solve();
+	return 0;
+}

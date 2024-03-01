@@ -1,0 +1,40 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int n, k;
+		string s;
+		cin >> n >> k >> s;
+		vector<int> vec;
+		int last = 0;
+		s += '1';
+		bool first = false;
+		int ans = 0;
+		for (int i = 0; i <= n; i++) {
+			if (s[i] == '1') {
+				if (!first) {
+					first = true;
+					last -= k;
+					last = max(last, 0);
+					last += (i == n) * k;
+					ans += last / (k + 1) + (last % (k + 1) != 0);
+				}
+				else {
+					last += (i == n) * k;
+					last -= 2 * k;
+					last = max(last, 0);
+					ans += last / (k + 1) + (last % (k + 1) != 0);
+				}
+				last = 0;
+			}
+			else
+				last++;
+		}
+		cout << ans << '\n';
+	}
+	return 0;
+}

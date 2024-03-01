@@ -1,0 +1,64 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 500 * 1000 + 10;
+int n, sz[N], h[N], cnt[N], val[N];
+bool ans[N];
+vector<int> adj[N];
+vector<pair<int, int>> query[N];
+ 
+int dfs_sz(int v) {
+	for (auto u: adj[v]) {
+		h[u] = h[v] + 1;
+		sz[v] += dfs_sz(u);
+	}
+	return ++sz[v];
+}
+ 
+void add(int v, int bg = 0) {
+	cnt[h[v]] ^= val[v];
+	for (auto u: adj[v])
+		if (u ^ bg)
+			add(u);
+}
+ 
+void dfs(int v, bool kp = false) {
+	int bg = 0;
+	for (auto u: adj[v])
+		if (sz[u] > sz[bg])
+			bg = u;
+	for (auto u: adj[v])
+		if (u ^ bg)
+			dfs(u);
+	if (bg)
+		dfs(bg, 1);
+	add(v, bg);
+	for (auto x: query[v])
+		ans[x.first] = __builtin_popcount(cnt[x.second]) <= 1;
+	if (!kp) 
+		add(v);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> n >> Q;
+	for (int i = 2, p; i <= n; i++) {
+		cin >> p;
+		adj[p].push_back(i);
+	}
+	for (int i = 1; i <= n; i++) {
+		char c;
+		cin >> c;
+		val[i] = 1 << (c - 'a');
+	}
+	dfs_sz(1);
+	for (int i = 0, v, k; i < Q; i++) {
+		cin >> v >> k;
+		query[v].push_back({i, k - 1});
+	}
+	dfs(1);
+	for (int i = 0; i < Q; i++)
+		cout << (ans[i]? "Yes": "No") << '\n';
+	return 0;
+}

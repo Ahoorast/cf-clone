@@ -1,0 +1,83 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 100;
+int dp[N][3], pos[N], n;
+ 
+void read() {
+	cin >> n;
+	int a;
+	for (int i = 0; i < n; i++)
+		cin >> a, pos[a]++;
+}
+ 
+void MIN() {
+	for (int i = 1; i < N; i++) {
+		if (pos[i] == 0)
+			dp[i][0] = dp[i - 1][0], dp[i][1] = dp[i - 1][1], dp[i][2] = dp[i - 1][2];
+		else {
+			dp[i][0] = dp[i - 1][0] + 1;
+			if (pos[i - 1] > 0)
+				dp[i][0] = min(dp[i][0], dp[i - 1][1]);
+			else
+				dp[i][0] = min(dp[i][0], dp[i - 1][1] + 1);
+			dp[i][0] = min(dp[i][0], dp[i - 1][2] + 1);
+			if (i > 1 && dp[i - 1][2] == dp[i - 2][2] + (pos[i - 1] > 0) && pos[i - 2] > 0)
+				dp[i][0] = min(dp[i][0], dp[i - 1][2]);
+			dp[i][1] = dp[i - 1][0] + 1;
+			dp[i][1] = min(dp[i][1], dp[i - 1][1] + 1);
+			if (pos[i - 1] > 0)
+				dp[i][1] = min(dp[i - 1][2], dp[i][1]);
+			else
+				dp[i][1] = min(dp[i - 1][2] + 1, dp[i][1]);
+			dp[i][2] = dp[i - 1][0] + 1;
+			dp[i][2] = min(dp[i][2], dp[i - 1][1] + 1);
+			dp[i][2] = min(dp[i][2], dp[i - 1][2] + 1);
+		}
+	}
+	cout << min(min(dp[N - 1][0], dp[N - 1][1]), dp[N - 1][2]) << ' ';
+}
+ 
+void MIN1() {
+	bool POS[N + 10] = {};
+	for (int i =  N - 1; i >= 0; i--) {
+		bool flag = false;
+		if (pos[i])
+			for (int j = 1; j >= -1; j--)
+				if (POS[i + j]) {
+					flag = true;
+					POS[i + j] = true;
+				}
+		if (flag == false && pos[i])
+			POS[i - 1] = true;
+	}
+	int ans = 0;
+	for (int i = 0; i < N; i++)
+		ans += POS[i];
+	cout << ans << endl;
+}
+ 
+void MAX() {
+ 	int ans = 0, last = -1;
+	for (int i = 1; i < N; i++)
+		if (pos[i] > 3)
+			pos[i] = 3;
+	for (int i = 1; i < N; i++) {
+		for (int j = 1; j <= pos[i]; j++)
+			for (int k = -1; k <= 1; k++)
+				if (i + k > last) {
+					last = i + k;
+					ans++;
+					break;
+				}
+	}
+	cout << ans << endl;
+}
+ 
+int main() {
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	read();
+	MIN1();
+	MAX();
+	return 0;
+}

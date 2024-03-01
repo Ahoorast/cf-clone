@@ -1,0 +1,87 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 1000 + 10;
+long long mx[N], mn[N];
+int n;
+vector<int> adj[N];
+pair<int, int> a[N];
+bool seen[N];
+ 
+struct DSU {
+	vector<int> par, size;
+	int comp;
+	DSU(const int &n) {
+		comp = n;
+		par.push_back(-1), size.push_back(-1);
+		for (int i = 1; i <= n; i++)
+			par.push_back(i), size.push_back(1);
+	}
+	int findRoot(int v) {
+		return par[v] == par[par[v]]? par[v]: par[v] = findRoot(par[v]);
+	}
+	bool Union(int v, int u) {
+		int pv = findRoot(v), pu = findRoot(u);
+		if (pv == pu)
+			return true;
+		if (size[pv] > size[pu])
+			swap(pv, pu);
+		par[pv] = par[pu], size[pu] += size[pv], comp--;
+		return false;
+	}
+	int sz(int v) {
+		return size[findRoot(v)];
+	}
+	bool check(int v, int u) {
+		return findRoot(v) == findRoot(u);
+	}
+};
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 1; i <= n; i++)
+		cin >> a[i].first, a[i].second = i;
+	sort(a + 1, a + n + 1);
+	for (int i = 1, v, u; i < n; i++) {
+		cin >> v >> u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+	DSU G(n);
+	for (int i = 1; i <= n; i++) {
+		long long sum = 0;
+		for (auto u: adj[a[i].second])
+			if (seen[u]) {
+				int x = G.sz(u);
+				mx[a[i].second] += (sum + 1) * x;
+				sum += x;
+			}
+		for (auto u: adj[a[i].second])
+			if (seen[u]) 
+				G.Union(a[i].second, u);
+		seen[a[i].second] = true;
+	}
+	for (int i = 1; i <= n; i++)
+		seen[i] = false;
+	reverse(a + 1, a + n + 1);
+	DSU T(n);
+	for (int i = 1; i <= n; i++) {
+		long long sum = 0;
+		for (auto u: adj[a[i].second])
+			if (seen[u]) {
+				int x = T.sz(u);
+				mn[a[i].second] += (sum + 1) * x;
+				sum += x;
+			}
+		for (auto u: adj[a[i].second])
+			if (seen[u])
+				T.Union(a[i].second, u);
+		seen[a[i].second] = true;
+	}
+	long long ans = 0;
+	for (int i = 1; i <= n; i++) 
+		ans += 1LL * a[i].first * (mx[a[i].second] - mn[a[i].second]);
+	cout << ans << '\n';
+	return 0;
+}

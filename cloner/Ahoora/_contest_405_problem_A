@@ -1,0 +1,25 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+	int n, arr[10000];
+	cin >> n;
+	for(int i = 0; i < n; i++)
+	cin >> arr[i];
+	for(int i = 0; i < n; i++)
+	{
+		int small = 11000, smalnum = 0;
+		for(int j = i; j < n; j++)
+		{
+			if(small > arr[j])
+			{
+				small = arr[j];
+				smalnum = j;
+			}
+		}
+		swap(arr[i], arr[smalnum]);
+	}
+	for(int i = 0; i < n; i++)
+	cout << arr[i] << " ";
+	return 0;
+}

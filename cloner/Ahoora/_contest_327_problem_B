@@ -1,0 +1,21 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 10000 + 10;
+bool Av[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int n;
+	cin >> n;
+	int l = 2;
+	while (n--) {
+		while (Av[l])
+			l++;
+		cout << l << ' ';
+		for (int i = l; i < N; i += l)
+			Av[i] = true;
+	}
+	cout << endl;
+	return 0;
+}

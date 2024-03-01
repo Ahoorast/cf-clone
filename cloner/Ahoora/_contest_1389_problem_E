@@ -1,0 +1,21 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		long long m, d, w;
+		cin >> m >> d >> w;
+		long long n = min(m, d);
+		if ((d - 1) % w == 0)
+			cout << n * (n - 1) / 2 << '\n';
+		else {
+			long long k = (d - 1) * w / __gcd(d - 1, w);
+			k /= (d - 1);
+			long long r = n % k, t = n / k;
+			cout << r * (t + 1) * t / 2 + (k - r) * t * (t - 1) / 2 << '\n';
+		}
+	}
+	return 0;
+}

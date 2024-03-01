@@ -1,0 +1,29 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 + 100;
+int a[N], b[N], t[N], n, m;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m;
+	for (int i = 0; i < n; i++)
+		cin >> a[i];
+	for (int i = 0; i < n; i++)
+		cin >> b[i];
+	sort(b, b + n);
+	int ans = 1 << 30;
+	for (int j = 0; j < n; j++) {
+		int d = (a[0] > b[j]? m - a[0] + b[j]: b[j] - a[0]);
+		for (int i = 0; i < n; i++)
+			t[i] = (a[i] + d) % m;
+		sort(t, t + n);
+		bool res = true;
+		for (int i = 0; i < n; i++)
+			res &= t[i] == b[i];
+		if (res)
+			ans = min(ans, d);
+	}
+	cout << ans << endl;
+	return 0;
+}

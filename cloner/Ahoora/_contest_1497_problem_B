@@ -1,0 +1,50 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int n, m;
+		cin >> n >> m;
+		vector<int> a(n);
+		map<int, int> cnt;
+		for (auto &x: a) {
+			cin >> x;
+			x %= m;
+			cnt[x]++;
+		}
+		int ans = 0;
+		if (cnt[0] > 0)
+			ans++;
+		for (int i = 1; i < m / 2; i++) {
+			int mx = max(cnt[i], cnt[m - i]);
+			int mn = min(cnt[i], cnt[m - i]);
+			if (cnt[i] > 0 && cnt[m - i] > 0) {
+				if (cnt[i] == cnt[m - i])
+					ans++;
+				else
+					ans += mx - mn;
+			} else
+				ans += mx;
+		}
+		if (m % 2 == 0 && cnt[m / 2] > 0)
+			ans++;
+		else if (m > 1) {
+			int m1 = (m / 2);
+			int m2 = (m + 1) / 2;
+			int mx = max(cnt[m1], cnt[m2]);
+			int mn = min(cnt[m1], cnt[m2]);
+			if (cnt[m1] > 0 && cnt[m2] > 0) {
+				if (cnt[m1] == cnt[m2])
+					ans++;
+				else
+					ans += mx - mn;
+			} else
+				ans += mx;
+		}
+		cout << ans << '\n';
+	}
+	return 0;
+}

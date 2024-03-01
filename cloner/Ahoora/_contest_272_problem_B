@@ -1,0 +1,32 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+	unsigned long long n, a, arr[100000], ans = 0, f = 0;
+	cin >> n;
+	for(int i = 0; i < n; i++)
+	{
+		arr[i] = 0;
+	}
+	for(int i = 0; i < n; i++)
+	{
+		cin >> a;
+		f = 0;
+		while(a != 0)
+		{
+			if(a % 2 == 1)
+			{
+				f++;
+			}
+			a /= 2;
+		}
+	//	cout << f << endl;
+		arr[f]++;
+	}
+	for(int i = 0; i < 101; i++)
+	{
+		ans += ((arr[i]) * (arr[i] - 1)) / 2;
+	}	
+	cout << ans;
+	return 0;
+} 

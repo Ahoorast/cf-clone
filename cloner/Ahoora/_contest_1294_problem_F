@@ -1,0 +1,89 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 100;
+vector<int> adj[N];
+int n;
+pair<int, int> dude[N], dist[N];
+bool mark[N], visits[N];
+ 
+void read() {
+	cin >> n;
+	for (int i = 1; i < n; i++) {
+		int v, u;
+		cin >> v >> u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+}
+ 
+pair<int, pair<int, int>> dfs(int root) {
+	bool leaf = true;
+	pair<int, pair<int, int>> res;
+	res.first = 0;
+	mark[root] = true;
+	for (auto u: adj[root])
+		if (!mark[u]) {
+			pair<int, pair<int, int>> x = dfs(u);
+			if (dude[u].first + 1 > res.first)
+				res.first = dude[u].first + 1, res.second = {root, dude[u].second};
+			if (!leaf && dude[u].first + 1 + dude[root].first > res.first)
+				res.first = dude[u].first + 1 + dude[root].first, res.second = {dude[u].second, dude[root].second};
+			if (dude[root].first < dude[u].first + 1)
+				dude[root].first = dude[u].first + 1, dude[root].second = dude[u].second;
+			if (x.first >= res.first)
+				res = x;
+			leaf = false;
+		}
+	if (leaf) {
+		dude[root] = {0, root};
+		return {-1, {root, -1}};
+	}
+	return res;
+}
+ 
+pair<int, int> secdfs(int root, int v, int h) {
+	++h;
+	mark[root] = true;
+	bool leaf = true;
+	pair<int, int> res = {0, 0};
+	for (auto u: adj[root]) 
+		if (!mark[u]) {
+			leaf = false;
+			pair<int, int> x;
+			if (visits[u])
+				x = secdfs(u, v, -1);
+			else
+				x = secdfs(u, v, h);
+			if (visits[u])
+				visits[root] = true;
+			if (res.first < x.first)
+				res = x;
+		}
+	if (leaf) {
+		if (root == v)
+			visits[root] = true;
+		return {h, root};
+	}
+	return res;
+}
+ 
+int main() {
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	read();
+	pair<int, pair<int, int>> x = dfs(1);
+	memset(mark, false, sizeof(mark));
+	visits[x.second.first] = true;
+	pair<int, int> y = secdfs(x.second.first, x.second.second, -1);
+	memset(mark, false, sizeof(mark));
+	y = secdfs(x.second.first, x.second.second, -1);
+	if (y.first < 0)
+		y.first = 0;
+	if (y.second <= 0 || y.second == x.second.first || y.second == x.second.second)
+		for (int i = 1; i <= n; i++)
+			if (i != x.second.first && i != x.second.second)
+				y.second = i;
+	cout << x.first + y.first << endl;
+	cout << x.second.first << ' ' << x.second.second << ' ' << y.second << endl;
+	return 0;
+}

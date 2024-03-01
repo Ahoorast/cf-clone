@@ -1,0 +1,60 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10;
+int n, a[N];
+bool mark[N], L[N], R[N];
+ 
+int f(int x) {
+	return !(mark[x - 1]) + !(mark[x + 1]);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> n;
+		for (int i = 1; i <= n; i++)
+			cin >> a[i];
+		int res = 0;
+		bool flag = true;
+		set<int> s;
+		for (int i = 1; i <= n && flag; i++) {
+			if (!mark[i])
+				s.insert(i);
+			if (!mark[a[i]])
+				mark[a[i]] = true;
+			else
+				flag = false;
+			s.erase(a[i]);
+			if (flag)
+				L[i] = ((int)s.size() == 0);
+		}
+		for (int i = 1; i <= n; i++)
+			mark[a[i]] = false;
+		flag = true;
+		s.clear();
+		for (int i = n; i >= 1 && flag; i--) {
+			if (!mark[n - i + 1])
+				s.insert(n - i + 1);
+			if (!mark[a[i]])
+				mark[a[i]] = true;
+			else
+				flag = false;
+			s.erase(a[i]);
+			if (flag)
+				R[i] = ((int)s.size() == 0);
+		}
+		for (int i = 1; i < n; i++)
+			if (L[i] && R[i + 1])
+				res++;
+		cout << res << endl;
+		for (int i = 1; i < n; i++)
+			if (L[i] && R[i + 1])
+				cout << i << ' ' << n - i << endl;
+		for (int i = 1; i <= n; i++)
+			mark[a[i]] = L[i] = R[i] = false;
+	}
+	return 0;
+}

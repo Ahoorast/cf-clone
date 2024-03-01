@@ -1,0 +1,59 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10;
+vector<int> adj[N];
+bool vis[N], mark[N];
+int n, dp[N][2];
+ 
+void read() {
+	cin >> n;
+	for (int i = 1; i <= n; i++) {
+		bool t;
+		cin >> t;
+		if (!t)
+			mark[i] = true;
+	}
+	for (int i = 1, v, u; i < n; i++) {
+		cin >> v >> u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+}
+ 
+void dfs(int root, bool t, int par = 0) {
+	if (!t) {
+		vis[root] = true;
+		for (auto u: adj[root]) 
+			if (!vis[u]) {
+				dfs(u, t);
+				if (dp[u][0] > 0)
+					dp[root][0] += dp[u][0];
+			}
+		dp[root][0] -= (mark[root]? 1: -1);
+	}
+	else {
+		if (par) 
+			dp[root][1] = max(min(dp[par][0], dp[par][0] - dp[root][0]) + dp[par][1] - (mark[par]? -1: 1), 0) + (mark[root]? -1: 1);
+		else
+			dp[root][1] = (mark[root]? -1: 1);
+		vis[root] = true;
+		for (auto u: adj[root])
+			if (!vis[u]) 
+				dfs(u, t, root);
+	}
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	read();
+	dfs(1, 0);
+	for (int i = 0; i < N; i++)
+		vis[i] = false;
+	dp[1][1] -= (mark[1]? 1: -1);
+	dfs(1, 1);
+	for (int i = 1; i <= n; i++)
+		cout << max({dp[i][0] + dp[i][1] - (mark[i]? -1: 1), dp[i][0], dp[i][1]}) << ' ';
+	cout << endl;
+	return 0;
+}

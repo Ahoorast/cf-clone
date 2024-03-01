@@ -1,0 +1,12 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	unsigned long long ans = 0, n;
+	cin >> n;
+	for (unsigned long long i = 2; i <= n; i++)
+		if ((n / i) > 1)
+			ans += 1LL * ((n / i) * (n / i + 1ull) / 2ull - 1ull) * 4ull;
+	cout << ans << endl;
+	return 0;
+}

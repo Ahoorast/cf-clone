@@ -1,0 +1,70 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 5 * 1000 * 100 + 10;
+int n, a[N], seg[N << 4], cnt, v;
+ 
+void upd(int p, int x, int l = 0, int r = n, int root = 1) {
+	if (l + 1 == r) {
+		seg[root] = a[l] = x;
+		return;
+	}
+	int mid = l + r >> 1;
+	(p < mid? upd(p, x, l, mid, root << 1): upd(p, x, mid, r, root << 1 | 1));
+	seg[root] = __gcd(seg[root << 1], seg[root << 1 | 1]);
+}
+ 
+void get(int l, int r, int x, int lx = 0, int rx = n, int root = 1) {
+	if (l <= lx && r >= rx) {
+		cnt += (seg[root] % x != 0);
+		if (seg[root] % x != 0)
+			v = root;
+		return;
+	}
+	if (l >= rx || r <= lx)
+		return;
+	int mid = lx + rx >> 1;
+	get(l, r, x, lx, mid, root << 1), get(l, r, x, mid, rx, root << 1 | 1);
+}
+ 
+void handle(int root, int x) {
+	if (seg[root << 1] % x != 0 && seg[root << 1 | 1] % x != 0)
+		cnt = 2;
+	if (cnt <= 1 && seg[root << 1] % x != 0)
+		handle(root << 1, x);
+	if (cnt <= 1 && seg[root << 1 | 1] % x != 0)
+		handle(root << 1 | 1, x);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 0; i < n; i++)
+		cin >> a[i];
+	for (int i = 0; i < n; i++)
+		upd(i, a[i]);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int t;
+		cin >> t;
+		if (t == 1) {
+			int l, r, x;
+			cin >> l >> r >> x;
+			--l;
+			cnt = 0;
+			get(l, r, x);
+			if (cnt == 1) {
+				cnt = 0;
+				handle(v, x);
+			}
+			cout << (cnt <= 1? "YES": "NO") << '\n';
+		}
+		else {
+			int p, x;
+			cin >> p >> x;
+			upd(--p, x);
+		}
+	}
+	return 0;
+}

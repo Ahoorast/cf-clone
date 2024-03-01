@@ -1,0 +1,53 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const long long N = 1010;
+long long n, c, p, T, b[N];
+ 
+bool check(long long tar) {
+	vector<long long> a;
+	long long sum = 0, prv = 0;
+	for (long long i = 1; i <= n; i++) {
+		prv = sum;
+		sum += b[i];
+		if (sum < tar)
+			a.push_back(b[i]);
+		else {
+			a.push_back(tar - prv);
+			break;
+		}
+	}
+	long long sz = (long long)(a.size()), res = 0;
+	for (long long i = sz - 1; i >= 0; i--) {
+		long long x = (a[i] + c - 1) / c;
+		res += 1LL * x * (i + 1) * 2 * p;
+		if (res > T)
+			return false;
+		long long r = c - (a[i] % c);
+		if (a[i] % c == 0)
+			r = 0;
+		a[i] = 0;
+		for (long long j = i - 1; j >= 0; j--) {
+			long long t = min(a[j], r);
+			r -= t, a[j] -= t;
+		}
+	}
+	return res <= T;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> c >> p >> T;
+	long long l = 0, r = 1;
+	for (long long i = 1; i <= n; i++)
+		cin >> b[i], r += b[i];
+	while (l + 1 < r) {
+		long long mid = l + r >> 1;
+		if (check(mid))
+			l = mid;
+		else
+			r = mid;
+	}
+	cout << l << '\n';
+	return 0;
+}

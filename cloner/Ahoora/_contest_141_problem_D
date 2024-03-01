@@ -1,0 +1,79 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 10000 * 100 + 10;
+int n, L, from[N], to[N], w[N], d[N], par[N], act[N];
+vector<int> adj[N];
+ 
+struct bad_struct {
+	int x, d, t, p;
+} a[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> L;
+	vector<int> all;
+	all.push_back(0), all.push_back(L);
+	for (int i = 0; i < n; i++) {
+		cin >> a[i].x >> a[i].d >> a[i].t >> a[i].p;
+		all.push_back(a[i].x);
+		if (a[i].x - a[i].p >= 0) {
+			all.push_back(a[i].x - a[i].p);
+			all.push_back(a[i].x + a[i].d);
+		}
+	}
+	sort(all.begin(), all.end());
+	all.resize(unique(all.begin(), all.end()) - all.begin());
+	int sz = (int)(all.size()), cnt = 0, ted = 0;
+	for (int i = 1; i < sz; i++) {
+		from[cnt] = i - 1, to[cnt] = i, w[cnt] = all[i] - all[i - 1];
+		adj[i - 1].push_back(cnt);
+		cnt++;
+		ted++;
+		from[cnt] = i, to[cnt] = i - 1, w[cnt] = all[i] - all[i - 1];
+		adj[i].push_back(cnt);
+		cnt++;
+		ted++;
+	}
+	for (int i = 0; i < n; i++) 
+		if (a[i].x - a[i].p >= 0) {
+			int v = a[i].x - a[i].p, u = a[i].x + a[i].d;
+			v = lower_bound(all.begin(), all.end(), v) - all.begin();
+			u = lower_bound(all.begin(), all.end(), u) - all.begin();
+			from[cnt] = v, to[cnt] = u, w[cnt] = a[i].t + a[i].p;
+			adj[v].push_back(cnt);
+			act[cnt] = i;
+			cnt++;
+		}
+	set<pair<int, int>> q;
+	fill(d, d + N, 1 << 30);
+	q.insert({0, 0}), d[0] = 0;
+	while (q.size()) {
+		auto it = *q.begin();
+		int v = it.second, dis = it.first;
+		q.erase(q.begin());
+		for (auto u: adj[v]) {
+			int nw = dis + w[u], nv = to[u];
+			if (nw < d[nv]) {
+				q.erase({d[nv], nv});
+				par[nv] = u;
+				q.insert({d[nv] = nw, nv});
+			}
+		}
+	}
+	cout << d[sz - 1] << '\n';
+	vector<int> ans;
+	int v = sz - 1;
+	while (v) {
+		int e = par[v];
+		v = from[e];
+		if (e >= ted) {
+			ans.push_back(act[e]);
+		}
+	}
+	cout << (int)(ans.size()) << '\n';
+	reverse(ans.begin(), ans.end());
+	for (auto e: ans)
+		cout << e + 1 << '\n';
+	return 0;
+}

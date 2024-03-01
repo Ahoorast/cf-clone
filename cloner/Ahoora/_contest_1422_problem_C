@@ -1,0 +1,45 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const long long N = 2 * 1000 * 100 + 10, mod = 1LL * 1000 * 1000 * 1000 + 7;
+long long fact[N], inv[N], n, dp[N];
+string s;
+ 
+long long Pow(long long a, long long b) {
+	return b? (b & 1? a: 1) % mod * Pow(a * a % mod, b >> 1) % mod: 1;
+}
+ 
+void prep() {
+	fact[0] = 1;
+	for (long long i = 1; i < N; i++)
+		fact[i] = 1LL * fact[i - 1] * i % mod;
+	inv[N - 1] = Pow(fact[N - 1], mod - 2);
+	for (long long i = N - 2; i >= 0; i--)
+		inv[i] = 1LL * inv[i + 1] * (i + 1) % mod;
+}
+ 
+long long C(long long r, long long n) {
+	return 1LL * fact[n] * inv[r] % mod * inv[n - r] % mod;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	prep();
+	cin >> s;
+	n = (long long)(s.size());
+	dp[1] = 1;
+	long long tmp = 1;
+	for (long long i = 2; i <= n; i++) {
+		dp[i] = 1LL * dp[i - 1] * 10 % mod;
+		tmp = (tmp + Pow(10, i - 1)) % mod;
+		dp[i] = (dp[i] + tmp) % mod;
+	}
+	long long ans = 0, tmp1 = 0, tmp2 = 0;
+	for (long long i = 0; i < n; i++) {
+		long long x = s[i] - '0';
+		ans = (ans + 1LL * C(2, i + 1) * Pow(10, n - i - 1) % mod * x % mod) % mod;
+		ans = (ans + 1LL * dp[n - i - 1] * x % mod) % mod;
+	}
+	cout << ans << '\n';
+	return 0;
+}

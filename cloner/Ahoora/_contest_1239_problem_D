@@ -1,0 +1,73 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 1000 + 10;
+int n, m;
+vector<int> adj[2][N], vec1, vec2;
+bool vis[N];
+ 
+void dfs(int root, bool t) {
+	vis[root] = true;
+	for (auto u: adj[t][root])
+		if (!vis[u])
+			dfs(u, t);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> n >> m;
+		for (int i = 1; i <= n; i++) {
+			vis[i] = false;
+			adj[0][i].clear(), adj[1][i].clear();
+		}
+		vec1.clear(), vec2.clear();
+		for (int i = 0, v, u; i < m; i++) {
+			cin >> v >> u;
+			adj[0][v].push_back(u);
+			adj[1][u].push_back(v);
+		}
+		dfs(1, 0);
+		for (int i = 1; i <= n; i++)
+			if (vis[i])
+				vec1.push_back(i);
+			else
+				vec2.push_back(i);
+		if (vec2.size()) {
+			cout << "YES" << endl;
+			cout << vec1.size() << ' ' << vec2.size() << endl;
+			for (auto it: vec1)
+				cout << it << ' ';
+			cout << endl;
+			for (auto it: vec2)
+				cout << it << ' ';
+			cout << endl;
+		}
+		else {
+			for (int i = 1; i <= n; i++)
+				vis[i] = false;
+			dfs(1, 1);
+			vec1.clear(), vec2.clear();
+			for (int i = 1; i <= n; i++)
+				if (vis[i])
+					vec2.push_back(i);
+				else
+					vec1.push_back(i);
+			if (vec1.size()) {
+				cout << "YES" << endl;
+				cout << vec1.size() << ' ' << vec2.size() << endl;
+				for (auto v: vec1)
+					cout << v << ' ';
+				cout << endl;
+				for (auto v: vec2)
+					cout << v << ' ';
+				cout << endl;
+			}
+			else
+				cout << "NO" << endl;
+		}
+	}
+	return 0;
+}

@@ -1,0 +1,28 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	vector<int> vec;
+	vec.push_back(6), vec.push_back(10), vec.push_back(14), vec.push_back(15), vec.push_back(22);
+	int sz = 5;
+	while (Q--) {
+		int n;
+		cin >> n;
+		bool found = false;
+		for (int i = 0; i < sz; i++)
+			for (int j = i + 1; j < sz; j++)
+				for (int k = j + 1; k < sz; k++) {
+					int x = n - vec[i] - vec[j] - vec[k];
+					if (!found && x != vec[i] && x != vec[j] && x != vec[k] && x > 0) {
+						cout << "YES\n", found = true;
+						cout << vec[i] << ' ' << vec[j] << ' ' << vec[k] << ' ' << x << '\n';
+					}
+				}
+		if (!found)
+			cout << "NO\n";
+	}
+	return 0;
+}

@@ -1,0 +1,18 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		long long n, m, r, c;
+		cin >> n >> m >> r >> c;
+		long long f[2] = {1, n}, s[2] = {1, m}, ans = 0;
+		for (int i = 0; i < 2; i++)
+			for (int j = 0; j < 2; j++)
+				ans = max(ans, abs(r - f[i]) + abs(c - s[j]));
+		cout << ans << '\n';
+	}
+	return 0;
+}

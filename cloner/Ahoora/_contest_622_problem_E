@@ -1,0 +1,41 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 5 * 1000 * 100 + 10;
+int n, h[N];
+vector<int> adj[N], vec;
+ 
+void dfs(int v, int par = 0) {
+	bool leaf = true;
+	for (auto u: adj[v])
+		if (u != par) {
+			h[u] = h[v] + 1;
+			dfs(u, v);
+			leaf = false;
+		}
+	if (leaf)
+		vec.push_back(h[v]);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 0, v, u; i + 1 < n; i++) {
+		cin >> v >> u;
+		--v, --u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+	int ans = 0;
+	for (auto u: adj[0]) {
+		vec.clear();
+		h[u] = 1;
+		dfs(u);
+		sort(vec.begin(), vec.end(), greater<int>());
+		int sz = (int)(vec.size());
+		for (int i = 0; i < sz; i++)
+			ans = max(ans, i + vec[i]);
+	}
+	cout << ans << '\n';
+	return 0;
+}

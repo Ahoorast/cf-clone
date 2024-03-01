@@ -1,0 +1,56 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 5 * 1000 * 100 + 10, SQ = 750;
+int n;
+long long lazy[N];
+pair<long long, int> a[N];
+ 
+inline void build(int box, int s, int e, int x) {
+	for (int i = box * SQ; i < min(box * SQ + SQ, n); i++) 
+		if (s <= a[i].second && e > a[i].second)
+			a[i].first += x;
+	sort(a + box * SQ, a + min(box * SQ + SQ, n));
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	scanf("%d%d", &n, &Q);
+	for (int i = 0; i < n; i++)
+		scanf("%lld", &a[i].first), a[i].second = i;
+	for (int i = 0; i * SQ < n; i++)
+		build(i, -1, -1, 0);
+	while (Q--) {
+		int tp;
+		scanf("%d", &tp);
+		if (tp == 1) {
+			int l, r, x;
+			scanf("%d%d%d", &l, &r, &x);
+			--l;
+			build(l / SQ, l, r, x);
+			if (l / SQ != r / SQ)
+				build(r / SQ, l, r, x);
+			l /= SQ, l++;
+			r /= SQ;
+			for (int i = l; i < r; i++)
+				lazy[i] += x;
+		} else {
+			int y;
+			scanf("%d", &y);
+			int mx = -1, mn = n;
+			for (int i = 0; i * SQ < n; i++) {
+				long long x = y - lazy[i];
+				int p = upper_bound(a + i * SQ, a + min(i * SQ + SQ, n), make_pair(x, -1)) - a;
+				if (a[p].first == x) 
+					mn = min(a[p].second, mn), mx = max(a[p].second, mx);
+				p = upper_bound(a + i * SQ, a + min(i * SQ + SQ, n), make_pair(x, 1 << 30)) - a;
+				p--;
+				if (p >= 0 && a[p].first == x) 
+					mn = min(a[p].second, mn), mx = max(a[p].second, mx);
+			}
+			printf("%d\n", (mx - mn >= 0? mx - mn: -1));
+		}
+	}
+	return 0;
+}

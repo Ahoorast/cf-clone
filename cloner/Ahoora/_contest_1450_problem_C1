@@ -1,0 +1,41 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 310;
+int n;
+char c[N][N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> n;
+		int cnt[3] = {0, 0, 0};
+		int cn[3] = {0, 0, 0};
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < n; j++) {
+				cin >> c[i][j];
+				if (c[i][j] == 'X')
+					cnt[(i + j) % 3]++;
+				if (c[i][j] == 'O')
+					cn[(i + j) % 3 ]++;
+			}
+		int mnx = 0, mno = 1;
+		for (int i = 0; i < 3; i++)
+			for (int j = 0; j < 3; j++)
+				if (i != j && cnt[i] + cn[j] < cnt[mnx] + cn[mno])
+					mnx = i, mno = j;
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < n; j++) {
+				if (c[i][j] == 'X' && (i + j) % 3 == mnx)
+					c[i][j] = 'O';
+				else if (c[i][j] == 'O' && (i + j) % 3 == mno)
+					c[i][j] = 'X';
+			}
+		for (int i = 0; i < n; i++, cout << '\n')
+			for (int j = 0; j < n; j++)
+				cout << c[i][j];
+	}
+	return 0;
+}

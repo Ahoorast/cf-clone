@@ -1,0 +1,29 @@
+/*
+ 
+ 
+*/
+#include <bits/stdc++.h>
+using namespace std;
+#define		debug(x)	cout << #x << '=' << x << endl
+const int maxn = 1e5 + 100;
+int m, l, r, sz, arr[maxn], k = 0;
+string s;
+void solve()
+{
+	cout << arr[r - 1] - arr[l - 1] << endl;
+}
+void read()
+{
+	cin >> s >> m;
+	sz = s.size();
+	for(int i = 1; i < sz; i++) if(s[i] == s[i - 1]) arr[i]++;
+	for(int i = 1; i < sz; i++) arr[i] += arr[i - 1];  
+//	for(int i = 0; i < sz; i++) cout << arr[i] << ' ';
+	for(int i = 0; i < m; i++) cin >> l >> r, solve();
+}
+int main()
+{
+	ios_base::sync_with_stdio(false), cin.tie(NULL);
+	read();
+	return 0;
+}

@@ -1,0 +1,15 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+	unsigned long long ans = 0, a, b, c;
+	cin >> a >> b >> c;
+	c += min(a, b);
+	b = max(a, b) - min(a, b);
+	a = 0;
+	ans = c * 2;
+	if(b > 0)
+	ans++;
+	cout << ans;
+	return 0;
+}

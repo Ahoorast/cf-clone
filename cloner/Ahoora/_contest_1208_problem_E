@@ -1,0 +1,55 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 1000 + 10;
+int n, w;
+long long ans[N], s[N];
+ 
+void solve(vector<int> vec) {
+	deque<int> dq;
+	int sz = (int)(vec.size());
+	int mx = *min_element(vec.begin(), vec.end());
+	mx = min(mx, 0);
+	for (int i = 0; i < w; i++) {
+		if (i >= sz)
+			i = max(i, w - sz - 5);
+		while (dq.size() && i + sz - dq.front() > w)
+			dq.pop_front();
+		if (i < sz) {
+			while (dq.size() && vec[dq.back()] > vec[i])
+				dq.pop_back();
+			dq.push_back(i);
+		}
+		if (i < sz && i + sz >= w)
+			ans[i] += vec[dq.front()];
+		else
+			ans[i] += min(vec[dq.front()], 0);
+	}
+	// from sz to w - sz - 5 add mx
+	if (sz < w - sz - 5) {
+		s[sz] += mx;
+		s[w - sz - 5] -= mx;
+	}
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> w;
+	vector<vector<int>> a(n);
+	for (int i = 0, l; i < n; i++) {
+		cin >> l;
+		a[i].resize(l);
+		for (auto &x: a[i]) 
+			cin >> x, x *= -1;
+		solve(a[i]);
+	}
+	for (int i = 0; i < w; i++) {
+		if (i > 0)
+			s[i] += s[i - 1];
+		ans[i] += s[i];
+	}
+	for (int i = 0; i < w; i++)
+		cout << -ans[i] << ' ';
+	cout << '\n';
+	return 0;
+}

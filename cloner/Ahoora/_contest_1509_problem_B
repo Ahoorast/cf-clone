@@ -1,0 +1,54 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+void solve() {
+    int n;
+	string s;
+    cin >> n >> s;
+	vector<int> vec;
+	vector<bool> vis(n);
+    int cnt = 0, cnt1 = 0;
+    for (int i = 0, j = 0; i < n; i++) {
+        if (s[i] == 'T') {
+            cnt++;
+            vec.push_back(i);
+		} else {
+			cnt1++;
+			if (j < (int)(vec.size())) 
+				vis[vec[j++]] = true;
+			else {
+				cout << "NO\n";
+				return;
+			}
+		}
+	}
+	vec.clear();
+    for (int i = n - 1, j = 0; i >= 0; i--) {
+        if (s[i] == 'T') 
+            vec.push_back(i);
+        else {
+            while (j < (int)(vec.size()) && vis[vec[j]]) 
+				j++;
+            if (j < (int)(vec.size())) 
+                vis[vec[j++]] = true;
+            else {
+                cout << "NO" << '\n';
+                return;
+            }
+        }
+    }
+    if (cnt == cnt1 * 2)
+        cout << "YES\n";
+    else
+        cout << "NO\n";
+}
+ 
+int main() { 
+    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+	int Q;
+    cin >> Q;
+    while (Q--) {
+        solve();
+    }    
+	return 0;
+}

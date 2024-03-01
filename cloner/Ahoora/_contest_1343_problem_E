@@ -1,0 +1,57 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 100;
+int n, m, a, b, c, dist[3][N], p[N];
+vector<int> adj[N];
+long long s[N];
+bool vis[N];
+ 
+void bfs(int root, int col) {
+	queue<int> q;
+	for (int i = 1; i <= n; i++)
+		vis[i] = false;
+	q.push(root), vis[root] = true, dist[col][root] = 0;
+	while (q.size()) {
+		int v = q.front();
+		q.pop();
+		for (auto u: adj[v])
+			if (!vis[u]) {
+				q.push(u);
+				dist[col][u] = dist[col][v] + 1;
+				vis[u] = true;
+			}
+	}
+}
+ 
+int main() { 
+	int T;
+	scanf("%d", &T);
+	while (T--) {
+		scanf("%d%d%d%d%d", &n, &m, &a, &b, &c);
+		for (int i = 1; i <= m; i++)
+			scanf("%d", &p[i]);
+		for (int i = 0, v, u; i < m; i++) {
+			scanf("%d%d", &v, &u);
+			adj[v].push_back(u);
+			adj[u].push_back(v);
+		}
+		long long ans = 1LL << 59;
+		sort(p + 1, p + m + 1);
+		for (int i = 1; i <= m; i++)	
+			s[i] = s[i - 1] + p[i];
+		for (int i = 0; i < 3; i++)
+			for (int j = 1; j <= n; j++)
+				dist[i][j] = 1 << 27;
+		bfs(a, 0), bfs(b, 1), bfs(c, 2);
+		for (int i = 1; i <= n; i++) {
+			int d1 = dist[0][i], d2 = dist[1][i], d3 = dist[2][i];
+			if (d1 + d2 + d3 <= m)
+				ans = min(ans, s[d1 + d2 + d3] + s[d2]);
+		}
+		printf("%lld\n", ans);
+		for (int i = 1; i <= n; i++)
+			adj[i].clear();
+	}
+	return 0;
+}

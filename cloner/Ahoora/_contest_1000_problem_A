@@ -1,0 +1,21 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	string t;
+	multiset<string> s;
+	int n, ans = 0;
+	cin >> n;
+	for (int i = 0; i < n; i++)
+		cin >> t, s.insert(t);
+	for (int i = 0; i < n; i++) {
+		cin >> t;
+		if (s.find(t) != s.end())
+			s.erase(s.find(t));
+		else
+			ans++;
+	}
+	cout << ans << endl;
+	return 0;
+}

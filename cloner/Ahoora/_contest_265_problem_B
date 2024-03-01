@@ -1,0 +1,19 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 1000 * 1000 + 100;
+ 
+int main() {
+	long long res;
+	int n, h, tmp = 0, s = 0;
+	cin >> n >> tmp;
+	res = n + tmp;
+	n--;
+	while (n--) {
+		cin >> h;
+		res += abs(tmp - h) + 1;
+		tmp = h;
+	}
+	cout << res << endl;
+	return 0;
+}

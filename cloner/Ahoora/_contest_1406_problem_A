@@ -1,0 +1,33 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 105;
+int n, a[N], cnt[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> n;
+		for (int i = 1; i <= n; i++)
+			cin >> a[i], cnt[a[i]]++;
+		int f = 0, s = 0;
+		while (true) {
+			if (cnt[f] >= 1) {
+				cnt[f]--;
+				f++;
+			}
+			if (cnt[s] >= 1) {
+				cnt[s]--;
+				s++;
+			}
+			if (cnt[f] == 0 && cnt[s] == 0)
+				break;
+		}
+		cout << f + s << '\n';
+		for (int i = 0; i < N; i++)
+			cnt[i] = 0;
+	}
+	return 0;
+}

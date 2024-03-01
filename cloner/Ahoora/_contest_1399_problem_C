@@ -1,0 +1,32 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 100;
+int w[N], n;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> n;
+		for (int i = 0; i < n; i++)
+			cin >> w[i];
+		sort(w, w + n);
+		int ans = 0;
+		for (int s = 2; s <= n * 2; s++) {
+			int tmp = 0, l = 0, r = n - 1;
+			while (l < r) {
+				if (w[l] + w[r] == s) 
+					tmp++, l++, r--;
+				else if (w[l] + w[r] > s)
+					r--;
+				else 
+					l++;
+			}
+			ans = max(ans, tmp);
+		}
+		cout << ans << '\n';
+	}
+	return 0;
+}

@@ -1,0 +1,25 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int n;
+ 
+int main() {
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	int t = 1 << 30;
+	bool res = true;
+	while (n--) {
+		int h, w;
+		cin >> h >> w;
+		if (t >= h && t >= w)
+			t = max(h, w);
+		else if (t >= h)
+			t = h;
+		else if (t >= w)
+			t = w;
+		else
+			res = false;
+	}
+	cout << (res? "YES": "NO") << endl;
+	return 0;
+}

@@ -1,0 +1,21 @@
+/*
+ 
+ 
+*/
+#include <bits/stdc++.h>
+using namespace std;
+#define		debug(x)	cout << #x << '=' << x << endl
+#define		print(x, n)	for(int i = 0; i < n; i++) cout << x[i] << ' ';
+#define		pb			push_back
+#define		sep			' '
+ 
+int main()
+{
+	ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+	long long n, b, d, res = 0, a;
+	unsigned long long s = 0;
+	cin >> n >> b >> d;
+	for(int i = 0; i < n; i++) cin >> a, (a <= b ? s += a : s = s), (s > d ? res++, s = 0 : s = s);
+	cout << res;
+	return 0;
+}

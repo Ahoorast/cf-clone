@@ -1,0 +1,21 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int maxn = 100 * 1000 + 100;
+int a[maxn];
+ 
+int main() {
+	int n;
+	long long res = 0, s = 0;
+	cin >> n;
+	for (int i = 0; i < n; i++)
+		cin >> a[i];
+	sort(a, a + n);
+	if (a[0] != 0)
+		res++;
+	for (int i = 1; i < n; i++)
+		if (a[i] != 0 && a[i] != a[i - 1])
+			res++;
+	cout << res << endl;
+	return 0;
+}

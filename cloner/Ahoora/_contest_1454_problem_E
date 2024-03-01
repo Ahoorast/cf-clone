@@ -1,0 +1,79 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10;
+int n, h[N], s, e, sz[N];
+bool vis[N];
+vector<int> adj[N], L;
+ 
+void dfs(int v, int par = 0) {
+	h[v] = h[par] + 1;
+	vis[v] = true;
+	for (auto u: adj[v])
+		if (!vis[u]) {
+			dfs(u, v);
+		} else if (u != par && h[u] < h[v]) 
+			s = v, e = u;
+}
+ 
+bool path(int v) {
+	vis[v] = true;
+	bool res = (v == e);
+	if (res)
+		return res;
+	for (auto u: adj[v])
+		if (!vis[u] && make_pair(v, u) != make_pair(s, e) && make_pair(v, u) != make_pair(e, s)) {
+			bool t = path(u);
+			res |= t;
+			if (t)
+				L.push_back(u);
+		}
+	return res;
+}
+ 
+void dfs_sz(int v) {
+	vis[v] = true;
+	for (auto u: adj[v])
+		if (!vis[u] && make_pair(v, u) != make_pair(s, e) && make_pair(v, u) != make_pair(e, s)) {
+			dfs_sz(u);
+			sz[v] += sz[u];
+		}
+	sz[v]++;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> n;
+		for (int i = 1, v, u; i <= n; i++) {
+			cin >> v >> u;
+			adj[v].push_back(u);
+			adj[u].push_back(v);
+		}
+		dfs(1);
+		fill(vis, vis + n + 1, false);
+		long long ans = 1LL * n * (n - 1) / 2;
+		path(s);
+		L.push_back(s);
+		fill(vis, vis + n + 1, false);
+		for (auto v: L)
+			vis[v] = true;
+		for (auto v: L)
+			dfs_sz(v);
+		long long sum = 0;
+		for (auto v: L) {
+			ans += 1LL * sum * sz[v];
+			sum += sz[v];
+		}
+		for (int i = 1; i <= n; i++) {
+			vis[i] = false;
+			sz[i] = h[i] = 0;
+			adj[i].clear();
+		}
+		L.clear(), s = e = 0;
+		cout << ans << '\n';
+	}
+	return 0;
+}

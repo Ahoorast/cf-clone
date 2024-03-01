@@ -1,0 +1,17 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1010;
+int cnt[N], n;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 1, a; i <= n; i++)
+		cin >> a, cnt[a]++;
+	int mx = 0;
+	for (int i = 1; i <= 1000; i++)
+		mx = max(mx, cnt[i]);
+	cout << (mx <= (n + 1) >> 1? "YES": "NO") << endl;
+	return 0;
+}

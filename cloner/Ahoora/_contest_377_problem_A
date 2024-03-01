@@ -1,0 +1,52 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 600;
+char c[N][N];
+int n, m, K, st[N][N], fn[N][N], ttime, dx[4] = {1, -1, 0, 0}, dy[4] = {0, 0, 1, -1};
+bool vis[N][N];
+vector<pair<int, int>> t;
+ 
+void dfs(int x, int y) {
+	vis[x][y] = true;
+	t.push_back({x, y});
+	st[x][y] = ++ttime;
+	for (int i = 0; i < 4; i++)
+		if (!vis[x + dx[i]][y + dy[i]] && c[x + dx[i]][y + dy[i]] == '.')
+			dfs(x + dx[i], y + dy[i]);
+	fn[x][y] = ++ttime;
+	t.push_back({x, y});
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m >> K;
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= m; j++)
+			cin >> c[i][j];
+	for (int r = 1; r <= n; r++)
+		for (int j = 1; j <= m; j++)
+			if (c[r][j] == '.' && !vis[r][j]) {
+				ttime = 0;
+				t.clear();
+				dfs(r, j);
+				pair<int, int> tmp;
+				int qs = 0;
+				for (int i = 0; i < t.size(); i++) {
+					if (qs)
+						c[t[i].first][t[i].second] = 'X';
+					if (tmp == t[i])
+					 	qs--;
+					else if (qs == 0 && K - (fn[t[i].first][t[i].second] - st[t[i].first][t[i].second] + 1) / 2 >= 0) {
+						tmp = t[i];
+						qs++;
+						c[t[i].first][t[i].second] = 'X';
+						K -= (fn[t[i].first][t[i].second] - st[t[i].first][t[i].second] + 1) / 2;
+					}
+				}
+			}
+	for (int i = 1; i <= n; i++, cout << endl)
+		for (int j = 1; j <= m; j++)
+			cout << c[i][j];
+	return 0;
+}

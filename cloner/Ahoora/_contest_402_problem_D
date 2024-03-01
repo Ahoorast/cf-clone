@@ -1,0 +1,43 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 5010, M = 1000 * 1000 + 10;
+int a[N], b[N], g[N], n, m;
+set<int> s;
+ 
+int F(int n) {
+	int res = 0;
+	for (int i = 2; i * i <= n; i++) 
+		if (n % i == 0) {
+			bool bad = s.find(i) != s.end();
+			int cnt = 0;
+			while (n % i == 0)
+				n /= i, cnt++;
+			res += (bad? -cnt: cnt);
+		}
+	if (n > 1)
+		res += (s.find(n) != s.end()? -1: 1);
+	return res;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m;
+	for (int i = 1; i <= n; i++)
+		cin >> a[i];
+	for (int i = 1; i <= m; i++) 
+		cin >> b[i], s.insert(b[i]);
+	g[1] = a[1];
+	for (int i = 2; i <= n; i++)
+		g[i] = __gcd(g[i - 1], abs(a[i]));
+	int p = 1, ans = 0;
+	for (int i = n; i >= 1; i--) {
+		int x = F(a[i] / p), y = F(a[i] / g[i]);
+		if (x >= y)
+			ans += x;
+		else
+			ans += y, p = g[i];
+	}
+	cout << ans << endl;
+	return 0;
+}

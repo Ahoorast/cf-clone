@@ -1,0 +1,68 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 3 * 1000 * 100 + 10;
+long long n, a[N], dp[N][2];
+ 
+struct Node {
+	long long mx[2] = {0, 0}, mn[2] = {0, 0};
+	void merge(Node L, Node R) {
+		mx[0] = max({L.mx[0], L.mx[0] + R.mx[0], L.mx[1] + R.mn[1], R.mx[0]});
+		mx[1] = max({L.mx[1], L.mx[1] + R.mn[0], L.mx[0] + R.mx[1], R.mx[1]});
+		mn[0] = max({L.mn[0], L.mn[0] + R.mn[0], L.mn[1] + R.mx[1], R.mn[0]});
+		mn[1] = max({L.mn[1], L.mn[1] + R.mx[0], L.mn[0] + R.mn[1], R.mn[1]});
+	}
+	void init(long long x) {
+		mx[0] = 0;
+		mx[1] = x;
+		mn[0] = 0;
+		mn[1] = -x;
+	}
+} seg[N << 2];
+ 
+void print() {
+	cout << max(seg[1].mx[0], seg[1].mx[1]) << '\n';
+}
+ 
+void build(int l = 0, int r = n, int root = 1) {
+	if (l + 1 == r) {
+		seg[root].init(a[l]);
+		return;
+	}
+	int mid = l + r >> 1;
+	build(l, mid, root << 1), build(mid, r, root << 1 | 1);
+	seg[root].merge(seg[root << 1], seg[root << 1 | 1]);
+}
+ 
+void upd(int p, int x, int l = 0, int r = n, int root = 1) {
+	if (l + 1 == r) {
+		seg[root].init(x);
+		return;
+	}
+	int mid = l + r >> 1;
+	p < mid? upd(p, x, l, mid, root << 1): upd(p, x, mid, r, root << 1 | 1);
+	seg[root].merge(seg[root << 1], seg[root << 1 | 1]);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int T;
+	cin >> T;
+	while (T--) {
+		int Q;
+		cin >> n >> Q;
+		for (int i = 0; i < n; i++)
+			cin >> a[i];
+		build();
+		print();
+		while (Q--) {
+			int l, r;
+			cin >> l >> r;
+			--l, --r;
+			upd(l, a[r]), upd(r, a[l]);
+			swap(a[l], a[r]);
+			print();
+		}
+	}
+	return 0;
+}

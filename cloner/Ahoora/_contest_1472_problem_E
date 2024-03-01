@@ -1,0 +1,56 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10;
+int n, m, d[N], dp[N];
+vector<int> adj[N], jda[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> n >> m;
+		for (int i = 0, v, u; i < m; i++) {
+			cin >> v >> u;
+			--v, --u;
+			adj[v].push_back(u);
+			jda[u].push_back(v);
+		}
+		queue<int> q;
+		fill(d, d + n, 1 << 30);
+		q.push(0), d[0] = 0;
+		while (q.size()) {
+			int v = q.front();
+			q.pop();
+			for (auto u: adj[v])
+				if (d[v] + 1 < d[u]) {
+					d[u] = d[v] + 1;
+					q.push(u);
+				}
+		}
+		set<pair<int, int>> s;
+		for (int i = 0; i < n; i++) {
+			dp[i] = d[i];
+			for (auto u: adj[i])
+				dp[i] = min(dp[i], d[u]);
+			s.insert({dp[i], i});
+		}
+		while (s.size()) {
+			int v = s.begin() -> second;
+			s.erase(s.begin());
+			for (auto u: jda[v])
+				if (d[u] < d[v] && dp[u] > dp[v]) {
+					s.erase({dp[u], u});
+					dp[u] = dp[v];
+					s.insert({dp[u], u});
+				}
+		}
+		for (int i = 0; i < n; i++)
+			cout << dp[i] << ' ';
+		cout << '\n';
+		for (int i = 0; i < n; i++)
+			adj[i].clear(), jda[i].clear();
+	}
+	return 0;
+}

@@ -1,0 +1,36 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int n;
+		cin >> n;
+		vector<int> a(n);
+		for (int i = 0; i < n; i++)
+			cin >> a[i];
+		sort(a.begin(), a.end(), greater<int>());
+		a.resize(unique(a.begin(), a.end()) - a.begin());
+		if ((int)(a.size()) > 150)
+			a.resize(150);
+		n = (int)(a.size());
+		int ans = 0;
+		for (int i = 0; i < n; i++) {
+			ans = max(ans, a[i]);
+			for (int j = i + 1; j < n; j++) {
+				if (a[i] % a[j] == 0)
+					continue;
+				ans = max(ans, a[i] + a[j]);
+				for (int k = j + 1; k < n; k++) {
+					if ((a[i] % a[k] == 0) || (a[j] % a[k] == 0))
+						continue;
+					ans = max(ans, a[i] + a[j] + a[k]);
+				}
+			}
+		}
+		cout << ans << '\n';
+	}
+	return 0;
+}

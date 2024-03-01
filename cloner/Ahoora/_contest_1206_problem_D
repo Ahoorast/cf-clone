@@ -1,0 +1,85 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int N = 100010;
+ 
+int n, m;
+unsigned long long a[N];
+vector<int> e[N];
+ 
+void read() {
+	cin >> n;
+	for (int i = 0; i < n; i++)
+		cin >> a[i];
+	bool flag = true;
+	while (flag) {
+		bool tmp = false;
+		for (int i = 0; i < n; i++)
+			tmp |= (a[i] > 0);
+		flag &= tmp;
+		int cnt = 0, l = 100000, r = -1;
+		for (int i = 0; i < n; i++)
+			if (a[i] % 2)
+				cnt++, l = min(l, i), r = max(r, i);
+		if (cnt > 2) {
+			cout << "3" << endl;
+			exit(0);
+		}
+		else if (cnt == 2)
+			e[l].push_back(r), e[r].push_back(l), m++;
+		for (int i = 0; i < n; i++)
+			a[i] /= 2;
+	}
+}
+ 
+bool G(int v, int u) {
+	for (auto i: e[v])
+		if (i == u)
+			return true;
+	return false;
+}
+ 
+int bfs(int v) {
+	int res = 0;
+	vector<int> vec[3];
+	bool mark[N] = {}, flag = true;
+	vec[0].push_back(v), mark[v] = true;
+	while (flag) {
+		for (auto i: vec[0]) 
+			for (auto j: vec[0])
+				if (G(i, j))
+					return (res * 2 + 1);
+		for (auto i: vec[0])
+			for (auto j: e[i])
+				if (!mark[j])
+					vec[1].push_back(j), mark[j] = true;
+		for (auto i: vec[1]) 
+			for (auto j: vec[0])
+				for (auto k: vec[0]) 
+					if (j != k && G(i, j) && G(i, k))
+						return res * 2 + 2;
+		flag &= (!vec[1].empty());
+		vec[0] = vec[1];
+		vec[1].clear();
+		res++;
+	}
+	return n + 100;
+}
+ 
+int kamarBarik() {
+	int ans = n + 100;
+	for (int i = 0; i < n; i++)
+		ans = min(ans, bfs(i));
+	return ans;
+}
+ 
+int main() {
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	read();
+	int res = kamarBarik();
+	if (res < n + 100)
+		cout << res << endl;
+	else
+		cout << "-1" << endl;
+	return 0;
+}

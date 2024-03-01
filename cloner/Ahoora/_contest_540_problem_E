@@ -1,0 +1,67 @@
+#include<bits/stdc++.h>
+#include<ext/pb_ds/assoc_container.hpp>
+#include<ext/pb_ds/tree_policy.hpp>
+ 
+#define indexed_set tree<int, null_type, less<int>, rb_tree_tag,tree_order_statistics_node_update>
+ 
+using namespace __gnu_pbds;
+using namespace std;
+ 
+const int N = 1000 * 100 + 10;
+int a[N], b[N], n, sz;
+long long inv;
+map<int, int> p;
+vector<pair<int, int>> vec;
+ 
+void modify(int x) {
+	if (!p.count(x))
+		p[x] = x;
+}
+ 
+int get(int x) { 
+	int l = 0, r = sz;
+	if (vec[0].second > x)
+		return 0;
+	while (l + 1 < r) {
+		int mid = l + r >> 1;
+		if (vec[mid].second <= x) 
+			l = mid;
+		else
+			r = mid;
+	}
+	return ++l;
+}
+ 
+int get(int l, int r) {
+	if (l > r)
+		return 0;
+	return max(get(r) - get(l - 1), 0);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 1; i <= n; i++) {
+		cin >> a[i] >> b[i];
+		modify(a[i]), modify(b[i]);
+		swap(p[a[i]], p[b[i]]);
+	}
+	for (auto x: p) 
+		vec.push_back({x.second, x.first});
+	sort(vec.begin(), vec.end(), [](pair<int, int> x, pair<int, int> y) {
+			return x.second < y.second;
+			});
+	sz = (int)(vec.size());
+	long long inv = 0;
+	indexed_set s;
+	for (auto x: vec) {
+		inv += (int)(s.size()) - (s.order_of_key(x.first + 1));
+		s.insert(x.first);
+		int ted = get(x.second + 1, x.first - 1);
+		inv += max(x.first - 1 - x.second - ted, 0);
+		ted = get(x.first + 1, x.second - 1);
+		inv += max(x.second - 1 - x.first - ted, 0); 
+	}
+	cout << inv << '\n';
+	return 0;
+}

@@ -1,0 +1,39 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+	char a;
+	long long w = 0, b = 0;
+	for(int i = 0; i < 64; i++)
+	{
+		cin >> a;
+		if(a == 'q')
+		w += 9;
+		if(a == 'r')
+		w += 5;
+		if(a == 'b' || a == 'n')
+		w += 3;
+		if(a == 'p')
+		w += 1;
+		if(a == 'Q')
+		b += 9;
+		if(a == 'R')
+		b += 5;
+		if(a == 'B' || a == 'N')
+		b += 3;
+		if(a == 'P')
+		b += 1;
+	}
+	if(b > w)
+	{
+		cout << "White";
+		return 0;
+	}
+	if(w > b)
+	{
+		cout << "Black";
+		return 0;
+	}
+	cout << "Draw";
+	return 0;
+}

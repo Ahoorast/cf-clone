@@ -1,0 +1,16 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int main() {
+	int w, h, u[2], d[2];
+	cin >> w >> h >> u[0] >> d[0] >> u[1] >> d[1];
+	for (int i = h; i >= 0; i--) {
+		w += i;
+		if (i == d[1])
+			w = max(w - u[1], 0);
+		if (i == d[0])
+			w = max(w - u[0], 0);
+	}
+	cout << max(0, w) << endl;
+	return 0;
+}

@@ -1,0 +1,66 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 510;
+int n, d[N][N], m;
+ 
+void add_edge(int v, int u) {
+	--v, --u;
+	d[v][u] = d[u][v] = min(d[v][u], 1);
+}
+ 
+int main() { 
+	cin >> n >> m;
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++)
+			d[i][j] = (i != j) * (1 << 29);
+	for (int i = 0, k; i < m; i++) {
+		cin >> k;
+		vector<int> a(k);
+		for (auto &x: a)
+			cin >> x;
+		for (int i = 1; i < k; i++)
+			add_edge(a[i], a[i - 1]);
+	}
+	for (int k = 0; k < n; k++)
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < n; j++)
+				d[i][j] = min(d[i][j], d[i][k] + d[k][j]);
+	int Q = n;
+	while (Q--) {
+		vector<bool> mark(n);
+		fill(mark.begin(), mark.end(), true);
+		while (true) {
+			int who = -1, mn = 1 << 30;
+			for (int i = 0; i < n; i++) {
+				if (!mark[i])
+					continue;
+				int mx = 0;
+				for (int u = 0; u < n; u++)
+					if (mark[u] && d[i][u] == 1) {
+						int cnt = 0;
+						for (int v = 0; v < n; v++)
+							if (mark[v] && d[u][v] < d[i][v])
+								cnt++;
+						mx = max(mx, cnt);
+					}
+				if (mx < mn)
+					mn = mx, who = i;
+			}
+			cout << who + 1 << endl;
+			string ans;
+			cin >> ans;
+			if (ans == "FOUND")
+				break;
+			else {
+				int v;
+				cin >> v;
+				--v;
+				for (int u = 0; u < n; u++)
+					if (mark[u] && d[who][u] <= d[v][u])
+						mark[u] = false;
+			}
+		}
+	}
+	return 0;
+}

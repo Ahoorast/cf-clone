@@ -1,0 +1,23 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int maxn = 1e5 + 100;
+long long n, arr[maxn], cnt = 0;
+unsigned long long sum = 0;
+void input()
+{
+	cin >> n;
+	for(int i = 0; i < n; i++) cin >> arr[i];	
+}
+void solve()
+{
+	sort(arr, arr + n);
+	for(int i = 0; i < n - 1; i++) sum += arr[i];
+	if(arr[n - 1] > sum || (sum + arr[n - 1]) % 2 != 0) cout << "NO";
+	else cout << "YES";
+}
+int main()
+{
+	input();
+	solve();
+	return 0;
+}

@@ -1,0 +1,17 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+	unsigned long long n, k, ans = 0;
+	cin >> n >> k;
+	if(k <= n)
+	cout << "1";
+	else
+	{
+		ans += k / n;
+		if(k % n > 0)
+		ans++;
+		cout << ans;
+	}
+	return 0;
+}

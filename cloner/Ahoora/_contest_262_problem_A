@@ -1,0 +1,26 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+	unsigned long long n, k, ans = 0, a, arr[100000], cnt = 0;
+	cin >> n >> k;
+	for(int i = 0; i < n; i++)
+	{
+		cin >> a;
+		cnt = 0;
+		while(a)
+		{
+			if(a % 10 == 4 || a % 10 == 7)
+			{
+				cnt++;
+			}
+			a /= 10;
+		}
+		if(cnt <= k)
+		{
+			ans++;
+		}
+	}
+	cout << ans;
+	return 0;
+}

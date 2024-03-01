@@ -1,0 +1,32 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10;
+set<char> s[30];
+char c[N];
+int n, f[N], ans;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 1; i <= n; i++)
+		cin >> c[i];
+	s[0].insert(c[1]);
+	f[1] = 1;
+	ans++;
+	for (int i = 2; i <= n; i++) 
+		for (int j = 0; j <= 26 && !f[i]; j++)
+			if (s[j].empty() || *--s[j].end() <= c[i]) {
+				if (s[j].empty())
+					ans++;
+				s[j].insert(c[i]);
+				f[i] = j + 1;
+			}
+	if (ans > 2)
+		return cout << "NO" << endl, 0;
+	cout << "YES" << endl;
+	for (int i = 1; i <= n; i++)
+		cout << --f[i];
+	cout << endl;
+	return 0;
+}

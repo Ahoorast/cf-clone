@@ -1,0 +1,39 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10;
+int n, a[N];
+long long dp[N][7][2];
+ 
+bool vld(int x, int y) {
+	return x >= y;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> n;
+		for (int i = 1; i <= n; i++)
+			cin >> a[i];
+		dp[0][0][0] = dp[0][0][1] = 1;
+		for (int i = 1; i <= n; i++) {
+			dp[i][0][0] = dp[i][0][1] = 1;
+			for (int j = 1; j <= 5; j++) 
+				for (int k = 0; k < 2; k++) {
+					dp[i][j][k] = (k == 0? 1LL: -1LL) *  (1LL << 59);
+					if (vld(i - 1, j))
+						dp[i][j][k] = dp[i - 1][j][k];
+					if (vld(i - 1, j - 1))
+						dp[i][j][k] = (k == 0? min({dp[i][j][k], a[i] * dp[i - 1][j - 1][0], a[i] * dp[i - 1][j - 1][1]}): max({dp[i][j][k], a[i] * dp[i - 1][j - 1][0], a[i] * dp[i - 1][j - 1][1]}));
+				}
+		}
+		cout << dp[n][5][1] << '\n';
+		for (int i = 0; i <= n; i++)
+			for (int j = 0; j <= 5; j++)
+				for (int k = 0; k < 2; k++)
+					dp[i][j][k] = 0;
+	}
+	return 0;
+}

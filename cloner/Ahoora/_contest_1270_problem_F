@@ -1,0 +1,54 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2000 * 100 + 10, SQ = 115;
+int n, s[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	string a;
+	cin >> a;
+	int n = (int)(a.size());
+	for (int i = 1; i <= n; i++)
+		s[i] = s[i - 1] + (a[i - 1] == '1');
+	long long ans = 0;
+	for (int d = 1; d <= n / SQ + 2; d++) { 
+		int p1 = 0, p2 = 0;
+		for (int i = 1; i <= n; i++) {
+			while (s[i] - s[p1] > d)
+				p1++;
+			while (s[i] - s[p2] >= d)
+				p2++;
+			int e = min(p2, i - SQ * d);
+			if (s[i] - s[p1] != d)
+				continue;
+			int s = p1;
+			if (e <= s)
+				continue;
+			int tar = i % d;
+			ans += (e - s) / d;
+			int r = (e - s) % d;
+			if (r == 0)
+				continue;
+			int x = p1 % d;
+			if (tar >= x && x + r - 1 >= tar) 
+				ans++;
+			if (tar < x) {
+				r -= d - x;
+				if (r - 1 >= tar)
+					ans++;
+			}
+		}
+	}
+	for (int v = 1; v <= SQ; v++) {
+		unordered_map<long long, int> cnt;
+		for (int i = 0; i <= n; i++) {
+			long long val = 1LL * i - 1LL * v * s[i];
+			ans += cnt[val];
+			cnt[val]++;
+		}
+	}
+	cout << ans << '\n';
+	return 0;
+}
+ 

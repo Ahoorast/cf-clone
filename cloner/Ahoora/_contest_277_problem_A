@@ -1,0 +1,69 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 110;
+int a[N][N], K[N];
+ 
+struct DSU {
+	vector<int> par, size;
+	int comp;
+	DSU(const int &n) {
+		comp = n;
+		par.push_back(-1), size.push_back(-1);
+		for (int i = 1; i <= n; i++)
+			par.push_back(i), size.push_back(1);
+	}
+	int findRoot(int v) {
+		return par[v] == par[par[v]]? par[v]: par[v] = findRoot(par[v]);
+	}
+	bool Union(int v, int u) {
+		int pv = findRoot(v), pu = findRoot(u);
+		if (pv != pu) {
+			if (size[pv] > size[pu])
+				swap(pv, pu);
+			par[pv] = par[pu], size[pv] += size[pu], size[pu] = size[pv], comp--;
+			return false;
+		}
+		return true;
+	}
+	int sz(int v) {
+		return size[findRoot(v)];
+	}
+	bool check(int v, int u) {
+		return findRoot(v) == findRoot(u);
+	}
+};
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int n, m, ans = 0, cnt = 0;
+	cin >> n >> m;
+	DSU G(m);
+	for (int i = 1; i <= n; i++) {
+		cin >> K[i];
+		for (int j = 1; j <= K[i]; j++) 
+			cin >> a[i][j];
+		cnt += K[i] == 0;
+	}
+	if (cnt == n)
+		return cout << n << '\n', 0;
+	for (int i = 1; i <= n; i++)
+		for (int j = 2; j <= K[i]; j++)
+			G.Union(a[i][j], a[i][j - 1]);
+	for (int i = 1; i <= n; i++)
+		for (int j = i + 1; j <= n; j++)
+			if (K[i] && K[j] && !G.check(a[i][1], a[j][1]))
+				G.Union(a[i][1], a[j][1]), ans++;//, cout << i << ' ' << j << '\n';
+			else if (!K[i] || !K[j]) {
+				if (K[i] || K[j]) {
+					//cout << i << ' ' << j << '\n';
+					ans++;
+					if (!K[i])
+						a[i][1] = a[j][1], K[i]++;
+					else
+						a[j][1] = a[i][1], K[j]++;
+				}
+			}
+	cout << ans << '\n';
+	return 0;
+}

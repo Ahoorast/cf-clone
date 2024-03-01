@@ -1,0 +1,18 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int x, y, a, b;
+		cin >> x >> y >> a >> b;
+		int l = y - x;
+		if (l % (a + b) == 0 && l >= a + b)
+			cout << l / (a + b) << endl;
+		else
+			cout << -1 << endl;
+	}
+	return 0;
+}

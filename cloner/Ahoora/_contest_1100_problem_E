@@ -1,0 +1,70 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10;
+int n, m, from[N], to[N], c[N];
+bool vis[N];
+vector<int> adj[N], L;
+ 
+void dfs(int v) {
+	vis[v] = true;
+	for (auto u: adj[v])
+		if (!vis[u])
+			dfs(u);
+	L.push_back(v);
+}
+ 
+bool check(int x) {
+	L.clear();
+	for (int i = 0; i < n; i++)
+		vis[i] = 0, adj[i].clear();
+	for (int i = 0; i < m; i++)
+		if (c[i] >= x)
+			adj[from[i]].push_back(to[i]);
+	for (int i = 0; i < n; i++)
+		if (!vis[i])
+			dfs(i);
+	fill(vis, vis + n, false);
+	for (auto v: L) {
+		vis[v] = true;
+		for (auto u: adj[v])
+			if (!vis[u])
+				return false;
+	}
+	return true;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m;
+	for (int i = 0; i < m; i++) {
+		cin >> from[i] >> to[i] >> c[i];
+		from[i]--, to[i]--;
+	}
+	int l = 0, r = 1e9 + 100;
+	while (l + 1 < r) {
+		int mid = l + r >> 1;
+		if (check(mid))
+			r = mid;
+		else
+			l = mid;
+	}
+	cout << r - 1 << ' ';
+	check(r);
+	vector<int> pos(n);
+	for (int i = 0; i < n; i++)
+		pos[L[i]] = i;
+	vector<int> o;
+	for (int i = 0; i < m; i++) {
+		if (c[i] >= r)
+			continue;
+		int v = from[i], u = to[i];
+		if (pos[v] < pos[u])
+			o.push_back(i + 1);
+	}
+	cout << (int)(o.size()) << '\n';
+	for (auto i: o)
+		cout << i << ' ';
+	cout << '\n';
+	return 0;
+}

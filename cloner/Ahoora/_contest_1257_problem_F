@@ -1,0 +1,43 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 110, HF = 15;
+int n, a[N], b[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 0; i < n; i++) 
+		cin >> a[i];
+	set<pair<vector<int>, int>> s;
+	for (int msk = 0; msk < 1 << HF; msk++) {
+		int mn = 100;
+		vector<int> vec;
+		for (int i = 0; i < n; i++) {
+			int x = a[i] >> HF;
+			x ^= msk;
+			x = __builtin_popcount(x);
+			vec.push_back(x), mn = min(mn, x);
+		}
+		for (int i = 0; i < n; i++)
+			vec[i] -= mn;
+		s.insert({vec, msk << HF});
+	}
+	for (int msk = 0; msk < 1 << HF; msk++) {
+		vector<int> vec;
+		int mx = 0;
+		for (int i = 0; i < n; i++) {
+			int x = a[i] & ((1 << HF) - 1);
+			x ^= msk;
+			x = __builtin_popcount(x);
+			vec.push_back(x), mx = max(mx, x);
+		}
+		for (int i = 0; i < n; i++)
+			vec[i] = mx - vec[i];
+		auto it = s.lower_bound({vec, -1});
+		if ((*it).first == vec) 
+			return cout << (msk + (*it).second) << '\n', 0;
+	}
+	cout << "-1\n";
+	return 0;
+}

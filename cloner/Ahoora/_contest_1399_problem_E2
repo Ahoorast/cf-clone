@@ -1,0 +1,83 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10;
+int n, sz[N], h[N], a[N], b[N], w[N], c[N];
+long long sum, S;
+vector<pair<int, int>> adj[N];
+set<pair<long long, int>> s;
+vector<long long> vec[2];
+ 
+void dfs(int root, int par = 0) {
+	h[root] = h[par] + 1;
+	bool cld = false;
+	for (auto u: adj[root])
+		if (u.first ^ par) {
+			dfs(u.first, root);
+			cld = true;
+			sz[root] += sz[u.first];
+			sum += 1LL * u.second * sz[u.first];
+		}
+	sz[root] += (!cld);
+}
+ 
+long long cal_delta(int ind) {
+	int v = a[ind], u = b[ind];
+	if (h[v] > h[u])
+		swap(v, u);
+	long long x = w[ind] - w[ind] / 2, y = sz[u];
+	return x * y;
+}
+ 
+void do_shit(int tp) {
+	s.clear();
+	for (int i = 1; i < n; i++)
+		if (c[i] == tp) 
+			s.insert({cal_delta(i), i});
+	while (s.size()) {
+		auto it = *--s.end();
+		s.erase(it);
+		vec[tp - 1].push_back(it.first);
+		int i = it.second;
+		w[i] /= 2;
+		if (w[i])
+			s.insert({cal_delta(i), i});
+	}
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> n >> S;
+		for (int i = 1; i <= n; i++)
+			adj[i].clear(), h[i] = sz[i] = 0;
+		for (int i = 1; i < n; i++) {
+			cin >> a[i] >> b[i] >> w[i] >> c[i];
+			adj[a[i]].push_back({b[i], w[i]});
+			adj[b[i]].push_back({a[i], w[i]});
+		}
+		sum = 0;
+		dfs(1);
+		vec[0].clear(), vec[1].clear();
+		vec[0].push_back(0), vec[1].push_back(0);
+		do_shit(1), do_shit(2);
+		int sz[2] {(int)vec[0].size(), (int)vec[1].size()};
+		sz[0]--, sz[1]--;
+		for (int t = 0; t < 2; t++)
+			for (int i = 2; i <= sz[t]; i++)
+				vec[t][i] += vec[t][i - 1];
+		int ans = 1 << 30;
+		int l = sz[1];
+		S = sum - S;
+		for (int i = 0; i <= sz[0]; i++) {
+			while (l > 0 && vec[0][i] + vec[1][l - 1] >= S)
+				l--;
+			if (vec[0][i] + vec[1][l] >= S)
+				ans = min(ans, l * 2 + i);
+		}
+		cout << ans << '\n';
+	}
+	return 0;
+}

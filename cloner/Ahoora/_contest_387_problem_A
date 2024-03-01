@@ -1,0 +1,25 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int maxn = 200;
+int a[maxn];
+ 
+int main() {
+ 	ios_base:: sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int n[2][2];
+	char c;
+	cin >> n[0][0] >> c >> n[0][1] >> n[1][0] >> c >> n[1][1];
+	n[0][1] -= n[1][1];
+	n[0][0] -= n[1][0];
+	if (n[0][1] < 0)
+		n[0][1] += 60, n[0][0]--;
+	if (n[0][0] < 0)
+		n[0][0] += 24;
+	if (n[0][0] < 10)
+		cout << '0';
+	cout << n[0][0] << ':';
+	if (n[0][1] < 10)
+		cout << '0';
+	cout << n[0][1] << endl;
+	return 0;
+}

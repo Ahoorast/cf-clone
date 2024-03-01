@@ -1,0 +1,123 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10;
+int n, Q;
+bool ans[N];
+vector<pair<int, int>> seg[N << 2];
+ 
+struct DSU {
+	int sz[N], bad;
+	pair<int, int> par[N];
+	vector<pair<int, int>> edge;
+	stack<int> s;
+	DSU(int x = 0) {
+		for (int i = 1; i <= x; i++)
+			par[i] = {i, 0};
+		fill(sz, sz + x + 1, 1);
+		bad = 0;
+		while (s.size())
+			s.pop();
+	}
+	pair<int, int> get_par(int v) {
+		int res = 0;
+		while (v != par[v].first) {
+			res += par[v].second;
+			v = par[v].first;
+		}
+		return {v, res};
+	}
+	void Union(int v, int u) {
+		int x, y;
+		edge.push_back({v, u});
+		pair<int, int> t = get_par(v);
+		v = t.first, x = t.second;
+		t = get_par(u);
+		u = t.first, y = t.second;
+		if (v == u) {
+			if (x % 2 == y % 2) {
+				bad++, s.push(-1);
+			}
+			else
+				s.push(-2);
+			return;
+		}
+		if (sz[u] > sz[v])
+			swap(u, v);
+		s.push(u);
+		x &= 1, y &= 1;
+		sz[v] += sz[u], par[u] = {v, x ^ y ^ 1};
+	}
+	void Undo() {
+		assert(s.size());
+		edge.pop_back();
+		int v = s.top();
+		s.pop();
+		if (v == -1) {
+			bad--;
+			return;
+		}
+		if (v == -2)
+			return;
+		sz[par[v].first] -= sz[v];
+		par[v] = {v, 0};
+	}
+	bool get() {
+		return bad == 0;
+	}
+	void debug() {
+		for (auto e: edge)
+			cout << e.first << ' ' << e.second << '\n';
+	}
+} G;
+ 
+void upd(int v, int u, int s, int e, int l = 0, int r = Q, int id = 1) {
+	if (s <= l && e >= r) {
+		seg[id].push_back({v, u});
+		return;
+	}
+	if (s >= r || e <= l)
+		return;
+	int mid = l + r >> 1;
+	upd(v, u, s, e, l, mid, id << 1), upd(v, u, s, e, mid, r, id << 1 | 1);
+	return;
+}
+ 
+void solve(int l = 0, int r = Q, int id = 1) {
+	for (auto x: seg[id]) 
+		G.Union(x.first, x.second);
+	if (l + 1 == r) {
+		ans[l] = G.get();
+		for (auto x: seg[id])
+			G.Undo();
+	}
+	if (l + 1 == r)
+		return;
+	int mid = l + r >> 1;
+	solve(l, mid, id << 1), solve(mid, r, id << 1 | 1);
+	for (auto x: seg[id])
+		G.Undo();
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> Q;
+	G = DSU(n);
+	map<pair<int, int>, int> last;
+	for (int i = 0, x, y; i < Q; i++) {
+		cin >> x >> y;
+		if (x > y)
+			swap(x, y);
+		if (last.count(make_pair(x, y))) {
+			upd(x, y, last[make_pair(x, y)], i);
+			last.erase(make_pair(x, y));
+		} else 
+			last[make_pair(x, y)] = i;
+	}
+	for (auto it: last)
+		upd(it.first.first, it.first.second, it.second, Q);
+	solve();
+	for (int i = 0; i < Q; i++)
+		cout << (ans[i]? "YES": "NO") << '\n';
+	return 0;
+}

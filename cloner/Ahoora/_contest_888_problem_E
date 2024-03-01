@@ -1,0 +1,36 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 40;
+int n, m, a[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m;
+	for (int i = 0; i < n; i++)
+		cin >> a[i];
+	int mid = n >> 1;
+	vector<int> vec;
+	for (int i = 0; i < 1 << mid; i++) {
+		int sm = 0;
+		for (int j = 0; j < mid; j++)
+			if ((1 << j) & i)
+				(sm += a[j]) %= m;
+		vec.push_back(sm);
+	}
+	sort(vec.begin(), vec.end());
+	int r = n - mid;
+	int ans = 0;
+	for (int i = 0; i < 1 << r; i++) {
+		int x = 0;
+		for (int j = 0; j < r; j++)
+			if ((1 << j) & i)
+				(x += a[mid + j]) %= m;
+		if (x)
+			ans = max(ans, x + *--lower_bound(vec.begin(), vec.end(), m - x));
+		ans = max(ans, x);
+	}
+	ans = max(ans, vec.back());
+	cout << ans << '\n';
+	return 0;
+}

@@ -1,0 +1,17 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int maxn = 1e5 + 100;
+long long a[2][maxn], n[2], k, m;
+ 
+int main() {
+ 	ios_base:: sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n[0] >> n[1] >> k >> m;
+	for (int i = 0; i < 2; i++)
+		for (int j = 0; j < n[i]; j++)
+			cin >> a[i][j];
+	if (a[1][n[1] - m] > a[0][k - 1])
+		cout << "YES";
+	else cout << "NO";
+	return 0;
+}

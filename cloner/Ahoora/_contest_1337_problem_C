@@ -1,0 +1,55 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 100 * 1000 + 100;
+int n, K, ans, h[N], p[N], sub[N];
+vector<int> adj[N], vec;
+bool mark[N], vis[N];
+ 
+void dfs(int root, int par = -1) {
+	if (par != -1)
+		h[root] = h[par] + 1, p[root] = par;
+	bool leaf = true;
+	for (auto u: adj[root])
+		if (u ^ par)
+			dfs(u, root), leaf = false, sub[root] += sub[u];
+	sub[root]++;
+	if (leaf)
+		vec.push_back(root);		
+}
+ 
+long long dfs1(int root, int par = -1, int t = 0) {
+	long long res = 0;
+	if (!mark[root])
+		t++;
+	for (auto u: adj[root])
+		if (u ^ par) 
+			res += dfs1(u, root, t);
+	return res + mark[root] * t;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> K;
+	for (int i = 1, v, u; i < n; i++) {
+		cin >> v >> u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+	dfs(1);
+	sort(vec.begin(), vec.end(), [](int v, int u) {
+			return h[v] > h[u];
+			});
+	set<pair<int, int>> s;
+	for (auto it: vec)
+		s.insert({h[it] * sub[it] - (sub[it] - 1) * (h[it] + 1), it}), vis[it] = true;
+	while (K--) {
+		pair<int, int> x = *--s.end();
+		s.erase(x);
+		mark[x.second] = true;
+		if (p[x.second] != -1 && !vis[p[x.second]])
+			s.insert({sub[p[x.second]] * h[p[x.second]] - (sub[p[x.second]] - 1) * (h[p[x.second]] + 1), p[x.second]}), vis[p[x.second]] = true;
+	}
+	cout << dfs1(1) << endl;
+	return 0;
+}

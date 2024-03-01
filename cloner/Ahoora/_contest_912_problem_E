@@ -1,0 +1,53 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 20;
+const long long M = 1LL * 1000000 * 1000000 * 1000000 + 10;
+int sz[2], k, n;
+long long p[N];
+vector<long long> vec[2];
+long long num = 1;
+ 
+bool check(long long x) {
+	int R = upper_bound(vec[1].begin(), vec[1].end(), x) - vec[1].begin();
+	int i = 0, res = 0;
+	while (vec[0][i] <= x && i < sz[0] && R && res < k) {
+		while (R && x / vec[1][R - 1] < vec[0][i])
+			R--;
+		res += R;
+		i++;
+	}
+	return res >= k;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 0; i < n; i++)
+		cin >> p[i];
+	cin >> k;
+	vec[0].push_back(1), vec[1].push_back(1), sz[0] = sz[1] = 1;
+	for (int i = 0; i < n; i++) {
+		if (sz[0] > sz[1])
+			swap(vec[0], vec[1]), swap(sz[0], sz[1]);
+		for (int k = sz[0] - 1; k >= 0; k--)
+			for (long long x = vec[0][k]; x <= M / p[i]; x *= p[i])
+				vec[0].push_back(x * p[i]), sz[0]++;
+	}
+	sort(vec[0].begin(), vec[0].end());
+	sort(vec[1].begin(), vec[1].end());
+	if (sz[0] > sz[1])
+		swap(vec[0], vec[1]), swap(sz[0], sz[1]);
+	long long l = 1, r = M;
+	if (k == 1)
+		return cout << "1\n", 0;
+	while (l + 1 < r) {
+		long long mid = l + r >> 1;
+		if (check(mid))
+			r = mid;
+		else
+			l = mid;
+	}
+	cout << r << '\n';
+	return 0;
+}

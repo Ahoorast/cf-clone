@@ -1,0 +1,68 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1010;
+int c[N][N], n, m, r1, c1, r2, c2, dx[4] = {1, -1, 0, 0}, dy[4] = {0, 0, 1, -1};
+bool vis[N][N];
+ 
+bool vld(int x, int y) {
+	return x >= 1 && x <= n && y >= 1 && y <= m && !vis[x][y] && c[x][y] != 'T';
+}
+ 
+int bfs(int x, int y, bool tp, int d = 0) {
+	queue<pair<pair<int, int>, int>> q;
+	q.push({{x, y}, 0});
+	vis[x][y] = true;
+	int res = 0;
+	while (q.size()) {
+		pair<pair<int, int>, int> t = q.front();
+		q.pop();
+		if (!tp) {
+			for (int i = 0; i < 4; i++) {
+				int nx = dx[i] + t.first.first, ny = dy[i] + t.first.second;
+				if (nx == r2 && ny == c2)
+					return t.second + 1;
+				if (vld(nx, ny))
+					q.push({{nx, ny}, t.second + 1}), vis[nx][ny] = true;
+			}
+		}
+		else {
+			if (t.second < d) {
+				for (int i = 0; i < 4; i++) {
+					int nx = dx[i] + t.first.first, ny = dy[i] + t.first.second;
+					if (vld(nx, ny)) {
+						q.push({{nx, ny}, t.second + 1}), vis[nx][ny] = true;
+						if (c[nx][ny] >= '1' && c[nx][ny] <= '9')
+							res += c[nx][ny] - '0';
+					}
+				}
+			}
+		}
+	}
+	return res;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m;
+	for (int i = 1; i <= n; i++) {
+		string s;
+		cin >> s;
+		for (int j = 0; j < s.size(); j++)
+			c[i][j + 1] = s[j];
+	}
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= m; j++) {
+			if (c[i][j] == 'E')
+				r2 = i, c2 = j;
+			if (c[i][j] == 'S')
+				r1 = i, c1 = j;
+		}
+	//cout << r2 << ' ' << c2 << endl;
+	int d = bfs(r1, c1, 0);
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= m; j++)
+			vis[i][j] = false;
+	cout << bfs(r2, c2, 1, d) << endl;
+	return 0;
+}

@@ -1,0 +1,27 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int LOG = 62;
+ 
+unsigned long long solve(unsigned long long l, unsigned long long r) {
+	if (l == r)
+		return 0ull;
+	int lBit = -1, rBit = -1;
+	for (int i = 0; i <= LOG; i++) {
+		if (l & (1ull << i))
+			lBit = i;
+		if (r & (1ull << i))
+			rBit = i;
+	}
+	if (rBit > lBit) 
+		return (1ull << (rBit + 1)) - 1ull;
+	return solve(l ^ (1ull << lBit), r ^ (1ull << rBit));
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	unsigned long long l, r;
+	cin >> l >> r;
+	cout << solve(l, r) << endl;
+	return 0;
+}

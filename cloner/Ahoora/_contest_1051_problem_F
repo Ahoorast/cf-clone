@@ -1,0 +1,87 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10, LG = 20;
+int n, m, par[N][LG], h[N];
+bool vis[N];
+long long d[N];
+vector<pair<int, int>> adj[N], E;
+ 
+void dfs(int v) {
+	vis[v] = true;
+	for (int i = 1; i < LG; i++)
+		par[v][i] = par[par[v][i - 1]][i - 1];
+	for (auto u: adj[v]) {
+		if (u.first == par[v][0])
+			continue;
+		if (!vis[u.first]) {
+			par[u.first][0] = v, h[u.first] = h[v] + 1;
+			d[u.first] = d[v] + u.second;
+			dfs(u.first);
+		} else 
+			E.push_back({v, u.first});
+	}
+}
+ 
+vector<long long> dij(int src) {
+	vector<long long> d(n + 1);
+	fill(d.begin(), d.end(), 1LL << 60);
+	set<pair<long long, int>> q;
+	q.insert({d[src] = 0, src});
+	while (q.size()) {
+		auto v = q.begin() -> second;
+		q.erase(q.begin());
+		for (auto u: adj[v])
+			if (d[v] + u.second < d[u.first]) {
+				q.erase({d[u.first], u.first});
+				q.insert({d[u.first] = d[v] + u.second, u.first});
+			}
+	}
+	return d;
+}
+ 
+int lca(int v, int u) {
+	if (h[v] < h[u])
+		swap(v, u);
+	for (int i = 0; i < LG; i++)
+		if ((1 << i) & (h[v] - h[u]))
+			v = par[v][i];
+	if (v == u)
+		return v;
+	for (int i = LG - 1; i >= 0; i--)
+		if (par[v][i] != par[u][i])
+			v = par[v][i], u = par[u][i];
+	return par[v][0];
+}
+ 
+long long dis(int v, int u) {
+	return d[v] + d[u] - 2LL * d[lca(v, u)];
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m;
+	for (int i = 1, v, u, w; i <= m; i++) {
+		cin >> v >> u >> w;
+		adj[v].push_back({u, w});
+		adj[u].push_back({v, w});
+	}
+	dfs(1);
+	vector<vector<long long>> d;
+	for (auto e: E) {
+		d.push_back(dij(e.first));
+		d.push_back(dij(e.second));
+	}
+	int sz = (int)(d.size());
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int v, u;
+		cin >> v >> u;
+		long long ans = dis(v, u);
+		for (int i = 0; i < sz; i++)
+			ans = min(ans, d[i][v] + d[i][u]);
+		cout << ans << '\n';
+	}
+	return 0;
+}

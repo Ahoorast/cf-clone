@@ -1,0 +1,21 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	string ans[2] = {"DA", "NET"};
+	swap(ans[0], ans[1]);
+	while (Q--) {
+		string s;
+		cin >> s;
+		int n = s.size();
+		int cnt[2] = {0, 0};
+		for (int i = 0; i < n; i++)
+			cnt[s[i] - '0']++;
+		int td = min(cnt[0], cnt[1]);
+		cout << ans[td & 1] << '\n';
+	}
+	return 0;
+}

@@ -1,0 +1,36 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int main() {
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		unsigned long long n, ans[3] = {}, l = -1;
+		ans[0] = ans[1] = ans[2] = 1;
+		cin >> n;
+		for (int i = 2; 1ll * i * i <= n; i++) {
+			if (n % i == 0) {
+				if (l == -1)
+					l++;
+				while (n % i == 0) {
+					if (l != 2 && ans[l] != 1)
+						if (l == 0 || (l > 0 && ans[l] != ans[l - 1]))
+							++l;
+					ans[l] *= i;
+					n /= i;
+				}
+			}
+		}
+		if (n > 1) {
+			if (l != 2)
+				l++;
+			ans[l] *= n;
+		}
+		if (l != 2 || (ans[0] == ans[1] || ans[0] == ans[2] || ans[1] == ans[2]))
+			cout << "NO" << endl;
+		else
+			cout << "YES" << endl << ans[0] << ' ' << ans[1] << ' ' << ans[2] << endl;
+	}
+	return 0;
+}

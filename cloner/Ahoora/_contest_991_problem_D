@@ -1,0 +1,38 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 110;
+string s[2], t;
+int n, dp[N][3];
+ 
+bool vld(int n) {
+	return s[0][n] == '0' && s[1][n] == '0';
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	s[0] += '1', s[1] += '1';
+	cin >> t, s[0] += t;
+	cin >> t, s[1] += t;
+	n = t.size();
+	for (int i = 1; i <= n; i++) {
+		if (vld(i) && s[0][i - 1] == '0')
+			dp[i][0] = max(dp[i][0], dp[i - 1][2] + 1);
+		if (vld(i) && s[1][i - 1] == '0')
+			dp[i][0] = max(dp[i][0], dp[i - 1][1] + 1);
+		if (s[0][i] == '0' && vld(i - 1)) {
+			dp[i][0] = max(dp[i][0], dp[i - 2][0] + 1);
+			dp[i][1] = max(dp[i][1], dp[i - 2][0] + 1);
+		}
+		if (s[1][i] == '0' && vld(i - 1)) {
+			dp[i][0] = max(dp[i][0], dp[i - 2][0] + 1);
+			dp[i][2] = max(dp[i][2], dp[i - 2][0] + 1);
+		}
+		int t = max(dp[i - 1][0], max(dp[i - 1][1], dp[i - 1][2]));
+		dp[i][0] = max(dp[i][0], t);
+		dp[i][1] = max(dp[i][1], t);
+		dp[i][2] = max(dp[i][2], t);
+	}
+	cout << max({dp[n][0], dp[n][1], dp[n][2]}) << endl;
+	return 0;
+}

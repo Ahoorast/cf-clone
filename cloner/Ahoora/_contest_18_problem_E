@@ -1,0 +1,72 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 510, Z = 26;
+char c[N][N];
+int n, m, cnt[N][2][Z], dp[N][Z + 5][Z + 5], val[N][Z + 5][Z + 5];
+pair<int, int> mn[4][Z + 5][Z + 5], path[N][Z + 5][Z + 5], ans[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> m;
+	int initX[4] = {1, 1, Z, Z}, initY[4] = {1, Z, 1, Z}, dx[4] = {+1, +1, -1, -1}, dy[4] = {+1, -1, +1, -1};
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= m; j++)
+			cin >> c[i][j], cnt[i][j & 1][c[i][j] - 'a']++;
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= Z; j++)
+			for (int k = 1; k <= Z; k++) {
+				val[i][j][k] = n + 100;
+				if (j != k)
+					val[i][j][k] = m - cnt[i][1][j - 1] - cnt[i][0][k - 1];
+			}
+	for (int i = 0; i <= Z + 1; i++)
+		for (int j = 0; j <= Z + 1; j++)
+			for (int t = 0; t < 4; t++) 
+				mn[t][i][j] = {0, 0};
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j <= Z; j++)
+			for (int k = 1; k <= Z; k++) {
+				dp[i][j][k] = 1 << 30;
+				if (j == k)
+					continue;
+				pair<int, int> tmp = mn[0][j - dx[0]][k - dy[0]];
+				for (int t = 1; t < 4; t++)
+					if (dp[i - 1][tmp.first][tmp.second] > dp[i - 1][mn[t][j - dx[t]][k - dy[t]].first][mn[t][j - dx[t]][k - dy[t]].second])
+						tmp = mn[t][j - dx[t]][k - dy[t]];
+				dp[i][j][k] = val[i][j][k] + dp[i - 1][tmp.first][tmp.second];
+				path[i][j][k] = tmp;
+			}
+		for (int j = 0; j <= Z + 1; j++)
+			dp[i][0][j] = dp[i][j][0] = dp[i][Z + 1][j] = dp[i][j][Z + 1] = 1 << 30;
+		for (int t = 0; t < 4; t++)
+			for (int j = initX[t]; j >= 1 && j <= Z; j += dx[t])
+				for (int k = initY[t]; k >= 1 && k <= Z; k += dy[t]) {
+					mn[t][j][k] = {j, k};
+					pair<int, int> tmp[2] = {mn[t][j - dx[t]][k], mn[t][j][k - dy[t]]};
+					for (int K = 0; K < 2; K++)
+						if (dp[i][mn[t][j][k].first][mn[t][j][k].second] > dp[i][tmp[K].first][tmp[K].second])
+							mn[t][j][k] = tmp[K];
+				}
+	}
+	pair<int, int> tmp = {1 ,1};
+	for (int j = 1; j <= Z; j++)
+		for (int k = 1; k <= Z; k++)
+			if (dp[n][j][k] < dp[n][tmp.first][tmp.second])
+				tmp = {j, k};
+	cout << dp[n][tmp.first][tmp.second] << '\n';
+	for (int i = n; i >= 1; i--) {
+		ans[i] = tmp;
+		tmp = path[i][tmp.first][tmp.second];
+	}
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= m; j++)
+			if (j & 1)
+				c[i][j] = ans[i].first - 1 + 'a';
+			else
+				c[i][j] = ans[i].second - 1 + 'a';
+	for (int i = 1; i <= n; i++, cout << '\n')
+		for (int j = 1; j <= m; j++)
+			cout << c[i][j];
+	return 0;
+}

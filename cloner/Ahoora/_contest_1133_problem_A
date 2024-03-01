@@ -1,0 +1,22 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int main() {
+	ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0); 
+	int h1, h2, m1, m2;
+	char c;
+	cin >> h1 >> c >> m1 >> h2 >> c >> m2;
+	h1 = h1 * 60 + m1;
+	h2 = h2 * 60 + m2;
+	h1 = (h1 + h2) / 2;
+	m1 = h1 / 60;
+	m2 = h1 % 60;
+	if (m1 < 10)
+		cout << '0';
+	cout << m1;
+	cout << ':';
+	if (m2 < 10)
+		cout << '0';
+	cout << m2;
+	return 0;
+}

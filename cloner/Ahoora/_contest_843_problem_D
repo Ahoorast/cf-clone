@@ -1,0 +1,78 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 1000 + 10;
+int n, m, from[N], to[N], we[N], par[N];
+bool vis[N];
+long long d[N], dd[N];
+vector<int> adj[N];
+vector<int> qq[N];
+ 
+int main() { 
+	int Q;
+	scanf("%d%d%d", &n, &m, &Q);
+	for (int i = 0, v, u, w; i < m; i++) {
+		scanf("%d%d%d", &v, &u, &w);
+		--v, --u;
+		from[i] = v, to[i] = u, we[i] = w;
+		adj[v].push_back(i);
+	}
+	set<pair<long long, int>> q;
+	fill(d, d + n, 1LL << 60);
+	q.insert({d[0] = 0, 0});
+	while (q.size()) {
+		int v = q.begin() -> second;
+		q.erase(q.begin());
+		for (auto i: adj[v]) {
+			int u = to[i], w = we[i];
+			if (d[v] + w < d[u]) {
+				q.erase({d[u], u});
+				par[u] = i;
+				q.insert({d[u] = d[v] + w, u});
+			}
+		}
+	}
+	while (Q--) {
+		int tp;
+		scanf("%d", &tp);
+		if (tp == 1) {
+			int v;
+			scanf("%d", &v);
+			--v;
+			printf("%lld\n", (d[v] < 1LL << 60? d[v]: -1));
+		} else {
+			int c;
+			scanf("%d", &c);
+			for (int i = 0, l; i < c; i++) {
+				scanf("%d", &l);
+				--l;
+				we[l]++;
+			}
+			fill(dd, dd + n, 1LL << 60);
+			qq[0].push_back(0), dd[0] = 0;
+			for (int x = 0; x <= c; x++) {
+				while (qq[x].size()) {
+					int v = qq[x].back();
+					qq[x].pop_back();
+					if (dd[v] - d[v] != x)
+						continue;
+					for (auto i: adj[v]) {
+						int u = to[i], w = we[i];
+						if (dd[v] + w < dd[u]) {
+							dd[u] = dd[v] + w;
+							if (dd[u] - d[u] <= c)
+								qq[dd[u] - d[u]].push_back(u);
+						}
+					}
+				}
+			}
+			for (int i = 0; i < n; i++)
+				d[i] = dd[i];
+			for (int x = 0; x <= c; x++)
+				qq[x].clear();
+			for (int i = 0; i < n; i++)
+				d[i] = dd[i];
+		}
+	}
+	return 0;
+}

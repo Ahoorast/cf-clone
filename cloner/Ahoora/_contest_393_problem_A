@@ -1,0 +1,41 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+	string s, a;
+	cin >> s;
+	int ans = 0, az = s.size(), arr[100];
+	for(int i = 0; i < 10; i++)
+	{
+		arr[i] = 0;
+	}
+	for(int i = 0; i < az; i++)
+	{
+		if(s[i] == 'i')
+		{
+			arr[0]++;
+		}
+		if(s[i] == 't')
+		{
+			arr[1]++;
+		}
+		if(s[i] == 'e')
+		{
+			arr[2]++;
+		}
+		if(s[i] == 'n')
+		{
+			arr[3]++;
+		}
+	}
+	arr[2] /= 3;
+	arr[3] = (arr[3] - 1) / 2;
+	ans = arr[0];
+	for(int i = 1; i < 4; i++)
+	{
+		if(arr[i] < ans)
+		ans = arr[i];
+	}
+	cout << ans;
+	return 0;
+}

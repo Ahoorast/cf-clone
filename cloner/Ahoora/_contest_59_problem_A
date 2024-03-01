@@ -1,0 +1,33 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+	string a;
+	cin >> a;
+	int big = 0, lit = 0;
+	for(int i = 0; i < a.size(); i++)
+	{
+		if(a[i] <= 'Z' && a[i] >= 'A')
+		big++;
+		if(a[i] <= 'z' && a[i] >= 'a')
+		lit++;
+	}
+	if(lit >= big)
+	{
+		for(int i = 0; i < a.size(); i++)
+		{
+			if(a[i] < 'a')
+			a[i] += 32;
+		}
+	} 
+	if(big > lit)
+	{
+		for(int i = 0; i < a.size(); i++)
+		{
+			if(a[i] >= 'a')
+			a[i] -= 32;
+		}
+	}
+	cout << a;
+	return 0;
+}

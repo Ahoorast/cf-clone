@@ -1,0 +1,72 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10;
+int comp[N];
+int n, m, D, cnt, deg[N];
+set<int> adj[N];
+bool mark[N];
+ 
+void read() {
+	cin >> n >> m >> D;
+	for (int i = 0; i < m; i++) {
+		int v, u;
+		cin >> v >> u;
+		adj[v].insert(u), adj[u].insert(v);
+		deg[v]++, deg[u]++;
+	}
+}
+ 
+void dfs(int root) {
+	comp[root] = cnt;
+	for (auto u: adj[root])
+		if (!comp[u] && u != 1)
+			dfs(u);
+}
+ 
+void bfs(int root) {
+	queue<int> q;
+	q.push(root);
+	mark[root] = true;
+	while (q.size()) {
+		int v = q.front();
+		for (auto u: adj[v])
+			if (!mark[u])
+				cout << v << ' ' << u << endl, mark[u] = true, q.push(u);
+		q.pop();
+	}
+}
+ 
+int main() {
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	read();
+	for (int i = 2; i <= n; i++)
+		if (!comp[i])
+			++cnt, dfs(i);
+	if (deg[1] < D || cnt > D)
+		return cout << "NO" << endl, 0;
+	mark[1] = true;
+	cout << "YES" << endl;
+	vector<int> vec;
+	bool vis[N] = {};
+	for (int i = 2; i <= n; i++)
+		if (!vis[comp[i]] && adj[1].find(i) != adj[1].end()) {
+			cout << 1 << ' ' << i << endl;
+			vec.push_back(i);
+			adj[1].erase(i);
+			adj[i].erase(1);
+			mark[i] = true;
+			vis[comp[i]] = true;
+			D--;
+		}
+	for (auto it: adj[1])
+		if (D) {
+			cout << 1 << ' ' << it << endl;
+			vec.push_back(it);
+			D--;
+			mark[it] = true;
+		}
+	for (auto it: vec)
+		bfs(it);
+	return 0;
+}

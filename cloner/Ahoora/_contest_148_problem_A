@@ -1,0 +1,22 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+	long long k, l, m, n, d, arr[100100], ans = 0;
+	cin >> k >> l >> m >> n >> d;
+	for(int i = 0; i <= d; i++)
+	arr[i] = 0;
+	for(long long i = 1; i * n <= d; i++)
+	arr[i * n] = 1;
+	for(long long i = 1; i * m <= d; i++)
+	arr[i * m] = 1;
+	for(long long i = 1; i * l <= d; i++)
+	arr[i * l] = 1;
+	for(long long i = 1; i * k <= d; i++)
+	arr[i * k] = 1;
+	for(int i = 1; i <= d; i++)
+	if(arr[i] == 0)
+	ans++;
+	cout << d - ans;
+	return 0;
+}

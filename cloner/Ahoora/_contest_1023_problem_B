@@ -1,0 +1,9 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int main() {
+	long long n, k;
+	cin >> n >> k;
+	cout << max(1ll * 0, min((k - 1) / 2, n - k / 2)) << endl;
+	return 0;
+}

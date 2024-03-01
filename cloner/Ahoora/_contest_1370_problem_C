@@ -1,0 +1,36 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+string ans[2] = {"FastestFinger", "Ashishgup"};
+ 
+int main() { 
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int n;
+		cin >> n;
+		if (n == 1)
+			cout << ans[0] << '\n';
+		else if (n == 2 || (n & 1))
+			cout << ans[1] << '\n';
+		else {
+			int cnt = 0;
+			while (n % 2 == 0)
+				n /= 2, cnt++;
+			if (n == 1)
+				cout << ans[0] << '\n';
+			else if (cnt != 1)
+				cout << ans[1] << '\n';
+			else {
+				cnt = 0;
+				for (int i = 2; i * i <= n; i++)
+					while (n % i == 0)
+						n /= i, cnt++;
+				if (n > 1)
+					cnt++;
+				cout << ans[cnt > 1] << '\n';
+			}
+		}
+	}
+	return 0;
+}

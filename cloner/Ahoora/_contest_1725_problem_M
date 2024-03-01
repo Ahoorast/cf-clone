@@ -1,0 +1,69 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10;
+const long long inf = 1LL * 1000 * 1000 * 1000 * 1000 * 1000 * 1000 + 10;
+int n, m;
+vector<pair<int, int>> adj[N], jda[N];
+long long d[N][2];
+bool mark[N][2];
+ 
+struct state {
+	int v;
+	bool av;
+	long long w;
+	state(int a, bool b, long long c) {
+		v = a;
+		av = b;
+		w = c;
+	}
+	bool operator < (state b) const {
+		if (w != b.w)
+			return w > b.w;
+		return make_pair(v, av) < make_pair(b.v, b.av);
+	}
+};
+ 
+int main() {
+	scanf("%d%d", &n, &m);
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < 2; j++)
+			d[i][j] = inf;
+	for (int i = 0, v, u, w; i < m; i++) {
+		scanf("%d%d%d", &v, &u, &w);
+		--v, --u;
+		adj[v].push_back({u, w});
+		jda[u].push_back({v, w});
+	}
+	priority_queue<state> s;
+	s.push(state(0, 0, 0));
+	d[0][0] = 0;
+	while (!s.empty()) {
+		state it = s.top();
+		int v = it.v;
+		bool av = it.av;
+		long long w = it.w;
+		s.pop();
+		if (!mark[v][av]) {
+			if (av == false) {
+				for (auto u: adj[v]) 
+					if (d[u.first][0] > w + u.second) {
+						s.push(state(u.first, 0, w + u.second));
+						d[u.first][0] = w + u.second;
+						d[u.first][1] = min(d[u.first][1], w + u.second);
+					}
+			}
+			for (auto u: jda[v])
+				if (d[u.first][1] > w + u.second) {
+					s.push(state(u.first, 1, w + u.second));
+					d[u.first][1] = w + u.second;
+				}
+			mark[v][av] = true;
+		}
+	}
+	for (int i = 1; i < n; i++) {
+		long long res =  min(d[i][0], d[i][1]);
+		printf("%lld " , (res >= inf? -1ll: res));
+	}
+	return 0;
+}

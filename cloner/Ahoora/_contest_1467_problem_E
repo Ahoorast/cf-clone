@@ -1,0 +1,98 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2 * 1000 * 100 + 10, LG = 20, SQ = 450;
+int st[N], en[N], ver[N], par[N][LG], h[N], a[N], s[N], n, TM, ah[N], kol;
+vector<int> adj[N], vec[N];
+ 
+void dfs_lca(int v) {
+	st[v] = TM++;
+	ver[st[v]] = v;
+	for (int i = 1; i < LG; i++)
+		par[v][i] = par[par[v][i - 1]][i - 1];
+	for (auto u: adj[v])
+		if (u != par[v][0]) {
+			par[u][0] = v, h[u] = h[v] + 1;
+			dfs_lca(u);
+		}
+	en[v] = TM;
+}
+ 
+int k_par(int v, int k) {
+	for (int i = 0; i < LG; i++)
+		if ((1 << i) & k)
+			v = par[v][i];
+	return v;
+}
+ 
+int lca(int v, int u) {
+	if (h[v] < h[u])
+		swap(v, u);
+	v = k_par(v, h[v] - h[u]);
+	if (v == u)
+		return v;
+	for (int i = LG - 1; i >= 0; i--)
+		if (par[v][i] != par[u][i])
+			v = par[v][i], u = par[u][i];
+	return par[v][0];
+}
+ 
+void upd(int v, int w) {
+	s[st[v]] += w;
+	s[en[v]] -= w;
+}
+ 
+void add(int v, int u) {
+	int w = lca(v, u);
+	if (h[v] < h[u])
+		swap(v, u);
+	if (w == u || w == v) {
+		upd(k_par(v, h[v] - h[u] - 1), +1);
+		upd(v, -1);
+		kol++;
+		return;
+	}
+	for (auto x: {v, u}) {
+		ah[st[x]]++;
+		ah[en[x]]--;
+	}
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	vector<int> all;
+	for (int i = 0; i < n; i++) 
+		cin >> a[i], all.push_back(a[i]);
+	sort(all.begin(), all.end());
+	all.resize(unique(all.begin(), all.end()) - all.begin());
+	for (int i = 0; i < n; i++) {
+		a[i] = lower_bound(all.begin(), all.end(), a[i]) - all.begin();
+		vec[a[i]].push_back(i);
+	}
+	for (int i = 1, v, u; i < n; i++) {
+		cin >> v >> u;
+		--v, --u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+	dfs_lca(0);
+	for (int i = 0; i < n; i++) {
+		sort(vec[i].begin(), vec[i].end(), [](int v, int u) {
+				return st[v] < st[u];
+				});
+		int sz = (int)(vec[i].size());
+		for (int j = 1; j < sz; j++) 
+			add(vec[i][j], vec[i][j - 1]);
+		if (sz > 1)
+			add(vec[i][0], vec[i][sz - 1]);
+	}
+	for (int i = 1; i < N; i++)
+		s[i] += s[i - 1], ah[i] += ah[i - 1];
+	int ans = 0;
+	for (int i = 0; i < n; i++) 
+		if (s[i] == kol && ah[i] == 0)
+			ans++;
+	cout << ans << '\n';
+	return 0;
+}

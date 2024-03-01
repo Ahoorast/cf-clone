@@ -1,0 +1,141 @@
+#include<bits/stdc++.h>
+using namespace std; const int maxA = 1LL * 1000 * 10000 + 10, N = 1000 * 100 + 10, mod = 1LL * 1000 * 1000 * 1000 + 7, LG = 25, MAXSZP = 664579 + 10;
+bool isP[maxA];
+int a[N], vq[N], uq[N], xq[N], SZP, n, key[maxA], ans[N], sz[MAXSZP], h[N], par[N][LG], val[N];
+vector<int> P, adj[N], add[MAXSZP][LG];
+vector<pair<int, int>> query[MAXSZP];
+ 
+long long Pow(long long a, long long b) {
+	return b? (b & 1? a: 1) % mod * Pow(a * a % mod, b >> 1) % mod: 1;
+}
+ 
+void alak() {
+	fill(isP, isP + maxA, true);
+	isP[1] = false;
+	for (int i = 2; 1LL * i * i < maxA; i++)
+		if (isP[i])
+			for (int j = i * i; j < maxA; j += i)
+				isP[j] = false;
+	for (int i = 1; i < maxA; i++)
+		if (isP[i]) {
+			key[i] = SZP++;
+			P.push_back(i);
+		}
+}
+ 
+void dfs(int root) {
+	for (int j = 1; j < LG; j++)
+		par[root][j] = par[par[root][j - 1]][j - 1];
+	for (auto u: adj[root])
+		if (u ^ par[root][0]) {
+			par[u][0] = root, h[u] = h[root] + 1;
+			dfs(u);
+		}
+}
+ 
+int get(int v, int l) {
+	for (int i = 0; i < LG; i++)
+		if ((1 << i) & l) 
+			v = par[v][i];
+	return v;
+}
+ 
+int lca(int v, int u) {
+	if (h[v] < h[u])
+		swap(v, u);
+	v = get(v, h[v] - h[u]);
+	if (v == u)
+		return v;
+	for (int i = LG - 1; i >= 0; i--)
+		if (par[v][i] ^ par[u][i])
+			v = par[v][i], u = par[u][i];
+	return par[v][0];
+}
+ 
+int sum_par(int v, int u) {
+	if (h[v] < h[u])
+		swap(v, u);
+	int res = 0;
+	while (h[v] >= h[u]) {
+		res += val[v];
+		v = par[v][0];
+	}
+	return res;
+}
+ 
+void upd(int v, int w) {
+	val[v] += w;
+}
+ 
+int sum(int v, int u) {
+	int w = lca(v, u);
+	if (w == v || w == u)
+		return sum_par(v, u);
+	return sum_par(v, w) + sum_par(u, w) - val[w];
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	alak();
+	h[0] = -1;
+	cin >> n;
+	for (int i = 1, v, u; i < n; i++) {
+		cin >> v >> u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+	for (int i = 1; i <= n; i++) {
+		cin >> a[i];
+		int x = a[i];
+		for (int j = 0; j < SZP && 1LL * P[j] * P[j] <= x; j++) 
+			if (x % P[j] == 0) {
+				int cnt = 0;
+				while (x % P[j] == 0)
+					cnt++, x /= P[j];
+				for (int k = 1; k <= cnt; k++)
+					add[j][k].push_back(i);
+			}
+		if (x > 1)
+			add[key[x]][1].push_back(i);
+	}
+	int Q;
+	cin >> Q;
+	fill(ans, ans + Q, 1);
+	for (int i = 0; i < Q; i++) {
+		cin >> vq[i] >> uq[i] >> xq[i];
+		int x = xq[i];
+		for (int j = 0; j < SZP && 1LL * P[j] * P[j] <= x; j++)
+			if (x % P[j] == 0) {
+				int cnt = 0;
+				while (x % P[j] == 0)
+					cnt++, x /= P[j];
+				query[j].push_back({cnt, i});
+				sz[j]++;
+			}
+		if (x > 1) {
+			query[key[x]].push_back({1, i});
+			sz[key[x]]++;
+		}
+	}
+	for (int i = 0; i < MAXSZP; i++)
+		query[i].push_back({0, -1}), sz[i]++;
+	for (int i = 0; i < MAXSZP; i++)
+		sort(query[i].begin(), query[i].end());
+	dfs(1);
+	for (int i = 0; i < SZP; i++) {
+		for (int j = 1; j < sz[i]; j++) {
+			for (int k = query[i][j - 1].first + 1; k <= query[i][j].first; k++)
+				for (auto x: add[i][k]) 
+					upd(x, +1);
+			pair<int, int> x = query[i][j];
+			ans[x.second] = 1LL * ans[x.second] * Pow(P[i], sum(vq[x.second], uq[x.second])) % mod;
+		}
+		for (int j = 1; j < sz[i]; j++)
+			for (int k = query[i][j - 1].first + 1; k <= query[i][j].first; k++)
+				for (auto x: add[i][k]) 
+					upd(x, -1);
+	}
+	for (int i = 0; i < Q; i++)
+		cout << ans[i] << '\n';
+	return 0;
+}

@@ -1,0 +1,21 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int maxn = 1e4 + 100;
+long long arr[maxn];
+int main()
+{
+	long long n, d, r;
+	unsigned long long ans = 0;
+	cin >> n >> d;
+	for(int i = 0; i < n; i++) cin >> arr[i];
+	cout << endl;
+	sort(arr, arr + n);
+//	for(int i = 0; i < n; i++) cout << arr[i] << endl;
+	for(int i = 0; i < n; i++) {
+		for(int j = i; j < n; j++)
+			if(arr[j] - arr[i] <= d) r = j;	
+		ans += (r - i) * 2;
+	}
+	cout << ans;
+	return 0;
+}

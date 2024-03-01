@@ -1,0 +1,56 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int n, m;
+	cin >> n >> m;
+	vector<long long> adj(m);
+	set<int> s;
+	int cnt = 0;
+	map<string, int> ind;
+	for (int i = 0; i < n; i++) {
+		int tp;
+		cin >> tp;
+		if (tp == 1) 
+			s.clear();
+		else {
+			string t;
+			cin >> t;
+			if (!ind.count(t))
+				ind[t] = cnt++;
+			int v = ind[t];
+			for (auto u: s) {
+				if (v == u)
+					continue;
+				adj[v] |= 1LL << u;
+				adj[u] |= 1LL << v;
+			}
+			s.insert(v);
+		}
+	}
+	int mid = cnt / 2, ans = 0;
+	vector<int> dp(1 << mid);
+	for (int msk = 0; msk < 1 << mid; msk++) {
+		long long kol = 0;
+		for (int i = 0; i < mid; i++)
+			if (msk >> i & 1) {
+				kol |= adj[i];
+				dp[msk] = max(dp[msk], dp[msk ^ (1 << i)]);
+			}
+		if ((kol & msk) == 0)
+			dp[msk] = max(dp[msk], __builtin_popcount(msk));
+	}
+	for (int msk = 0; msk < 1 << (cnt - mid); msk++) {
+		long long kol = 0;
+		for (int i = 0; i < cnt - mid; i++)
+			if (msk >> i & 1)
+				kol |= adj[i + mid];
+		if ((kol & ((1LL * msk) << mid)) == 0) {
+			int them = (1 << mid) - 1;
+			ans = max(ans, dp[them ^ (them & kol)] + __builtin_popcount(msk));
+		}
+	}
+	cout << ans << '\n';
+	return 0;
+}

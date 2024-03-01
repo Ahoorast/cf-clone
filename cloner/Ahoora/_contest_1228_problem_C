@@ -1,0 +1,32 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const long long mod = 1LL * 1000 * 1000 * 1000 + 7;
+ 
+long long Pow(long long a, long long b) {
+	return b? (b & 1? a: 1) % mod * Pow(a * a % mod, b >> 1) % mod: 1;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	long long x, n, ans = 1;
+	cin >> x >> n;
+	for (int i = 2; 1LL * i * i <= x; i++) 
+		if (x % i == 0) {
+			long long t = n;
+			while (x % i == 0)
+				x /= i;
+			while (t / i) {
+				(ans *= Pow(1LL * i, (t / i))) %= mod;
+				t /= i;
+			}
+		}
+	if (x > 1) { 
+		while (n / x) {
+			(ans *= Pow(x, (n / x))) %= mod;
+			n /= x;
+		}
+	}
+	cout << ans << '\n';
+	return 0;
+}

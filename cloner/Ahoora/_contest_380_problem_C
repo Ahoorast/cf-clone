@@ -1,0 +1,59 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 1000 * 4 + 100;
+string t;
+int n, seg[N], s[N], e[N], L[N], R[N];
+ 
+void build(int l, int r, int root = 1) {
+	if (l == r) {
+		if (t[l - 1] == '(')
+			s[root]++;
+		else
+			e[root]++;
+		return;
+	}
+	int mid = (l + r) >> 1;
+	build(l, mid, root << 1);
+	build(mid + 1, r, root * 2 + 1);
+	seg[root] = seg[root << 1] + seg[root * 2 + 1] + min(s[root * 2], e[root * 2 + 1]) * 2;
+	s[root] = s[root * 2 + 1] + s[root * 2] - min(s[root * 2], e[root * 2 + 1]);
+	e[root] = e[root * 2] + e[root * 2 + 1] - min(s[root * 2], e[root * 2 + 1]);
+}
+ 
+pair<pair<int, int>, int> query(int l, int r, int root = 1, int lv = 1, int rv = n) {
+	//cout << lv << ' ' << rv << endl;
+//	cout << l << ' ' << r << endl;
+	if (lv == l && rv == r) {
+	//	cout << seg[root] << endl;
+		return {{s[root], e[root]}, seg[root]};
+	}
+	if (lv == rv) 
+		return {{s[root], e[root]}, seg[root]};
+	int mid = (lv + rv) >> 1;
+	pair<pair<int, int>, int> res, t1, t2;
+	res = t1 = t2 = {{0, 0}, 0};
+	if (l <= mid) 
+		t1 = query(l, min(mid, r), root * 2, lv, mid);
+	if (r >= mid + 1)		
+		t2 = query(max(mid + 1, l), r, root * 2 + 1, mid + 1, rv);
+	res.second = t1.second + t2.second + min(t1.first.first, t2.first.second) * 2;
+	res.first.first = t2.first.first + t1.first.first - min(t1.first.first, t2.first.second);
+	res.first.second = t1.first.second + t2.first.second - min(t1.first.first, t2.first.second);
+	return res;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> t;
+	n = t.size();
+	build(1, n);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		int l, r;
+		cin >> l >> r;
+		cout << query(l, r).second << endl;
+	}
+	return 0;
+}

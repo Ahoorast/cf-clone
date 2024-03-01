@@ -1,0 +1,51 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1500 + 10, mod = 998244353;
+int n, a[N][N], sz[N], par[N], dp[N][N], m[N];
+vector<pair<int, int>> E;
+ 
+int get_par(int v) {
+	return par[v] == v? v: par[v] = get_par(par[v]);
+}
+ 
+void merge(int v, int u) {
+	v = get_par(v), u = get_par(u);
+	if (v == u) {
+		m[v]++;
+		dp[v][1] = (m[v] == (sz[v] * (sz[v] - 1) / 2));
+		return;
+	}
+	if (sz[u] > sz[v])
+		swap(u, v);
+	sz[v] += sz[u], par[u] = v;
+	m[v] = m[v] + 1 + m[u];
+	for (int i = sz[v]; i; i--) {
+		dp[v][i] = 0;
+		for (int j = 1; j < i; j++)
+			(dp[v][i] += 1LL * dp[v][j] * dp[u][i - j] % mod) %= mod;
+	}
+	dp[v][1] = (m[v] == (sz[v] * (sz[v] - 1) / 2));
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++) {
+			cin >> a[i][j];
+			if (i < j)
+				E.push_back({i, j});
+		}
+	sort(E.begin(), E.end(), [](pair<int, int> x, pair<int, int> y) {
+			return a[x.first][x.second] < a[y.first][y.second];
+			});
+	for (int i = 0; i < n; i++)
+		sz[i] = 1, par[i] = i, dp[i][1] = 1;
+	for (auto e: E) 
+		merge(e.first, e.second);
+	for (int i = 1; i <= n; i++)
+		cout << dp[get_par(0)][i] << ' ';
+	cout << '\n';
+	return 0;
+}

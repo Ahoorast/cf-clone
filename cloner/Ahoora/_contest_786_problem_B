@@ -1,0 +1,163 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10;
+int n, s, mx[N << 2], v[N], l[N], r[N], w[N], can[N << 2];
+long long mn[N << 2], lazy[N << 2], ans[N];
+vector<int> vec[N], query[N];
+vector<pair<int, int>> adj[N];
+ 
+int merge(int x, int y) {
+	if (x == -1)
+		return y;
+	if (y == -1)
+		return x;
+	return (r[x] > r[y]? x: y);
+}
+ 
+void build(int l = 0, int r = n, int id = 1) {
+	if (l + 1 == r) {
+		mx[id] = -1;
+		if ((int)(vec[l].size()))
+			mx[id] = vec[l].back();
+		return;
+	}
+	int mid = l + r >> 1;
+	build(l, mid, id << 1), build(mid, r, id << 1 | 1);
+	mx[id] = merge(mx[id << 1], mx[id << 1 | 1]);
+}
+ 
+int get(int s, int e, int l = 0, int r = n, int id = 1) {
+	if (s <= l && e >= r)
+		return mx[id];
+	if (s >= r || e <= l)
+		return -1;
+	int mid = l + r >> 1;
+	return merge(get(s, e, l, mid, id << 1), get(s, e, mid, r, id << 1 | 1));
+}
+ 
+void rem(int x, int l = 0, int r = n, int id = 1) {
+	if (l + 1 == r) {
+		mx[id] = -1;
+		vec[l].pop_back();
+		if ((int)(vec[l].size()))
+			mx[id] = vec[l].back();
+		return;
+	}
+	int mid = l + r >> 1;
+	(x < mid? rem(x, l, mid, id << 1): rem(x, mid, r, id << 1 | 1));
+	mx[id] = merge(mx[id << 1], mx[id << 1 | 1]);
+}
+ 
+void add(long long w, int id) {
+	if (can[id] == -1)
+		return;
+	mn[id] = min(mn[id], w);
+	lazy[id] = min(lazy[id], w);
+}
+ 
+void shift(int id) {
+	add(lazy[id], id << 1), add(lazy[id], id << 1 | 1);
+	lazy[id] = 1LL << 60;
+}
+ 
+void upd(int s, int e, long long w, int l = 0, int r = n, int id = 1) {
+	if (s <= l && e >= r) {
+		add(w, id);
+		return;
+	}
+	if (s >= r || e <= l)
+		return;
+	shift(id);
+	int mid = l + r >> 1;
+	upd(s, e, w, l, mid, id << 1), upd(s, e, w, mid, r, id << 1 | 1);
+	mn[id] = min(mn[id << 1], mn[id << 1 | 1]);
+}
+ 
+void mark(int x, int l = 0, int r = n, int id = 1) {
+	if (l + 1 == r) {
+		mn[id] = 1LL << 60;
+		can[id] = -1;
+		return;
+	}
+	shift(id);
+	int mid = l + r >> 1;
+	(x < mid? mark(x, l, mid, id << 1): mark(x, mid, r, id << 1 | 1));
+	mn[id] = min(mn[id << 1], mn[id << 1 | 1]);
+	if (can[id << 1] == -1 && can[id << 1 | 1] == -1) {
+		can[id] = -1;
+		mn[id] = 1LL << 60;
+	}
+}
+ 
+pair<long long, int> find(int l = 0, int r = n, int id = 1) {
+	if (can[id] == -1)
+		return {-1, -1};
+	if (l + 1 == r)
+		return {mn[id], l};
+	shift(id);
+	int mid = l + r >> 1;
+	if (mn[id << 1] < mn[id << 1 | 1])
+		return find(l, mid, id << 1);
+	return find(mid, r, id << 1 | 1);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	for (int i = 0; i < N << 2; i++)
+		lazy[i] = mn[i] = 1LL << 60;
+	int Q;
+	cin >> n >> Q >> s;
+	--s;
+	for (int i = 0; i < Q; i++) {
+		int tp;
+		cin >> tp;
+		if (tp == 1) {
+			int v, u, w;
+			cin >> v >> u >> w;
+			adj[--v].push_back({--u, w});
+		} else if (tp == 2) {
+			int v;
+			cin >> v >> l[i] >> r[i] >> w[i];
+			--l[i];
+			query[--v].push_back(i);
+		} else {
+			cin >> v[i] >> l[i] >> r[i] >> w[i];
+			--l[i], --v[i], --r[i];
+			vec[l[i]].push_back(i);
+		}
+	}
+	for (int i = 0; i < n; i++)
+		sort(vec[i].begin(), vec[i].end(), [](int x, int y) {
+				return r[x] < r[y];
+				});
+	build();
+	upd(s,s + 1, 0);
+	for (int i = 0; i < n; i++)
+		ans[i] = -1;
+	while (true) {
+		pair<long long, int> x = find();
+		if (x.second == -1 || (x.first == (1LL << 60)))
+			break;
+		ans[x.second] = x.first;
+		mark(x.second);
+		for (auto u: adj[x.second]) 
+			upd(u.first, u.first + 1, x.first + u.second);
+		bool flag = true;
+		while (flag) {
+			int ind = get(0, x.second + 1);
+			if (ind >= 0 && r[ind] >= x.second) {
+				upd(v[ind], v[ind] + 1, x.first + w[ind]);
+				rem(l[ind]);
+			}
+			else
+				flag = false;
+		}
+		for (auto it: query[x.second]) 
+			upd(l[it], r[it], x.first + w[it]);
+	}
+	for (int i = 0; i < n; i++)
+		cout << ans[i] << ' ';
+	cout << '\n';
+	return 0;
+}

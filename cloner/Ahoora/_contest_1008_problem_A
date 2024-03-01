@@ -1,0 +1,17 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int main() 
+{
+	string s;
+	cin >> s;
+	int sz = s.size(), cnt = 0;
+	for(int i = 0; i < sz; i++) {
+		if(s[i] != 'n' && s[i] != 'a' && s[i] != 'e' && s[i] != 'i' && s[i] != 'o' && s[i] != 'u') 
+			if(s[i + 1] != 'a' && s[i + 1] != 'e' && s[i + 1] != 'i' && s[i + 1] != 'o' && s[i + 1] != 'u')
+				cnt++; 
+	}
+	if(cnt == 0) cout << "YES";
+	else cout << "NO";
+	return 0;
+}

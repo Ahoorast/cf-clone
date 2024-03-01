@@ -1,0 +1,26 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+	int n, x;
+	long long sx = 0, sy = 0, sz = 0;
+	cin >> n;
+	for(int i = 0; i < n; i++)
+	{
+		for(int j = 0; j < 3; j++)
+		{
+			cin >> x;
+			if(j == 0)
+			sx += x;
+			else if(j == 1)
+			sy += x;
+			else if(j == 2)
+			sz += x;
+		}
+	}
+	if(sz == 0 && sx == 0 && sy == 0)
+	cout << "YES";
+	else
+	cout << "NO";
+	return 0;
+}

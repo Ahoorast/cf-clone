@@ -1,0 +1,24 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 2010;
+int n, h, l, r, dp[N][N], a[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> h >> l >> r;
+	for (int i = 1; i <= n; i++)
+		cin >> a[i];
+	for (int i = 0; i < N; i++)
+		for (int j = 0; j < N; j++)
+			dp[i][j] = -1 * (1 << 30);
+	dp[0][0] = 0;
+	for (int i = 1; i <= n; i++)
+		for (int j = 0; j < h; j++)
+			dp[i][j] = max(dp[i - 1][((j - a[i]) % h + h) % h], dp[i - 1][((j - a[i] + 1) % h + h) % h]) + (j >= l && j <= r);
+	int ans = 0;
+	for (int j = 0; j < h; j++)
+		ans = max(ans, dp[n][j]);
+	cout << ans << endl;
+	return 0;
+}

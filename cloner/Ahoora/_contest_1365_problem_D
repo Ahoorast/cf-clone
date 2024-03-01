@@ -1,0 +1,54 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 100;
+int n, m, dx[4] = {0, 0, -1, +1}, dy[4] = {+1, -1, 0, 0};
+bool vis[N][N];
+char c[N][N];
+ 
+bool vld1(int x, int y) {
+	return x >= 1 && x <= n && y >= 1 && y <= m && c[x][y] == '.';
+}
+ 
+bool vld2(int x, int y) {
+	return x >= 1 && x <= n && y >= 1 && y <= m && c[x][y] != '#' && !vis[x][y];
+}
+ 
+void dfs(int x, int y) {
+	vis[x][y] = true;
+	for (int i = 0; i < 4; i++) {
+		int nx = x + dx[i], ny = y + dy[i];
+		if (vld2(nx, ny))
+			dfs(nx, ny);
+	}
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> Q;
+	while (Q--) {
+		cin >> n >> m;
+		for (int i = 1; i <= n; i++)
+			for (int j = 1; j <= m; j++) 
+				cin >> c[i][j];
+		for (int i = 1; i <= n; i++)
+			for (int j = 1; j <= m; j++)
+				if (c[i][j] == 'B') 
+					for (int k = 0; k < 4; k++)
+						if (vld1(i + dx[k], j + dy[k]))
+							c[i + dx[k]][j + dy[k]] = '#';
+		if (vld2(n, m))
+			dfs(n, m);
+		bool res = true;
+		for (int i = 1; i <= n; i++)
+			for (int j = 1; j <= m; j++)
+				if (c[i][j] == 'G' || c[i][j] == 'B') 
+					res &= vis[i][j] ^ (c[i][j] == 'B');
+		cout << (res? "Yes": "No") << '\n';
+		for (int i = 1; i <= n; i++)
+			for (int j = 1; j <= m; j++)
+				c[i][j] = '.', vis[i][j] = false;
+	}
+	return 0;
+}

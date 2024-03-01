@@ -1,0 +1,112 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 6001;
+short n, dp[N][N][2], ans, mx[N][2], mx1[N][2], ah = 1;
+int r[N], cm[N];
+vector<int> adj[N];
+ 
+void compress() {
+	for (int i = 1; i <= n; i++)
+		cm[i] = r[i];
+	sort(cm + 1, cm + n + 1);
+	for (int i = 1; i <= n; i++) 
+		r[i] = lower_bound(cm + 1, cm + n + 1, r[i]) - cm;
+}
+ 
+short max(short x, int y) {
+	short Y = y;
+	return x > Y? x: Y;
+}
+ 
+void dfs(int root, int par = -1) {
+	for (auto u: adj[root])
+		if (u ^ par) {
+			dfs(u, root);
+		 	for (int j = 1; j <= n; j++) {
+				dp[root][j][0] = max(dp[root][j][0], dp[u][j][0]);
+				if (r[root] <= j)
+					dp[root][j][0] = max(dp[root][j][0], dp[u][r[root] - 1][0] + ah);
+				dp[root][j][1] = max(dp[root][j][1], dp[u][j][1]);
+				if (r[root] >= j)
+					dp[root][j][1] = max(dp[root][j][1], dp[u][r[root] + 1][1] + ah);
+			}
+		}
+	for (int j = 1; j <= n; j++) {
+		if (r[root] <= j) 
+			dp[root][j][0] = max(dp[root][j][0], ah); 
+		if (r[root] >= j)
+			dp[root][j][1] = max(dp[root][j][1], ah);
+	}
+	for (int j = 2; j <= n; j++)
+		dp[root][j][0] = max(dp[root][j][0], dp[root][j - 1][0]);
+	for (int j = n - 1; j >= 1; j--)
+		dp[root][j][1] = max(dp[root][j][1], dp[root][j + 1][1]);
+}
+bool debug = false;
+ 
+short cal(int d1, int d2) {
+	short res1 = 0, res2 = 0;
+	res1 = dp[mx[d1][1]][d1][1];
+	if (mx[d1][1] == 0 || mx[d2][0] == 0)
+		return 0;
+	if (mx[d1][1] == mx[d2][0]) {
+		res1 += dp[mx1[d2][0]][d2][0];
+		if (mx1[d2][0] == 0)
+			res1 = 0;
+	}
+	else
+		res1 += dp[mx[d2][0]][d2][0];
+	res2 = dp[mx[d2][0]][d2][0];
+	if (mx[d2][0] == mx[d1][1]) {
+		if (mx1[d1][1] == 0)
+			return res1;
+		res2 += dp[mx1[d1][1]][d1][1];
+	}
+	else
+		res2 += dp[mx[d1][1]][d1][1];
+	res1 = max(res1, res2);
+	return res1;
+}
+ 
+void dfs1(int root, int par = -1) {
+	for (int j = 1; j <= n; j++)
+		mx[j][0] = mx[j][1] = 0;
+	for (int j = 1; j <= n; j++)
+		ans = max({ans, dp[root][j][0], dp[root][j][1]});
+	for (auto u: adj[root])
+		if (u ^ par) 
+			for (int k = 0; k < 2; k++)
+				for (int j = 1; j <= n; j++)
+					if (dp[u][j][k] > dp[mx[j][k]][j][k])
+						mx[j][k] = u;
+	for (auto u: adj[root])
+		if (u ^ par) 
+			for (int k = 0; k < 2; k++)
+				for (int j = 1; j <= n; j++) 
+					if (u != mx[j][k] && dp[u][j][k] > dp[mx1[j][k]][j][k])
+						mx1[j][k] = u;
+	if (r[root] + 1 <= n && r[root] - 1 >= 1)
+		ans = max(cal(r[root] + 1, r[root] - 1) + (short)(1), ans);
+	for (int j = 1; j < n; j++) 
+		ans = max(ans, cal(j + 1, j));
+	for (auto u: adj[root])
+		if (u ^ par)
+			dfs1(u, root);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 1; i <= n; i++)
+		cin >> r[i];
+	for (int i = 1, v, u; i < n; i++) {
+		cin >> v >> u;
+		adj[v].push_back(u);
+		adj[u].push_back(v);
+	}
+	compress();
+	dfs(1), dfs1(1);
+	cout << ans << '\n';
+	return 0;
+}

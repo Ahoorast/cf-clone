@@ -1,0 +1,74 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 1000 + 10;
+int n, a[N], b[N], mt[N << 2];
+vector<int> adj[N], vec;
+bool vis[N];
+ 
+void compress() {
+	for (int i = 0; i < n; i++) {
+		vec.push_back(a[i]);
+		vec.push_back(b[i]);
+	}
+	sort(vec.begin(), vec.end());
+	vec.resize(unique(vec.begin(), vec.end()) - vec.begin());
+	for (int i = 0; i < n; i++) {
+		a[i] = lower_bound(vec.begin(), vec.end(), a[i]) - vec.begin() + n;
+		b[i] = lower_bound(vec.begin(), vec.end(), b[i]) - vec.begin() + n;
+	}
+}
+ 
+bool dfs(int v) {
+	vis[v] = true;
+	for (auto u: adj[v])
+		if (mt[u] == -1 || (!vis[mt[u]] && dfs(mt[u]))) {
+			mt[v] = u, mt[u] = v;
+			return true;
+		}
+	return false;
+}
+ 
+bool check(int x) {
+	int res = 0;
+	fill(vis, vis + N, false);
+	fill(mt, mt + (N << 2), -1);
+	for (int i = 0; i < n; i++)
+		adj[i].clear();
+	for (int i = 0; i < n; i++) {
+		if (a[i] < x + n) 
+			adj[i].push_back(a[i]);
+		if (b[i] < x + n)
+			adj[i].push_back(b[i]);
+	}
+	bool fnd = true;
+	while (fnd) {
+		fnd = false;
+		fill(vis, vis + N, false);
+		for (int i = 0; i < n; i++)
+			if (mt[i] == -1 && !vis[i] && dfs(i)) 
+				fnd = true, res++;
+	}
+	return res == n;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n;
+	for (int i = 0; i < n; i++)
+		cin >> a[i] >> b[i];
+	compress();
+	int sz = (int)(vec.size());
+	int l = n, r = sz, ans = -1;
+	if (!check(r))
+		return cout << "-1\n", 0;
+	while (l <= r) {
+		int mid = l + r >> 1;
+		if (check(mid))
+			r = mid - 1;
+		else
+			l = mid + 1;
+	}
+	cout << vec[r] << '\n';
+	return 0;
+}

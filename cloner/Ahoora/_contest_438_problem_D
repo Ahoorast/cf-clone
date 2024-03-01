@@ -1,0 +1,79 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1000 * 100 + 10;
+int n;
+ 
+struct Node {
+	long long s;
+	int mx;
+	Node(int x = 0) {
+		s = mx = x;
+	}
+	void merge(Node L, Node R) {
+		s = L.s + R.s;
+		mx = max(L.mx, R.mx);
+	}
+} seg[N << 2];
+ 
+void upd_pos(int x, int y, int l = 0, int r = n, int id = 1) {
+	if (l + 1 == r) {
+		seg[id] = Node(y);
+		return;
+	}
+	int mid = l + r >> 1;
+	(x < mid? upd_pos(x, y, l, mid, id << 1): upd_pos(x, y, mid, r, id << 1 | 1));
+	seg[id].merge(seg[id << 1], seg[id << 1 | 1]);
+}
+ 
+void upd(int s, int e, int x, int l = 0, int r = n, int id = 1) {
+	if (seg[id].mx < x)
+		return;
+	if (s >= r || e <= l)
+		return;
+	if (l + 1 == r) {
+		seg[id] = Node(seg[id].mx % x);
+		return;
+	}
+	int mid = l + r >> 1;
+	upd(s, e, x, l, mid, id << 1), upd(s, e, x, mid, r, id << 1 | 1);
+	seg[id].merge(seg[id << 1], seg[id << 1 | 1]);
+}
+ 
+long long get(int s, int e, int l = 0, int r = n, int id = 1) {
+	if (s <= l && e >= r)
+		return seg[id].s;
+	if (s >= r || e <= l)
+		return 0ll;
+	int mid = l + r >> 1;
+	return get(s, e, l, mid, id << 1) + get(s, e, mid, r, id << 1 | 1);
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int Q;
+	cin >> n >> Q;
+	for (int i = 0, a; i < n; i++)
+		cin >> a, upd_pos(i, a);
+	while (Q--) {
+		int tp;
+		cin >> tp;
+		if (tp == 1) {
+			int l, r;
+			cin >> l >> r;
+			--l;
+			cout << get(l, r) << '\n';
+		} else if (tp == 2) {
+			int l, r, x;
+			cin >> l >> r >> x;
+			--l;
+			upd(l, r, x);
+		} else {
+			int k, x;
+			cin >> k >> x;
+			--k;
+			upd_pos(k, x);
+		}
+	}
+	return 0;
+}

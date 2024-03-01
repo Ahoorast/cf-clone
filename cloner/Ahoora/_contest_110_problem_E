@@ -1,0 +1,61 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+struct DSU {
+	vector<int> par, size;
+	int comp;
+	DSU(const int &n) {
+		comp = n;
+		par.push_back(-1), size.push_back(-1);
+		for (int i = 1; i <= n; i++)
+			par.push_back(i), size.push_back(1);
+	}
+	int findRoot(int v) {
+		return par[v] == par[par[v]]? par[v]: par[v] = findRoot(par[v]);
+	}
+	bool Union(int v, int u) {
+		int pv = findRoot(v), pu = findRoot(u);
+		if (pv != pu) {
+			if (size[pv] > size[pu])
+				swap(pv, pu);
+			par[pv] = par[pu], size[pu] += size[pv], size[pv] = 0, comp--;
+			return false;
+		}
+		return true;
+	}
+	int sz(int v) {
+		return size[findRoot(v)];
+	}
+	bool check(int v, int u) {
+		return findRoot(v) == findRoot(u);
+	}
+};
+ 
+bool isLucky(int x) {
+	while (x) {
+		if (x % 10 != 4 && x % 10 != 7)
+			return false;
+		x /= 10;
+	}
+	return true;
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int n;
+	cin >> n;
+	DSU T(n);
+	for (int i = 1, v, u, w; i < n; i++) {
+		cin >> v >> u >> w;
+		if (!isLucky(w))
+			T.Union(v, u);
+	}
+	long long ans = 0;
+	for (int i = 1; i <= n; i++)
+		if (T.findRoot(i) == i) {
+			long long sz = T.sz(i);
+			ans += sz * (n - sz) * (n - sz - 1);
+		}
+	cout << ans << '\n';
+	return 0;
+}

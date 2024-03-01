@@ -1,0 +1,16 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+	long long s, t1, t2, v1, v2, a, b;
+	cin >> s >> v1 >> v2 >> t1 >> t2;
+	a = t1 * 2 + s * v1;
+	b = t2 * 2 + s * v2;
+	if(a > b)
+	cout << "Second";
+	else if(b > a)
+	cout << "First";
+	else 
+	cout << "Friendship";
+	return 0;
+}

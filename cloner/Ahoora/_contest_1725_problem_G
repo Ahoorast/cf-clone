@@ -1,0 +1,40 @@
+#include <bits/stdc++.h>
+using namespace std;
+// #include <ext/pb_ds/assoc_container.hpp> 
+// #include <ext/pb_ds/tree_policy.hpp> 
+// using namespace __gnu_pbds; 
+ 
+// #define ordered_set tree<pair <int, int>, null_type,greater<pair <int, int>>, rb_tree_tag,tree_order_statistics_node_update> 
+ 
+const int MAXN = 3e3 + 3, MAXM = 2e3, MOD = 998244353, MOD1 = 1e9 + 9, SQ = 320;
+const unsigned long long INF = 1e18 + 10;
+int t[] = {+3, 0, +2};
+ 
+void solve() {
+	int n;
+	cin >> n;
+	
+	if (n == 1) {
+		cout << 3 << '\n';
+		return;
+	}
+	
+	n--;
+	long long n_ = (n + 2) / 3;
+	long long g = (n_ - 1) * 4 + 5;
+	int x = n % 3;
+	
+	cout << g + t[x] << '\n';
+	
+	
+}
+ 
+int main() { 
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+	int q = 1;
+//	cin >> q;
+	
+	while (q--) {
+		solve();
+	}
+}

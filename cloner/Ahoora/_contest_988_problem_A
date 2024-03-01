@@ -1,0 +1,31 @@
+#include <bits/stdc++.h>
+using namespace std;
+int arr[1000];
+int main()
+{
+	int k, n, cnt = 0;
+	cin >> n >> k;
+	for(int i = 0; i < n; i++)
+	cin >> arr[i];
+	for(int i = 0; i < n; i++)
+	for(int j = i + 1; j < n; j++)
+	if(arr[i] == arr[j])
+	arr[j] = -1;
+	for(int i = 0; i < n; i++)
+	if(arr[i] != -1)
+	cnt++;
+	if(cnt < k)
+	cout << "NO";
+	else
+	{
+		cout << "YES" << endl;
+		cnt = 0;
+		for(int i = 0; cnt != k; i++)
+		if(arr[i] != -1)
+		{
+			cnt++;
+			cout << i + 1 << " ";
+		}
+	}
+	return 0;
+}

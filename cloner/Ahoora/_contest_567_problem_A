@@ -1,0 +1,23 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int maxn = 1e5 + 100;
+long long n, x[maxn];
+string s;
+void input()
+{
+	cin >> n;
+	for(int i = 0; i < n; i++) cin >> x[i];
+	sort(x, x + n);
+}
+void solve()
+{
+	cout << abs(x[0] - x[1]) << ' ' << abs(x[0] - x[n - 1]) << endl;
+	for(int i = 1; i + 1 < n; i++) cout << min(abs(x[i - 1] - x[i]), abs(x[i + 1] - x[i])) << ' ' << max(abs(x[0] - x[i]), abs(x[n - 1] - x[i])) << endl;
+	cout << abs(x[n - 1] - x[n - 2]) << ' ' << abs(x[0] - x[n - 1]);
+}
+int main()
+{
+	input();
+	solve();
+	return 0;
+}

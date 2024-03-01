@@ -1,0 +1,88 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const int N = 1010;
+char c[N][N];
+int n, m, dx[4] = {0, 0, 1, -1}, dy[4] = {1, -1, 0, 0}, dist[N][N][4], D[4][4];
+bool vis[N][N];
+ 
+bool vld(int x, int y, bool t) {
+	if (!t)
+		return c[x][y] == '.' && !vis[x][y];
+	else
+		return !vis[x][y] && c[x][y] != '#' && x >= 1 && x <= n && y >= 1 && y <= m;
+}
+ 
+void read() {
+	cin >> n >> m;
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= m; j++)
+			cin >> c[i][j];
+}
+ 
+void clear() {
+	for (int i = 0; i <= n; i++)
+		for (int j = 0; j <= m; j++)
+			vis[i][j] = false;
+}
+ 
+void bfs(int x, bool tp) {
+	queue<pair<pair<int, int>, int>> q;
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= m; j++)
+			if (c[i][j] == x + '0')
+				q.push({{i, j}, 0}), vis[i][j] = true, dist[i][j][x] = 0;
+	while (q.size()) {
+		pair<pair<int, int>, int> t = q.front();
+		q.pop();
+		for (int i = 0; i < 4; i++) {
+			int nx = t.first.first + dx[i], ny = t.first.second + dy[i];
+			if (vld(nx, ny, tp)) {
+				if (!tp) {
+					q.push({{nx, ny}, t.second + 1});
+					vis[nx][ny] = true;
+					dist[nx][ny][x] = dist[t.first.first][t.first.second][x] + 1;
+				}
+				else {
+					q.push({{nx, ny}, t.second + 1});
+					vis[nx][ny] = true;
+					if (c[nx][ny] >= '1' && c[nx][ny] <= '3')
+						D[x][c[nx][ny] - '0'] = D[c[nx][ny] - '0'][x] = min(D[x][c[nx][ny] - '0'], t.second);
+				}
+			}
+		}
+	}
+ 
+}
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	read();
+	for (int i = 0; i <= 3; i++)
+		for (int j = 0; j <= 3; j++)
+			D[i][j] = 1 << 27;
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= m; j++)
+			for (int k = 0; k <= 3; k++)
+				dist[i][j][k] = 1 << 27;
+	bfs(1, 0), clear();
+	bfs(2, 0), clear();
+	bfs(3, 0), clear();
+	bfs(1, 1), clear();
+	bfs(2, 1), clear();
+	bfs(3, 1), clear();
+	int ans = 1 << 27;
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= m; j++)
+			if (c[i][j] >= '1' && c[i][j] <= '3') {
+				int x = c[i][j] - '0';
+				ans = min(ans, D[x][1] + D[x][2] + D[x][3] - D[x][x]);
+			}
+			else if (c[i][j] == '.')
+				ans = min(ans, dist[i][j][1] + dist[i][j][2] + dist[i][j][3] - 2);
+	if (ans < 1 << 25)
+		cout << ans << endl;
+	else
+		cout << -1 << endl;
+	return 0;
+}

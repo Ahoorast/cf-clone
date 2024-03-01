@@ -1,0 +1,23 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int maxn = 1e5 + 100;
+long long l = 0, r, mid, n, k;
+long long sum(long long x)
+{
+	return x * (x + 1) / 2;
+}
+int main()
+{
+	cin >> n >> k;
+	l = 0;
+	r = n + 1;
+	while(l + 1 < r)
+	{
+		mid = (l + r) / 2;
+		if(sum(n - mid) - mid >= k)
+		l = mid;
+		else r = mid;
+	}
+	cout << l;
+	return 0;
+}

@@ -1,0 +1,54 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+struct DSU {
+	vector<int> par, size;
+	int comp;
+	DSU(const int &n) {
+		comp = n;
+		par.push_back(-1), size.push_back(-1);
+		for (int i = 1; i <= n; i++)
+			par.push_back(i), size.push_back(1);
+	}
+	int findRoot(int v) {
+		return par[v] == par[par[v]]? par[v]: par[v] = findRoot(par[v]);
+	}
+	bool Union(int v, int u) {
+		int pv = findRoot(v), pu = findRoot(u);
+		if (pv != pu) {
+			if (size[pv] > size[pu])
+				swap(pv, pu);
+			par[pv] = par[pu], size[pu] += size[pv], comp--;
+			return false;
+		}
+		return true;
+	}
+	int sz(int v) {
+		return size[findRoot(v)];
+	}
+	bool check(int v, int u) {
+		return findRoot(v) == findRoot(u);
+	}
+};
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	int n;
+	cin >> n;
+	DSU G(n);
+	DSU T(n);
+	for (int i = 1, v, u, t; i < n; i++) {
+		cin >> v >> u >> t;
+		if (t)
+			G.Union(v, u);
+		else
+			T.Union(v, u);
+	}
+	long long ans = 0;
+	for (int i = 1; i <= n; i++) {
+		int gg = G.sz(i), tt = T.sz(i);
+		ans += 1LL * (gg - 1) * (tt - 1) + 1LL * (gg - 1) + 1LL * (tt - 1);
+	}
+	cout << ans << '\n';
+	return 0;
+}

@@ -1,0 +1,61 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+const long long N = 1000 * 100 + 10;
+long long n, d, S, c[N], f[N], l[N];
+ 
+int main() { 
+	ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin >> n >> d >> S;
+	long long mn = 1e9 + 10, ted = 0;
+	long long sum = 0;
+	for (long long i = 0; i < n; i++) {
+		cin >> c[i] >> f[i] >> l[i];
+		sum += c[i];
+		ted += (c[i] > 0);
+		if (l[i] >= d && c[i] > 0) 
+			mn = min(mn, f[i]);
+	}
+	long long mf1 = 0, mf2 = 0;
+	long long res1 = 0, res2 = 0;
+	if (mn <= 1e9 && mn <= S) {
+		mf1 += mn;
+		res1 = min(sum + 1, 1LL * n);
+		vector<long long> v1, v2;
+		for (long long i = 0; i < n; i++)
+			if (c[i] == 0 && l[i] >= d)
+				v1.push_back(f[i]);	
+		for (long long i = 0; i < n; i++)
+			if (c[i] > 0 && l[i] >= d)
+				v2.push_back(f[i]);
+		v1.push_back(S + 1), v2.push_back(S + 1);
+		sort(v1.begin(), v1.end(), greater<long long>());
+		sort(v2.begin(), v2.end(), greater<long long>());
+		v2.pop_back();
+		while (res1 < n && min(v1.back(), v2.back()) + mf1 <= S) {
+			mf1 += min(v1.back(), v2.back());
+			res1++;
+			if (v1.back() < v2.back())
+				v1.pop_back();
+			else
+				v2.pop_back();
+		}
+	}
+	vector<long long> vec;
+	for (long long i = 0; i < n; i++)
+		if (c[i] == 0 && l[i] >= d)
+			vec.push_back(f[i]);
+	sort(vec.begin(), vec.end(), greater<long long>());
+	mf2 = res2 = 0;
+	while (vec.size() && mf2 + vec.back() <= S) {
+		mf2 += vec.back();
+		res2++;
+		vec.pop_back();
+	}
+	if (res1 < res2)
+		swap(res1, res2), swap(mf1, mf2);
+	if (res1 == res2 && mf1 > mf2)
+		swap(mf1, mf2);
+	cout << res1 << ' ' << mf1 << '\n';
+	return 0;
+}
