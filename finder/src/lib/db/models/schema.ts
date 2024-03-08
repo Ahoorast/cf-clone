@@ -13,6 +13,7 @@ export const submission = pgTable("submission", {
     id: serial("id").primaryKey().notNull(),
     url: varchar("url", { length: 100 }).unique(),
     solution: text("solution"),
+    lowerSolution: text("lowercase_solution"),
     status: varchar("status").$type<SubmissionStatus>(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     problemId: integer("problem_id").references(() => problem.id).notNull(),

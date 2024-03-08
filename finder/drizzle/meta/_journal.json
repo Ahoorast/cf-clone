@@ -36,6 +36,13 @@
       "when": 1709322484374,
       "tag": "0004_magical_ego",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1709814574752,
+      "tag": "0005_lucky_puppet_master",
+      "breakpoints": true
     }
   ]
 }
