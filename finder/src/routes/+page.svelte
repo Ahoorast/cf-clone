@@ -1,7 +1,8 @@
 <script lang="ts">
     let number = 0;
 </script>
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+
+
+
 <p>{number}</p>
-<button on:click={() => {number += 1}}>inc</button>
+<button class="text-red-900 w-full" on:click={() => {number += 1}}>increase</button>
