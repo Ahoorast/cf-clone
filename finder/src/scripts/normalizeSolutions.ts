@@ -5,8 +5,6 @@ import { eq, like, sql } from "drizzle-orm";
 
 console.log("HI");
 
-
-// await db.execute(sql`update ${submission} set ${submission.lowerSolution}=${submission.solution}`)
 await db.update(submission).set({
 	lowerSolution: (() => {
 		const x = sql`solution`;
@@ -14,5 +12,6 @@ await db.update(submission).set({
 		return sql`replace(lower(${submission.solution}), ' ', '')`;
 	})(),
 });
+
 console.log("HI");
 
