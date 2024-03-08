@@ -10,7 +10,9 @@ const config = {
 	kit: {
 		alias: {
 			$schema: 'src/lib/db/models/schema.ts',
-			$pgclient: 'src/lib/db/pgclient.ts'
+			$pgclient: 'src/lib/db/pgclient.ts',
+			$stores: 'src/lib/stores/',
+			$comp: 'src/lib/components/',
 		},
 		// adapter-auto only supports some environments, see https://kit.svelte.dev/docs/adapter-auto for a list.
 		// If your environment is not supported or you settled on a specific environment, switch out the adapter.

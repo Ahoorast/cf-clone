@@ -1,8 +1,11 @@
 <script lang="ts">
-    let number = 0;
+    import ProblemRowCard from "$comp/ProblemRowCard.svelte";
+    export let data;
 </script>
 
 
-
-<p>{number}</p>
-<button class="text-red-900 w-full" on:click={() => {number += 1}}>increase</button>
+{#each data.problems as problem}
+    <ProblemRowCard
+        url={problem.url}
+    />
+{/each}
