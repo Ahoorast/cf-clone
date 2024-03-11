@@ -1,9 +1,33 @@
 // import type { PageServerLoadEvent } from './$types';
 import { db } from '$pgclient';
-import { problem } from '$schema';
+import { problem, submission } from '$schema';
+import { eq } from 'drizzle-orm';
+import { fail } from '@sveltejs/kit';
+import { z } from "zod";
+import type { Actions } from './$types';
+ 
 
 export async function load(/* event: PageServerLoadEvent */) {
 	return {
-		problems: await db.select().from(problem),
+		problems: await db.select({
+			id: problem.id,
+			url: problem.url,
+		}).from(problem),
 	};
 }
+
+export const actions = {
+	get_statement: async ({ cookies, request }) => {
+		const body = await request.json();
+		const id = body.id;
+		console.log(id);
+		return await db.select({
+			statement: problem.statement,
+		}).from(problem).where(eq(problem.id, id));
+	},
+	get_solution: async ({ cookies, request }) => {
+		return await db.select({
+			solution: submission.solution,
+		}).from(submission).where(eq(submission.problemId, id));
+	}
+} satisfies Actions

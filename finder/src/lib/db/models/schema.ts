@@ -1,4 +1,6 @@
 import { serial, text, timestamp, pgTable, varchar, integer } from "drizzle-orm/pg-core";
+// import { z } from "zod";
+// import { createSelectSchema, createInsertSchema } from "drizzle-zod";
 
 export const problem = pgTable("problem", {
     id: serial("id").primaryKey().notNull(),
@@ -7,6 +9,9 @@ export const problem = pgTable("problem", {
     url: varchar("url", { length: 100 }).unique(),
 });
 
+// export const ProblemInsertSchema = createInsertSchema(problem);
+// export const ProblemSelectSchema = createSelectSchema(problem);
+//
 type SubmissionStatus = "ac" | "tle" | "rte" | "wa" | "ce";
 
 export const submission = pgTable("submission", {

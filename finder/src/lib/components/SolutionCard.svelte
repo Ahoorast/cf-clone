@@ -2,6 +2,6 @@
     export let id: number;
 </script>
 
-<div>
-    asdf {id}
-</div>
+<p>
+    {id}
+</p>
