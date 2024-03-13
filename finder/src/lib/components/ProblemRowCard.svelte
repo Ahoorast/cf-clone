@@ -28,4 +28,10 @@
             View Statement
         </a>
     </td>
+    <!-- <td class="py-3 px-1 w-1/3 text-left"> -->
+    <!--     <button class="text-center text-blue-100 bg-green-700 hover:bg-green-800 border-black rounded py-0.5 px-1 border text-xs" -->
+    <!--     > -->
+    <!--         Refetch Statement -->
+    <!--     </button> -->
+    <!-- </td> -->
 </tr>

@@ -1,7 +1,12 @@
 <script lang="ts">
+    export let problemHtml: string;
     export let id: number;
+    $: console.log(problemHtml);
 </script>
 
 <div>
-    asdf {id}
+    {id}
+</div>
+<div class="text-xs">
+    {@html problemHtml}
 </div>

@@ -5,53 +5,83 @@
     import SolutionCard from "$comp/SolutionCard.svelte";
 
     export let data;
-    let codeId: number | undefined;
-    let statementId: number | undefined;
+    let codeId: Id;
+    let statementId: Id;
+    type Id = {
+        rowId: number;
+        codeId: number | undefined;
+        statementId: number | undefined;
+    } | undefined;
 
-    function getId() {
-        return parseInt($page.url.hash.split('-')[1]);
+    function getId(): Id {
+        const rowId = parseInt($page.url.hash.split('-')[1]);
+        return {
+            rowId: rowId,
+            codeId: data.problems[rowId].submission?.id,
+            statementId: data.problems[rowId].problem.id,
+        };
     }
-    // async function getStatement(id: number) {
-    //     console.log("HI");
-    //     try {
-    //         const response = await fetch('/get_statement', {
-    //             method: 'get',
-    //             data: JSON.stringify({ id: id }),
-    //         });
-    //
-    //         console.log(response);
-    //     } catch (e) {
-    //         console.log(e);
-    //     }
-    // }
+
+    async function getStatement(id: Id) {
+        if (id === undefined) {
+            return;
+        }
+        // if (data.problems[id.rowId].problem.statement !== null) {
+        //     return;
+        // }
+        try {
+            const req = new Request(`/api/problem/${id.statementId}`);
+            const response = await fetch(req);
+            const responseData: { 
+                problem: {
+                    id: number;
+                    statement: string | null;
+                    createdAt: Date;
+                    url: string | null;
+                }[] 
+            } = await response.json();
+            console.log(responseData);
+            data.problems[id.rowId].problem.statement = responseData.problem[0].statement;
+            data = data;
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     $: {
         if ($page.url.hash.startsWith("#code")) {
             codeId = getId();
             statementId = undefined;
         } else if ($page.url.hash.startsWith("#statement")) {
             codeId = undefined;
-            statementId = getId()
+            statementId = getId();
         } else {
             codeId = undefined;
             statementId = undefined;
         }
     }
-    // $: {
-    //     if (codeId !== undefined) {
-    //         console.log("HI");
-    //         getStatement(codeId);
-    //     }
-    // }
+
+    $: {
+        if (statementId !== undefined) {
+            getStatement(statementId);
+        }
+    }
 </script>
 
 <div class="w-full flex">
     {#if (codeId !== undefined || statementId !== undefined)}
-        <div class="w-full">
-            {#if codeId !== undefined}
-                <SolutionCard id={codeId} />
+        <div class="w-full border-1 border-black">
+            {#if codeId?.codeId !== undefined}
+                <SolutionCard 
+                    id={codeId.codeId}
+                    solution={data.problems[codeId.rowId].submission?.solution}
+                />
             {/if}
-            {#if statementId !== undefined}
-                <ProblemCard id={statementId} />
+            {#if statementId?.statementId !== undefined}
+                <ProblemCard 
+                    id={statementId.statementId} 
+                    problemHtml={data.problems[statementId.rowId].problem.statement}
+                />
             {/if}
         </div>    
     {/if}
@@ -63,8 +93,8 @@
                 {#key statementId}
                 <ProblemRowCard
                     id={idx}
-                    url={problem.url}
-                    selected={(codeId === idx || statementId === idx)}
+                    url={problem.problem.url}
+                    selected={(codeId?.codeId === data.problems[idx].submission?.id || statementId?.statementId === data.problems[idx].problem.id)}
                 />
                 {/key}
                 {/key}
