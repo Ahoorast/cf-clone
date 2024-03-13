@@ -84,6 +84,8 @@
                 />
             {/if}
         </div>    
+        <div class="h-screen border-2 border-lime-700">
+        </div>
     {/if}
     <table class="w-full">
         <thead></thead>
