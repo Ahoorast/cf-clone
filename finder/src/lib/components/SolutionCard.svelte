@@ -1,12 +1,10 @@
 <script lang="ts">
-    export let id: number;
+    import { CodeBlock } from "svhighlight";
+    import 'highlight.js/styles/base16/dracula.css';
+
     export let solution: string;
 </script>
 
-<p>
-    {id}
-</p>
-
 <div class="text-xs">
-    {solution}
+    <CodeBlock language="C++" code={solution} dimensions="text-xs"/>
 </div>

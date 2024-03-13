@@ -72,10 +72,11 @@
     {#if (codeId !== undefined || statementId !== undefined)}
         <div class="w-full overflow-y-auto h-screen">
             {#if codeId?.codeId !== undefined}
+                {#key codeId.codeId}
                 <SolutionCard 
-                    id={codeId.codeId}
                     solution={data.problems[codeId.rowId].submission?.solution}
                 />
+                {/key}
             {/if}
             {#if statementId?.statementId !== undefined}
                 <ProblemCard 
