@@ -70,7 +70,7 @@
 
 <div class="w-full flex">
     {#if (codeId !== undefined || statementId !== undefined)}
-        <div class="w-full border-1 border-black">
+        <div class="w-full overflow-y-auto h-screen">
             {#if codeId?.codeId !== undefined}
                 <SolutionCard 
                     id={codeId.codeId}
@@ -87,20 +87,22 @@
         <div class="h-screen border-2 border-lime-700">
         </div>
     {/if}
-    <table class="w-full">
-        <thead></thead>
-        <tbody class="overflow-y-scroll">
-            {#each data.problems as problem, idx}
-                {#key codeId}
-                {#key statementId}
-                <ProblemRowCard
-                    id={idx}
-                    url={problem.problem.url}
-                    selected={(codeId?.codeId === data.problems[idx].submission?.id || statementId?.statementId === data.problems[idx].problem.id)}
-                />
-                {/key}
-                {/key}
-            {/each}
-        </tbody>
-    </table>
+    <div class="overflow-y-auto h-screen w-full">
+        <table class="w-full">
+            <thead></thead>
+            <tbody>
+                {#each data.problems as problem, idx}
+                    {#key codeId}
+                    {#key statementId}
+                    <ProblemRowCard
+                        id={idx}
+                        url={problem.problem.url}
+                        selected={(codeId?.codeId === data.problems[idx].submission?.id || statementId?.statementId === data.problems[idx].problem.id)}
+                    />
+                    {/key}
+                    {/key}
+                {/each}
+            </tbody>
+        </table>
+    </div>
 </div>
