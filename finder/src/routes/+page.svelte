@@ -124,6 +124,10 @@
     />
 </div>
 
+<div>
+    {data.problems.length} results
+</div>
+
 
 <div class="border-1 bg-gray-600 w-full h-1"></div>
 
