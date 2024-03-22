@@ -1,8 +1,7 @@
 import type { RequestHandler } from './$types';
 import { db } from '$pgclient';
 import { problem, submission } from '$schema';
-import { eq, and, lte, like, or, not, SQL } from 'drizzle-orm';
-import { DOMParser, Window } from 'happy-dom';
+import { eq, and, like, or, not, SQL } from 'drizzle-orm';
 import { lex, initLexer, Token } from '$lib/lexer/lexer';
 import type { Tokenized } from '$lib/lexer/lexer';
 import { PgColumn } from 'drizzle-orm/pg-core';
@@ -41,7 +40,7 @@ function buildQuery(tokens: Tokenized[], solution: PgColumn) {
 
 }
 
-function buildQuerySimple(keywordTokens: Tokenized[], solution: PgColumn) {
+function buildQuerySimple(keywordTokens: Tokenized[], solution: PgColumn): SQL<unknown> | undefined {
     const firstQuery = like(solution, `%${keywordTokens[0].value}%`);
     if (keywordTokens.length === 1) {
 	return firstQuery;
@@ -49,10 +48,22 @@ function buildQuerySimple(keywordTokens: Tokenized[], solution: PgColumn) {
     return or(firstQuery, buildQuerySimple(keywordTokens.slice(1), solution));
 }
 
+function transformToLowercase(tokens: Tokenized[]) {
+    return tokens.map((tok) => {
+	if (tok.token !== Token.KEYWORD) {
+	    return tok;
+	}
+	return {
+	    token: tok.token,
+	    value: tok.value.toLowerCase().split(' ').join(''),
+	};
+    });
+}
+
 export const POST: RequestHandler = async (req) => { 
     const data = await req.request.json();
     const lexer = initLexer(data.query);
-    const tokens = lex(lexer).tokens;
+    const tokens = transformToLowercase(lex(lexer).tokens);
     //    if (tokens.find((value) => value.token === Token.INVALID) !== undefined) {
     // console.log("HII");
     //    }
@@ -61,8 +72,6 @@ export const POST: RequestHandler = async (req) => {
     })
     console.log(keywordTokens);
     const query = buildQuerySimple(keywordTokens, submission.lowerSolution);
-    // console.log("HIIII");
-    // console.log(db.select().from(problem).leftJoin(submission, eq(problem.id, submission.problemId)).where(query).toSQL());
     const response = new Response(
 	JSON.stringify({
 	    problems: await db.select().from(problem).leftJoin(submission, eq(problem.id, submission.problemId)).where(query),

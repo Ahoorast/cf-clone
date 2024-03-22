@@ -5,15 +5,14 @@
     import SolutionCard from "$comp/SolutionCard.svelte";
     import SearchBar from "$comp/SearchBar.svelte";
     import type { PageData } from "./$types";
-	import { onMount } from "svelte";
 
     export let data;
 
     $: console.log(data);
 
 
-    let codeId: Id;
-    let statementId: Id;
+    let problemId: Id;
+
     type Id = {
         rowId: number;
         codeId: number | undefined;
@@ -57,7 +56,6 @@
     }
 
     async function handleSearch() {
-        console.log("CALLED SEARCH");
         try {
             const response = await fetch('/api/search/', {
                 method: 'post',
@@ -66,11 +64,9 @@
                 })
             });
             const responseData: PageData = await response.json();
-            console.log(responseData);
             data = responseData;
             $page.url.hash = '';
-            codeId = undefined;
-            statementId = undefined;
+            problemId = undefined;
         } catch (e) {
             console.log(e);
         }
@@ -89,14 +85,11 @@
 
     $: {
         if ($page.url.hash.startsWith("#code")) {
-            codeId = getId();
-            statementId = undefined;
+            problemId = getId();
         } else if ($page.url.hash.startsWith("#statement")) {
-            codeId = undefined;
-            statementId = getId();
+            problemId = getId();
         } else {
-            codeId = undefined;
-            statementId = undefined;
+            problemId = undefined;
         }
         
     }
@@ -112,38 +105,39 @@
     }
 
     $: {
-        if (statementId !== undefined) {
-            getStatement(statementId);
+        if (problemId?.statementId !== undefined) {
+            getStatement(problemId);
         }
     }
 </script>
 
-<div class="w-full text-center h-10 bg-gray-200">
-    <SearchBar 
-        searchValue={searchValue}
-    />
+<div class="sticky top-0">
+    <div class="w-full text-center h-10 bg-gray-200">
+        <SearchBar 
+            searchValue={searchValue}
+        />
+    </div>
+
+    <div class="w-full h-10 bg-gray-200 px-1 text-sm">
+        {data.problems.length} results
+    </div>
+
+    <div class="border-1 bg-gray-600 w-full h-1"></div>
 </div>
-
-<div>
-    {data.problems.length} results
-</div>
-
-
-<div class="border-1 bg-gray-600 w-full h-1"></div>
 
 <div class="w-full flex">
-    {#if (codeId !== undefined || statementId !== undefined)}
+    {#if problemId !== undefined }
         <div class="w-full overflow-y-auto h-screen">
-            {#if codeId?.codeId !== undefined}
-                {#key codeId.codeId}
+            {#if problemId?.codeId !== undefined}
+                {#key problemId.codeId}
                 <SolutionCard 
-                    solution={data.problems[codeId.rowId].submission?.solution}
+                    solution={data.problems[problemId.rowId].submission?.solution}
                 />
                 {/key}
             {/if}
-            {#if statementId?.statementId !== undefined}
+            {#if problemId?.statementId !== undefined}
                 <ProblemCard 
-                    problemHtml={data.problems[statementId.rowId].problem.statement}
+                    problemHtml={data.problems[problemId.rowId].problem.statement}
                 />
             {/if}
         </div>    
@@ -155,14 +149,12 @@
             <thead></thead>
             <tbody>
                 {#each data.problems as problem, idx}
-                    {#key codeId}
-                    {#key statementId}
+                    {#key problemId}
                     <ProblemRowCard
                         id={idx}
                         url={problem.problem.url}
-                        selected={(codeId?.codeId === data.problems[idx].submission?.id || statementId?.statementId === data.problems[idx].problem.id)}
+                        selected={(problemId?.codeId === data.problems[idx].submission?.id || problemId?.statementId === data.problems[idx].problem.id)}
                     />
-                    {/key}
                     {/key}
                 {/each}
             </tbody>
