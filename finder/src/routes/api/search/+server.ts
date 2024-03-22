@@ -21,7 +21,7 @@ function tokenToCondition(token: Token) {
 }
 
 
-// TODO
+// TODO: not finished yet
 function buildQuery(tokens: Tokenized[], solution: PgColumn) {
     const hasAndOr = tokens.find((val) => { 
 	return (val.token === Token.AND || val.token === Token.OR);
@@ -41,13 +41,12 @@ function buildQuery(tokens: Tokenized[], solution: PgColumn) {
 
 }
 
-// TODO not working properly
 function buildQuerySimple(keywordTokens: Tokenized[], solution: PgColumn) {
     const firstQuery = like(solution, `%${keywordTokens[0].value}%`);
     if (keywordTokens.length === 1) {
 	return firstQuery;
     }
-    return or(firstQuery, buildQuery(keywordTokens.slice(1), solution));
+    return or(firstQuery, buildQuerySimple(keywordTokens.slice(1), solution));
 }
 
 export const POST: RequestHandler = async (req) => { 
@@ -60,7 +59,10 @@ export const POST: RequestHandler = async (req) => {
     const keywordTokens = tokens.filter((tok) => {
 	return tok.token === Token.KEYWORD;
     })
+    console.log(keywordTokens);
     const query = buildQuerySimple(keywordTokens, submission.lowerSolution);
+    // console.log("HIIII");
+    // console.log(db.select().from(problem).leftJoin(submission, eq(problem.id, submission.problemId)).where(query).toSQL());
     const response = new Response(
 	JSON.stringify({
 	    problems: await db.select().from(problem).leftJoin(submission, eq(problem.id, submission.problemId)).where(query),
