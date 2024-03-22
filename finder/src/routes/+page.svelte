@@ -3,8 +3,15 @@
     import ProblemCard from "$comp/ProblemCard.svelte";
     import ProblemRowCard from "$comp/ProblemRowCard.svelte";
     import SolutionCard from "$comp/SolutionCard.svelte";
+    import SearchBar from "$comp/SearchBar.svelte";
+    import type { PageData } from "./$types";
+	import { onMount } from "svelte";
 
     export let data;
+
+    $: console.log(data);
+
+
     let codeId: Id;
     let statementId: Id;
     type Id = {
@@ -12,6 +19,8 @@
         codeId: number | undefined;
         statementId: number | undefined;
     } | undefined;
+
+    let searchValue: string = '';
 
     function getId(): Id {
         const rowId = parseInt($page.url.hash.split('-')[1]);
@@ -40,13 +49,43 @@
                     url: string | null;
                 }[] 
             } = await response.json();
-            console.log(responseData);
             data.problems[id.rowId].problem.statement = responseData.problem[0].statement;
             data = data;
         } catch (e) {
             console.log(e);
         }
     }
+
+    async function handleSearch() {
+        console.log("CALLED SEARCH");
+        try {
+            const response = await fetch('/api/search/', {
+                method: 'post',
+                body: JSON.stringify({
+                    query: searchValue,
+                })
+            });
+            const responseData: PageData = await response.json();
+            console.log(responseData);
+            data = responseData;
+            $page.url.hash = '';
+            codeId = undefined;
+            statementId = undefined;
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    // onMount(() => {
+    //     if ($page.url.search.startsWith("?search=")) {
+    //         const newSearchValue = decodeURIComponent($page.url.search.split('=')[1]);
+    //         if (newSearchValue !== searchValue) {
+    //             searchValue = newSearchValue;
+    //             handleSearch();
+    //         }
+    //     }
+    //     console.log("MOUNT ", searchValue);
+    // })
 
     $: {
         if ($page.url.hash.startsWith("#code")) {
@@ -59,6 +98,17 @@
             codeId = undefined;
             statementId = undefined;
         }
+        
+    }
+    
+    $: {
+        if ($page.url.search.startsWith("?search=")) {
+            const newSearchValue = decodeURIComponent($page.url.search.split('=')[1]);
+            if (newSearchValue !== searchValue) {
+                searchValue = newSearchValue;
+                handleSearch();
+            }
+        }
     }
 
     $: {
@@ -67,6 +117,15 @@
         }
     }
 </script>
+
+<div class="w-full text-center h-10 bg-gray-200">
+    <SearchBar 
+        searchValue={searchValue}
+    />
+</div>
+
+
+<div class="border-1 bg-gray-600 w-full h-1"></div>
 
 <div class="w-full flex">
     {#if (codeId !== undefined || statementId !== undefined)}
@@ -80,7 +139,6 @@
             {/if}
             {#if statementId?.statementId !== undefined}
                 <ProblemCard 
-                    id={statementId.statementId} 
                     problemHtml={data.problems[statementId.rowId].problem.statement}
                 />
             {/if}

@@ -4,7 +4,7 @@ import { problem, submission } from '$schema';
 import { eq } from 'drizzle-orm';
 // import { fail, type RequestHandler } from '@sveltejs/kit';
 // import { z } from "zod";
-// import type { Actions } from './$types';
+import type { Actions } from './$types';
  
 
 export async function load(/* event: PageServerLoadEvent */) {
@@ -23,9 +23,20 @@ export async function load(/* event: PageServerLoadEvent */) {
 // 	// 		statement: problem.statement,
 // 	// 	}).from(problem).where(eq(problem.id, id));
 // 	// },
-// 	get_solution: async ({ cookies, request }) => {
-// 		return await db.select({
-// 			solution: submission.solution,
-// 		}).from(submission).where(eq(submission.problemId, id));
-// 	},
-// } satisfies Actions
+// 	// get_solution: async ({ cookies, request }) => {
+// 	// 	return await db.select({
+// 	// 		solution: submission.solution,
+// 	// 	}).from(submission).where(eq(submission.problemId, id));
+// 	// },
+// 	search: async ({ cookies, request }) => {
+// 		const data = await request.formData();
+// 		console.log("THIS IS", data);
+// 		// data.forEach((value, key) => {
+// 		// 	console.log(key, value);
+// 		// );
+// 		return { 
+// 			success: true,
+// 			wtf: 'ye baby',
+// 		};
+// 	}
+// } satisfies Actions;

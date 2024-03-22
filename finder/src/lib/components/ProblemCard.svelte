@@ -1,12 +1,13 @@
 <script lang="ts">
-    export let problemHtml: string;
-    export let id: number;
-    $: console.log(problemHtml);
+    export let problemHtml: string | null;
 </script>
 
-<div>
-    {id}
-</div>
-<div class="text-xs">
+{#if problemHtml}
+<div class="text-xs bg-gray-200">
     {@html problemHtml}
 </div>
+{:else}
+    <div>
+        loading
+    </div>
+{/if}
