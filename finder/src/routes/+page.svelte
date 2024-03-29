@@ -14,7 +14,7 @@
     let problemId: Id;
 
     type Id = {
-        rowId: number;
+        rowId: number | undefined;
         codeId: number | undefined;
         statementId: number | undefined;
     } | undefined;
@@ -85,9 +85,19 @@
 
     $: {
         if ($page.url.hash.startsWith("#code")) {
-            problemId = getId();
+            const id = getId();
+            problemId = {
+                rowId: id?.rowId,
+                statementId: undefined,
+                codeId: id?.codeId,
+            };
         } else if ($page.url.hash.startsWith("#statement")) {
-            problemId = getId();
+            const id = getId();
+            problemId = {
+                rowId: id?.rowId,
+                statementId: id?.statementId,
+                codeId: undefined,
+            };
         } else {
             problemId = undefined;
         }
@@ -105,6 +115,7 @@
     }
 
     $: {
+        console.log(problemId?.statementId);
         if (problemId?.statementId !== undefined) {
             getStatement(problemId);
         }
