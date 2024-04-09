@@ -8,9 +8,6 @@
 
     export let data;
 
-    $: console.log(data);
-
-
     let problemId: Id;
 
     type Id = {
@@ -18,6 +15,15 @@
         codeId: number | undefined;
         statementId: number | undefined;
     } | undefined;
+
+    enum sidebarState {
+        NONE,
+        CODE,
+        STATEMENT,
+        NOTE,
+    };
+
+    let sidebar: sidebarState = sidebarState.NONE;
 
     let searchValue: string = '';
 
@@ -34,9 +40,12 @@
         if (id === undefined) {
             return;
         }
-        // if (data.problems[id.rowId].problem.statement !== null) {
-        //     return;
-        // }
+        if (id.rowId === undefined) {
+            return;
+        }
+        if (id.statementId === undefined) {
+            return;
+        }
         try {
             const req = new Request(`/api/problem/${id.statementId}`);
             const response = await fetch(req);
@@ -85,19 +94,14 @@
 
     $: {
         if ($page.url.hash.startsWith("#code")) {
-            const id = getId();
-            problemId = {
-                rowId: id?.rowId,
-                statementId: undefined,
-                codeId: id?.codeId,
-            };
+            problemId = getId();
+            sidebar = sidebarState.CODE;
         } else if ($page.url.hash.startsWith("#statement")) {
-            const id = getId();
-            problemId = {
-                rowId: id?.rowId,
-                statementId: id?.statementId,
-                codeId: undefined,
-            };
+            problemId = getId();
+            sidebar = sidebarState.STATEMENT;
+        } else if ($page.url.hash.startsWith("#notes")) {
+            problemId = getId();
+            sidebar = sidebarState.NOTE;
         } else {
             problemId = undefined;
         }
@@ -115,8 +119,7 @@
     }
 
     $: {
-        console.log(problemId?.statementId);
-        if (problemId?.statementId !== undefined) {
+        if (sidebar === sidebarState.STATEMENT) {
             getStatement(problemId);
         }
     }
@@ -136,17 +139,18 @@
     <div class="border-1 bg-gray-600 w-full h-1"></div>
 </div>
 
+
 <div class="w-full flex">
-    {#if problemId !== undefined }
+    {#if problemId?.rowId !== undefined }
         <div class="w-full overflow-y-auto h-screen">
-            {#if problemId?.codeId !== undefined}
+            {#if sidebar === sidebarState.CODE}
                 {#key problemId.codeId}
                 <SolutionCard 
                     solution={data.problems[problemId.rowId].submission?.solution}
                 />
                 {/key}
             {/if}
-            {#if problemId?.statementId !== undefined}
+            {#if sidebar === sidebarState.STATEMENT}
                 <ProblemCard 
                     problemHtml={data.problems[problemId.rowId].problem.statement}
                 />
@@ -156,13 +160,21 @@
         </div>
     {/if}
     <div class="overflow-y-auto h-screen w-full">
-        <table class="w-full">
-            <thead></thead>
+        <table class="table-auto w-full text-center">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
             <tbody>
                 {#each data.problems as problem, idx}
                     {#key problemId}
                     <ProblemRowCard
-                        id={idx}
+                        indx={idx}
                         url={problem.problem.url}
                         selected={(problemId?.codeId === data.problems[idx].submission?.id || problemId?.statementId === data.problems[idx].problem.id)}
                     />
