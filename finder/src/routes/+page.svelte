@@ -4,6 +4,7 @@
     import ProblemRowCard from "$comp/ProblemRowCard.svelte";
     import SolutionCard from "$comp/SolutionCard.svelte";
     import SearchBar from "$comp/SearchBar.svelte";
+    import ProblemNote from "$comp/ProblemNote.svelte";
     import type { PageData } from "./$types";
 
     export let data;
@@ -155,15 +156,19 @@
                     problemHtml={data.problems[problemId.rowId].problem.statement}
                 />
             {/if}
+            {#if sidebar === sidebarState.NOTE}
+                <ProblemNote 
+                    id={problemId.codeId}
+                />
+            {/if}
         </div>    
         <div class="h-screen border-2 border-lime-700">
         </div>
     {/if}
     <div class="overflow-y-auto h-screen w-full">
-        <table class="table-auto w-full text-center">
+        <table class="table-auto w-full text-center h-screen">
             <thead>
                 <tr>
-                    <th></th>
                     <th></th>
                     <th></th>
                     <th></th>

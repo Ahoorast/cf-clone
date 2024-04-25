@@ -33,22 +33,7 @@
         <a class="text-center text-blue-100 bg-yellow-700 hover:bg-yellow-800 border-black rounded py-1 px-2 border text-xs"
             href="#notes-{indx}"
         >
-            View Notes 
+            Notes 
         </a>
-    </td>
-    <td class="py-3 px-1">
-        <button class="text-center text-blue-100 bg-amber-600 hover:bg-red-800 border-black rounded py-1 px-2 border text-xs"
-            on:click={() => {
-
-            }}
-        >
-            Add Note
-        </button>
-    </td>
-    <td class="py-3 px-1">
-        <button class="text-center text-blue-100 bg-green-700 hover:bg-green-800 border-black rounded py-1 px-2 border text-xs"
-        >
-            Refetch Statement
-        </button>
     </td>
 </tr>

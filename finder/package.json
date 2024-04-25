@@ -38,6 +38,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@tinymce/tinymce-svelte": "^2.0.2",
     "@types/node": "^20.11.24",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.29.4",
