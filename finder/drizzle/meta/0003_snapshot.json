@@ -1,10 +1,8 @@
 {
-  "id": "62c074d7-18b2-48b6-985b-4284c734339c",
-  "prevId": "2935cce0-215b-4fd9-9b5c-c9f984f31436",
-  "version": "5",
-  "dialect": "pg",
+  "version": "7",
+  "dialect": "postgresql",
   "tables": {
-    "problem": {
+    "public.problem": {
       "name": "problem",
       "schema": "",
       "columns": {
@@ -40,14 +38,14 @@
       "uniqueConstraints": {
         "problem_url_unique": {
           "name": "problem_url_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "url"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
-    "submission": {
+    "public.submission": {
       "name": "submission",
       "schema": "",
       "columns": {
@@ -94,25 +92,25 @@
         "submission_problem_id_problem_id_fk": {
           "name": "submission_problem_id_problem_id_fk",
           "tableFrom": "submission",
-          "tableTo": "problem",
           "columnsFrom": [
             "problem_id"
           ],
+          "tableTo": "problem",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "submission_url_unique": {
           "name": "submission_url_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "url"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     }
@@ -120,8 +118,10 @@
   "enums": {},
   "schemas": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
-    "tables": {}
-  }
+    "tables": {},
+    "columns": {}
+  },
+  "id": "62c074d7-18b2-48b6-985b-4284c734339c",
+  "prevId": "2935cce0-215b-4fd9-9b5c-c9f984f31436"
 }

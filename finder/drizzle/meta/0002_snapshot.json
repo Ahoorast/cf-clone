@@ -1,10 +1,8 @@
 {
-  "id": "2935cce0-215b-4fd9-9b5c-c9f984f31436",
-  "prevId": "030dda98-01a4-4937-83de-59244c1d3076",
-  "version": "5",
-  "dialect": "pg",
+  "version": "7",
+  "dialect": "postgresql",
   "tables": {
-    "problem": {
+    "public.problem": {
       "name": "problem",
       "schema": "",
       "columns": {
@@ -39,7 +37,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "submission": {
+    "public.submission": {
       "name": "submission",
       "schema": "",
       "columns": {
@@ -86,15 +84,15 @@
         "submission_problem_id_problem_id_fk": {
           "name": "submission_problem_id_problem_id_fk",
           "tableFrom": "submission",
-          "tableTo": "problem",
           "columnsFrom": [
             "problem_id"
           ],
+          "tableTo": "problem",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -104,8 +102,10 @@
   "enums": {},
   "schemas": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
-    "tables": {}
-  }
+    "tables": {},
+    "columns": {}
+  },
+  "id": "2935cce0-215b-4fd9-9b5c-c9f984f31436",
+  "prevId": "030dda98-01a4-4937-83de-59244c1d3076"
 }

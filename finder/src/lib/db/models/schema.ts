@@ -48,3 +48,10 @@ export const problemRelations = relations(problem, ({ many }) => ({
     notes: many(problemNote),
     submissions: many(submission),
 }));
+
+export const submissionRelations = relations(submission, ({ one }) => ({
+    problem: one(problem, {
+        fields: [submission.problemId],
+        references: [problem.id],
+    }),
+}));

@@ -1,10 +1,8 @@
 {
-  "id": "540f2954-eb09-43a8-950a-972c561e7ae3",
-  "prevId": "30a41f8d-a9d9-4c6e-a7b9-02c1958b71a2",
-  "version": "5",
-  "dialect": "pg",
+  "version": "7",
+  "dialect": "postgresql",
   "tables": {
-    "note": {
+    "public.note": {
       "name": "note",
       "schema": "",
       "columns": {
@@ -33,7 +31,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "problem": {
+    "public.problem": {
       "name": "problem",
       "schema": "",
       "columns": {
@@ -69,14 +67,14 @@
       "uniqueConstraints": {
         "problem_url_unique": {
           "name": "problem_url_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "url"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
-    "problem_note": {
+    "public.problem_note": {
       "name": "problem_note",
       "schema": "",
       "columns": {
@@ -104,7 +102,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "submission": {
+    "public.submission": {
       "name": "submission",
       "schema": "",
       "columns": {
@@ -157,25 +155,25 @@
         "submission_problem_id_problem_id_fk": {
           "name": "submission_problem_id_problem_id_fk",
           "tableFrom": "submission",
-          "tableTo": "problem",
           "columnsFrom": [
             "problem_id"
           ],
+          "tableTo": "problem",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "submission_url_unique": {
           "name": "submission_url_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "url"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     }
@@ -183,8 +181,10 @@
   "enums": {},
   "schemas": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
-    "tables": {}
-  }
+    "tables": {},
+    "columns": {}
+  },
+  "id": "540f2954-eb09-43a8-950a-972c561e7ae3",
+  "prevId": "30a41f8d-a9d9-4c6e-a7b9-02c1958b71a2"
 }
