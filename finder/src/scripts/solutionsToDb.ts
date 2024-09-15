@@ -19,12 +19,18 @@ for (const file of problemFiles) {
 	const solution = readFile(`${BASE_DIR}/${file}`);
 	const url = `codeforces.com${file.replaceAll("_", "/").replaceAll("-", "/")}`;
 	const problems = await db.select({id: problem.id}).from(problem).where(eq(problem.url, url));
-	let p: any = problems[0];
+	let p = problems[0];
 	if (p === undefined) {
-		p = await db.insert(problem).values({
+		let matchedProblems = await db.insert(problem).values({
 			url: url,
-		}).returning({id: problem.id})[0];
+		}).returning({id: problem.id});
+		if (matchedProblems.length != 1) {
+			console.log("WTF");
+		} else {
+			p = matchedProblems[0];
+		}
 	} 
+
 	await db.insert(submission).values({
 		solution: solution,
 		status: "ac",

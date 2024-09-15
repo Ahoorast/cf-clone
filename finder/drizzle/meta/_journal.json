@@ -4,51 +4,9 @@
   "entries": [
     {
       "idx": 0,
-      "version": "5",
-      "when": 1709284868539,
-      "tag": "0000_talented_callisto",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1709290268700,
-      "tag": "0001_bored_lady_vermin",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1709319018765,
-      "tag": "0002_nervous_cardiac",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1709320405964,
-      "tag": "0003_careful_the_twelve",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1709322484374,
-      "tag": "0004_magical_ego",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "5",
-      "when": 1709814574752,
-      "tag": "0005_lucky_puppet_master",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "5",
-      "when": 1712669007340,
-      "tag": "0006_previous_grey_gargoyle",
+      "version": "7",
+      "when": 1726411407518,
+      "tag": "0000_exotic_ultimates",
       "breakpoints": true
     }
   ]
