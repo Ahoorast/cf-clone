@@ -45,7 +45,7 @@ function buildQuerySimple(keywordTokens: Tokenized[], solution: PgColumn): SQL<u
     if (keywordTokens.length === 1) {
 	return firstQuery;
     }
-    return or(firstQuery, buildQuerySimple(keywordTokens.slice(1), solution));
+    return and(firstQuery, buildQuerySimple(keywordTokens.slice(1), solution));
 }
 
 function transformToLowercase(tokens: Tokenized[]) {
@@ -72,6 +72,7 @@ export const POST: RequestHandler = async (req) => {
     })
     console.log(keywordTokens);
     const query = buildQuerySimple(keywordTokens, submission.lowerSolution);
+    console.log()
     const response = new Response(
 	JSON.stringify({
 	    problems: await db.select().from(problem).leftJoin(submission, eq(problem.id, submission.problemId)).where(query),
