@@ -18,7 +18,7 @@ const problemFiles = readDir(BASE_DIR);
 for (const file of problemFiles) {
 	const solution = readFile(`${BASE_DIR}/${file}`);
 	const url = `codeforces.com${file.replaceAll("_", "/").replaceAll("-", "/")}`;
-	const problems = await db.select({id: problem.id}).from(problem).where(eq(problem.url, url));
+	const problems = await db.select({id: problem.id}).from(problem).where(eq(problem.url, 123));
 	let p = problems[0];
 	if (p === undefined) {
 		let matchedProblems = await db.insert(problem).values({

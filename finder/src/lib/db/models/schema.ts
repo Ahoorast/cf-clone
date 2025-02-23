@@ -13,6 +13,11 @@ export const problem = pgTable("problem", {
     url: varchar("url", { length: 100 }).unique(),
 });
 
+export const tag = pgTable("tag", {
+    id: serial("id").primaryKey().notNull(),
+    name: text("name").unique(),
+});
+
 type SubmissionStatus = "ac" | "tle" | "rte" | "wa" | "ce";
 
 export const submission = pgTable("submission", {
@@ -37,6 +42,12 @@ export const problemNote = pgTable("problem_note", {
     noteId: integer("note_id"),
 });
 
+export const problemTag = pgTable("problem_tag", {
+    id: serial("id").primaryKey().notNull(),
+    problemId: integer("problem_id"),
+    tagId: integer("tag_id"),
+});
+
 export const problemNoteRelations = relations(problemNote, ({ one }) => ({
     problem: one(problem, {
         fields: [problemNote.problemId],
@@ -49,9 +60,21 @@ export const problemRelations = relations(problem, ({ many }) => ({
     submissions: many(submission),
 }));
 
+export const problemTagRelations = relations(problemTag, ({ one }) => ({
+    problem: one(problem, {
+        fields: [problemTag.problemId],
+        references: [problem.id],
+    }),
+    tag: one(tag, {
+        fields: [problemTag.tagId],
+        references: [tag.id],
+    }),
+}));
+
 export const submissionRelations = relations(submission, ({ one }) => ({
     problem: one(problem, {
         fields: [submission.problemId],
         references: [problem.id],
     }),
 }));
+
