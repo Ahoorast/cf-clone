@@ -72,7 +72,6 @@ export const POST: RequestHandler = async (req) => {
     })
     console.log(keywordTokens);
     const query = buildQuerySimple(keywordTokens, submission.lowerSolution);
-    console.log()
     const response = new Response(
 	JSON.stringify({
 	    problems: await db.select().from(problem).leftJoin(submission, eq(problem.id, submission.problemId)).where(query),
