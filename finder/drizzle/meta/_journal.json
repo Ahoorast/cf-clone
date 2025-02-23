@@ -15,6 +15,13 @@
       "when": 1740341786673,
       "tag": "0001_sparkling_cable",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1740346912889,
+      "tag": "0002_sleepy_felicia_hardy",
+      "breakpoints": true
     }
   ]
 }

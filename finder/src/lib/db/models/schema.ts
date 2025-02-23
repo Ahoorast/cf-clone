@@ -1,4 +1,5 @@
 import { relations } from "drizzle-orm";
+import { unique, uniqueIndex } from "drizzle-orm/pg-core";
 import { serial, text, timestamp, pgTable, varchar, integer } from "drizzle-orm/pg-core";
 // import { z } from "zod";
 // import { createSelectSchema, createInsertSchema } from "drizzle-zod";
@@ -46,7 +47,9 @@ export const problemTag = pgTable("problem_tag", {
     id: serial("id").primaryKey().notNull(),
     problemId: integer("problem_id"),
     tagId: integer("tag_id"),
-});
+}, (t) => ({
+    unq: unique().on(t.problemId, t.tagId),
+}));
 
 export const problemNoteRelations = relations(problemNote, ({ one }) => ({
     problem: one(problem, {

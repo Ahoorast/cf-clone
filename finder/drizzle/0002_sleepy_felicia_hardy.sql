@@ -1,0 +1,1 @@
+ALTER TABLE "problem_tag" ADD CONSTRAINT "problem_tag_problem_id_tag_id_unique" UNIQUE("problem_id","tag_id");
